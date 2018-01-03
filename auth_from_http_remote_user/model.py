@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Laurent Mignon
@@ -18,10 +17,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm
+from odoo import models
 
 
-class AuthFromHttpRemoteUserInstalled(orm.AbstractModel):
+class AuthFromHttpRemoteUserInstalled(models.AbstractModel):
     """An abstract model used to safely know if the module is installed
     """
     _name = 'auth_from_http_remote_user.installed'

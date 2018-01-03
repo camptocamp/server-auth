@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Laurent Mignon
@@ -41,9 +40,12 @@ def mock_cursor(cr):
     cr.autocommit = org_autocommit
 
 
-class test_res_users(common.TransactionCase):
+class TestResUsers(common.TransactionCase):
 
     def test_login(self):
+        self.env.cr.execute('update res_users set sso_key = null;')
+        self.env.cr.commit()
+        #
         res_users_obj = self.registry('res.users')
         res = res_users_obj.authenticate(
             common.get_db_name(), 'admin', 'admin', None)
@@ -55,16 +57,16 @@ class test_res_users(common.TransactionCase):
         self.assertFalse(res)
         # mimic what the new controller do when it find a value in
         # the http header (HTTP_REMODE_USER)
-        res_users_obj.write(self.cr, self.uid, uid, {'sso_key': token})
+        user = self.env['res.users'].browse([uid])
+        user.write({'sso_key': token})
 
         # Here we need to mock the cursor since the login is natively done
         # inside its own connection
         with mock_cursor(self.cr):
-            # We can verifies that the given (uid, token) is authorized for
-            # the database
-            res_users_obj.check(common.get_db_name(), uid, token)
-
-            # we are able to login with the new token
+            # Verify that the given (uid, token) is authorized for the database
+            self.env['res.users'].sudo().check(
+                common.get_db_name(), uid, token)
+            # We are able to login with the new token
             res = res_users_obj.authenticate(
                 common.get_db_name(), 'admin', token, None)
             self.assertTrue(res)
@@ -81,13 +83,11 @@ class test_res_users(common.TransactionCase):
     def test_copy(self):
         '''Check that the sso_key is not copied on copy
         '''
-        res_users_obj = self.registry('res.users')
         vals = {'sso_key': '123'}
-        res_users_obj.write(self.cr, self.uid, self.uid, vals)
-        read_vals = res_users_obj.read(
-            self.cr, self.uid, self.uid, ['sso_key'])
+        user = self.env['res.users'].browse(self.uid)
+        user.write(vals)
+        read_vals = user.read(['sso_key'])[0]
         self.assertDictContainsSubset(vals, read_vals)
-        copy = res_users_obj.copy(self.cr, self.uid, self.uid)
-        read_vals = res_users_obj.read(
-            self.cr, self.uid, copy, ['sso_key'])
+        copy = user.copy()
+        read_vals = copy.read(['sso_key'])[0]
         self.assertFalse(read_vals.get('sso_key'))

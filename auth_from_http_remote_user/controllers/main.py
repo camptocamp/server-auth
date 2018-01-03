@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Author: Laurent Mignon
@@ -19,16 +18,14 @@
 #
 ##############################################################################
 
-from openerp import SUPERUSER_ID
-
-import openerp
-from openerp import http
-from openerp.http import request
-from openerp.addons.web.controllers import main
-from openerp.addons.auth_from_http_remote_user.model import \
+from odoo import http
+from odoo.http import request
+from odoo.addons.web.controllers import main
+from odoo.addons.auth_from_http_remote_user.model import \
     AuthFromHttpRemoteUserInstalled
 from .. import utils
 
+import odoo
 import random
 import logging
 import werkzeug
@@ -50,8 +47,8 @@ class Home(main.Home):
         return super(Home, self).web_client(s_action, **kw)
 
     def _search_user(self, res_users, login, cr):
-        user_ids = res_users.search(cr, SUPERUSER_ID, [('login', '=', login),
-                                                       ('active', '=', True)])
+        user_ids = request.env['res.users'].sudo().search([
+            ('login', '=', login), ('active', '=', True)])
         assert len(user_ids) < 2
         if user_ids:
             return user_ids[0]
@@ -59,24 +56,23 @@ class Home(main.Home):
 
     def _bind_http_remote_user(self, db_name):
         try:
-            registry = openerp.registry(db_name)
+            registry = odoo.registry(db_name)
             with registry.cursor() as cr:
                 if AuthFromHttpRemoteUserInstalled._name not in registry:
-                    # module not installed in database,
-                    # continue usual behavior
+                    # module not installed in database, continue usual behavior
                     return
 
                 headers = http.request.httprequest.headers.environ
 
                 login = headers.get(self._REMOTE_USER_ATTRIBUTE, None)
                 if not login:
-                    # no HTTP_REMOTE_USER header,
-                    # continue usual behavior
+                    # no HTTP_REMOTE_USER header, continue usual behavior
                     return
 
                 request_login = request.session.login
                 if request_login:
                     if request_login == login:
+                        request.params['login_success'] = True
                         # already authenticated
                         return
                     else:
@@ -89,14 +85,17 @@ class Home(main.Home):
                     request.session.logout(keep_db=True)
                     raise http.AuthenticationError()
 
+                request.params['login_success'] = True
                 # generate a specific key for authentication
                 key = randomString(utils.KEY_LENGTH, '0123456789abcdef')
-                res_users.write(cr, SUPERUSER_ID, [user_id], {'sso_key': key})
+                cr.execute('''update res_users
+                                set sso_key=%s
+                                where id=%s''', (key, user_id.id))
             request.session.authenticate(db_name, login=login,
-                                         password=key, uid=user_id)
-        except http.AuthenticationError, e:
+                                         password=key, uid=user_id.id)
+        except http.AuthenticationError as e:
             raise e
-        except Exception, e:
+        except Exception as e:
             _logger.error("Error binding Http Remote User session",
                           exc_info=True)
             raise e
@@ -108,4 +107,4 @@ randrange = random.SystemRandom().randrange
 def randomString(length, chrs):
     """Produce a string of length random bytes, chosen from chrs."""
     n = len(chrs)
-    return ''.join([chrs[randrange(n)] for _ in xrange(length)])
+    return ''.join([chrs[randrange(n)] for _ in range(length)])
