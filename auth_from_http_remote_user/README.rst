@@ -7,11 +7,11 @@ Authentication From HTTP Remote User
 ====================================
 
 This module initialize the session by looking for the field HTTP_REMOTE_USER in
-the HEADER of the HTTP request and trying to bind the given value to a user.
+the HEADERS of the HTTP request and trying to bind the given value to a user.
 To be active, the module must be installed in the expected databases and loaded
 at startup; Add the *--load* parameter to the startup command: ::
 
-  --load=web,web_kanban,auth_from_http_remote_user, ...
+  --load=web,auth_from_http_remote_user, ...
 
 If the field is found in the header and no user matches the given one, the
 system issue a login error page. (*401* `Unauthorized`)
@@ -131,9 +131,6 @@ Usage
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
     :alt: Try me on Runbot
     :target: https://runbot.odoo-community.org/runbot/149/11.0
-
-Known Issues / Roadmap
-======================
 
 
 Bug Tracker

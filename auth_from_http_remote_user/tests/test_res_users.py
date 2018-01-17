@@ -1,24 +1,8 @@
-##############################################################################
-#
-#    Author: Laurent Mignon
-#    Copyright 2014 'ACSONE SA/NV'
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# Author: Laurent Mignon
+# Copyright 2014-2018 'ACSONE SA/NV'
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
-from openerp.tests import common
+from odoo.tests import common
 import mock
 import os
 from contextlib import contextmanager
@@ -46,7 +30,7 @@ class TestResUsers(common.TransactionCase):
         self.env.cr.execute('update res_users set sso_key = null;')
         self.env.cr.commit()
         #
-        res_users_obj = self.registry('res.users')
+        res_users_obj = self.env['res.users']
         res = res_users_obj.authenticate(
             common.get_db_name(), 'admin', 'admin', None)
         uid = res
@@ -55,8 +39,8 @@ class TestResUsers(common.TransactionCase):
         res = res_users_obj.authenticate(
             common.get_db_name(), 'admin', token, None)
         self.assertFalse(res)
-        # mimic what the new controller do when it find a value in
-        # the http header (HTTP_REMODE_USER)
+        # mimic what the new controller do when it finds a value in
+        # the http header (HTTP_REMOTE_USER)
         user = self.env['res.users'].browse([uid])
         user.write({'sso_key': token})
 
@@ -79,7 +63,7 @@ class TestResUsers(common.TransactionCase):
                      ' of the mail module has created the column '
                      '`notification_email_send` as REQUIRED into the table '
                      'res_partner. BTW, it\'s no more possible to copy a '
-                     'res_user without an intefirty error')
+                     'res_user without an integrity error')
     def test_copy(self):
         '''Check that the sso_key is not copied on copy
         '''
