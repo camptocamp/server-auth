@@ -1,7 +1,7 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
-from odoo import http, registry
+from odoo import http
 from odoo.http import request
 
 from odoo.addons.auth_from_http_remote_user.controllers import main
@@ -16,8 +16,8 @@ class Home(main.Home):
     _REMOTE_USER_ROLE = 'HTTP_USER_ROLES'
     _REMOTE_USER_ROLE_SEPARATOR = ','
 
-    def _get_roles(self):
-        """Return user roles from HTTP header.
+    def _get_http_role_codes(self):
+        """Return role codes from HTTP header.
 
         Return in a list the user role codes found in the HTTP
         header using the field and separator predefined.
@@ -29,21 +29,27 @@ class Home(main.Home):
             roles = roles_in_header.split(self._REMOTE_USER_ROLE_SEPARATOR)
         return roles
 
-    def _authenticate_user(self, user, cr):
-        """Update roles assigned to user """
-        cr.execute('''DELETE FROM res_users_role_line
-                        WHERE user_id=%s''', [user.id])
-        role_codes = self._get_roles()
-        if role_codes:
-            roles = request.env['res.users.role'].sudo().search(
-                    [('user_role_code', 'in', role_codes)])
-            _logger.info('''Role codes {} found ids {} assigning to {}'''
-                    .format( role_codes, roles.ids, user.login))
-            if roles:
-                cr.execute('''INSERT INTO res_users_role_line(user_id, role_id)
-                                VALUES( %s, unnest( %s))''',
-                           (user.id, list(roles.ids)))
-        else:
-            _logger.warn('No HTTP user roles found for {} '.format(user.login))
+    def logging_http_remote_user(self, env, user):
+        """Update roles assigned to user
 
-        return super()._authenticate_user(user, cr)
+        Read roles codes from the http header and compare with the actual roles
+        of the logging user. If there is a difference, changes are applied.
+        """
+        new_roles = set()
+        existing_roles = set(user.role_line_ids.mapped('role_id').ids)
+        role_codes = self._get_http_role_codes()
+        if role_codes:
+            new_roles = set(
+                request.env['res.users.role'].sudo().search(
+                    [('user_role_code', 'in', role_codes)]).ids)
+        roles2add = list(new_roles.difference(existing_roles))
+        roles2remove = list(existing_roles.difference(new_roles))
+        role_lines = env['res.users.role.line']
+        if roles2add:
+            for role_id in roles2add:
+                role_lines.create({'user_id': user.id, 'role_id': role_id})
+        if roles2remove:
+            role_lines.search([
+                ('user_id', '=', user.id),
+                ('role_id', 'in', roles2remove)]).unlink()
+        return super().logging_http_remote_user(env, user)
