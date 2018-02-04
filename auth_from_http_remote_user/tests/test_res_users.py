@@ -2,7 +2,9 @@
 # Copyright 2014-2018 'ACSONE SA/NV'
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
+from odoo import api, registry
 from odoo.tests import common
+from odoo.tests.common import TransactionCase
 import mock
 import os
 from contextlib import contextmanager
@@ -24,12 +26,27 @@ def mock_cursor(cr):
     cr.autocommit = org_autocommit
 
 
-class TestResUsers(common.TransactionCase):
+class TestResUsers(TransactionCase):
+
+    def setUp(self):
+        super().setUp()
+        # ToDo : create a user for tests
+        #        for now using admin
+        self.user = self.env['res.users'].browse(1)
+        self._model = self.env['res.users']
+
+    def test_authenticate(self):
+        """ Try creating a key for the user """
+        key = self._model.authenticate_sso_user(self.env, self.user)
+        self.assertEqual(self.user.sso_key, key)
 
     def test_login(self):
-        self.env.cr.execute('update res_users set sso_key = null;')
-        self.env.cr.commit()
-        #
+        reg = registry(self.env.cr.dbname)
+        with api.Environment.manage():
+            with reg.cursor() as cr:
+                env = api.Environment(cr, 1, {})
+                env['res.users'].browse(1).write({'sso_key': False})
+
         res_users_obj = self.env['res.users']
         res = res_users_obj.authenticate(
             common.get_db_name(), 'admin', 'admin', None)
