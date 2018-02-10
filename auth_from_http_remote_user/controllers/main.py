@@ -7,7 +7,6 @@ from odoo.http import request
 from odoo.addons.web.controllers import main
 
 import odoo
-import random
 import logging
 import werkzeug
 from .. import utils
@@ -27,14 +26,6 @@ class Home(main.Home):
         except http.AuthenticationError:
             return werkzeug.exceptions.Unauthorized().get_response()
         return super(Home, self).web_client(s_action, **kw)
-
-    def _search_user(self, res_users, login, cr):
-        user_ids = request.env['res.users'].sudo().search([
-            ('login', '=', login), ('active', '=', True)])
-        assert len(user_ids) < 2
-        if user_ids:
-            return user_ids[0]
-        return None
 
     def _bind_http_remote_user(self, db_name):
         try:
@@ -78,12 +69,3 @@ class Home(main.Home):
             _logger.error("Error binding Http Remote User session",
                           exc_info=True)
             raise
-
-
-randrange = random.SystemRandom().randrange
-
-
-def randomString(length, chrs):
-    """Produce a string of length random bytes, chosen from chrs."""
-    n = len(chrs)
-    return ''.join([chrs[randrange(n)] for _ in range(length)])
