@@ -17,8 +17,8 @@ class Users(models.Model):
     )
 
     @classmethod
-    def authenticate_sso_user(cls, env, user):
-        """Specific authentication for HTTP user.
+    def logging_sso_user(cls, env, user):
+        """Specific logging for HTTP user.
 
         Generate a key for authentication and update the user
         """
