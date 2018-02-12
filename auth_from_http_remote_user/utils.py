@@ -19,9 +19,9 @@ def get_user(users, login):
     """Search for an active user by login name"""
     user = users.sudo().search([
         ('login', '=', login),
-        ('active', '=', True)
-        ])
-    assert len(user) < 2
+        ('active', '=', True)],
+        limit=1
+    )
     if user:
         return user[0]
     return None
