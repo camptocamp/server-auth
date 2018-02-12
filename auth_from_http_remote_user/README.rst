@@ -122,7 +122,7 @@ Open your browser and go to MY_VHOST.com. If everything is well configured, you
 are prompted for a login and password outside Odoo and are automatically
 logged in the system.
 
-.. [#] Shibolleth, Tivoli access manager, ..
+.. [#] Shibboleth, Tivoli access manager, ..
 .. [#] Based on a ubuntu 12.04 env
 
 Usage
