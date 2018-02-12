@@ -42,7 +42,7 @@ class TestResUsers(TransactionCase):
         reg = registry(self.env.cr.dbname)
         with api.Environment.manage():
             with reg.cursor() as cr:
-                env = api.Environment(cr, self._uid, {})
+                env = api.Environment(cr, self.env.uid, {})
                 env['res.users'].browse(1).write({'sso_key': False})
 
         res_users_obj = self.env['res.users']
@@ -70,15 +70,6 @@ class TestResUsers(TransactionCase):
                 common.get_db_name(), 'admin', token, None)
             self.assertTrue(res)
 
-    @unittest.skipIf(os.environ.get('TRAVIS'),
-                     'When run by travis, tests runs on a database with all '
-                     'required addons from server-tools and their dependencies'
-                     ' installed. Even if `auth_from_http_remote_user` does '
-                     'not require the `mail` module, The previous installation'
-                     ' of the mail module has created the column '
-                     '`notification_email_send` as REQUIRED into the table '
-                     'res_partner. BTW, it\'s no more possible to copy a '
-                     'res_user without an integrity error')
     def test_copy(self):
         '''Check that the sso_key is not copied on copy
         '''
