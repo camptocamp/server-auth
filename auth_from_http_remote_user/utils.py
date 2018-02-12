@@ -13,15 +13,3 @@ def randomString(length, chrs):
     """Produce a string of length random bytes, chosen from chrs."""
     n = len(chrs)
     return ''.join([chrs[randrange(n)] for _ in range(length)])
-
-
-def get_user(users, login):
-    """Search for an active user by login name"""
-    user = users.sudo().search([
-        ('login', '=', login),
-        ('active', '=', True)],
-        limit=1
-    )
-    if user:
-        return user[0]
-    return None

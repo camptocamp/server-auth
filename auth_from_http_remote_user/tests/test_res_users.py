@@ -33,11 +33,6 @@ class TestResUsers(TransactionCase):
         self.user = self.env['res.users'].browse(1)
         self._model = self.env['res.users']
 
-    def test_authenticate(self):
-        """ Try creating a key for the user """
-        key = self._model.logging_sso_user(self.env, self.user)
-        self.assertEqual(self.user.sso_key, key)
-
     def test_login(self):
         reg = registry(self.env.cr.dbname)
         with api.Environment.manage():

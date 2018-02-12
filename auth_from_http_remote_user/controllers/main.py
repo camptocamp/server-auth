@@ -29,6 +29,26 @@ class Home(main.Home):
             return werkzeug.exceptions.Unauthorized().get_response()
         return super(Home, self).web_client(s_action, **kw)
 
+    def search_user(self, users, login):
+        """Search for an active user by login name"""
+        user = users.sudo().search([
+            ('login', '=', login),
+            ('active', '=', True)],
+            limit=1
+        )
+        if user:
+            return user[0]
+        return None
+
+    def logging_http_remote_user(self, env, user):
+        """Specific logging for HTTP user.
+
+        Generate a key for authentication and update the user
+        """
+        key = utils.randomString(utils.KEY_LENGTH, '0123456789abcdef')
+        user.with_env(env).sudo().write({'sso_key': key})
+        return key
+
     def _bind_http_remote_user(self, db_name):
         headers = http.request.httprequest.headers.environ
         login = headers.get(self._REMOTE_USER_ATTRIBUTE, None)
@@ -43,7 +63,7 @@ class Home(main.Home):
             else:
                 request.session.logout(keep_db=True)
         try:
-            user = utils.get_user(request.env['res.users'], login)
+            user = self.search_user(request.env['res.users'], login)
             if not user:
                 # HTTP_REMOTE_USER login not found in database
                 request.session.logout(keep_db=True)
@@ -53,7 +73,7 @@ class Home(main.Home):
             with api.Environment.manage():
                 with request.env.registry.cursor() as cr:
                     env = api.Environment(cr, SUPERUSER_ID, {})
-                    key = env['res.users'].logging_sso_user(env, user)
+                    key = self.logging_http_remote_user(env, user)
             request.session.authenticate(db_name, login=login,
                                          password=key, uid=user.id)
         except http.AuthenticationError as e:
