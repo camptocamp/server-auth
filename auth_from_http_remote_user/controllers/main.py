@@ -7,6 +7,7 @@ import werkzeug
 
 from odoo import http
 from odoo import api
+from odoo import SUPERUSER_ID
 from odoo.http import request
 from odoo.addons.web.controllers import main
 
@@ -51,7 +52,7 @@ class Home(main.Home):
             # later on is done in a specific environment as well
             with api.Environment.manage():
                 with request.env.registry.cursor() as cr:
-                    env = api.Environment(cr, 1, {})
+                    env = api.Environment(cr, SUPERUSER_ID, {})
                     key = env['res.users'].logging_sso_user(env, user)
             request.session.authenticate(db_name, login=login,
                                          password=key, uid=user.id)
