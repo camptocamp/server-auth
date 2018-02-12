@@ -42,7 +42,7 @@ class TestResUsers(TransactionCase):
         reg = registry(self.env.cr.dbname)
         with api.Environment.manage():
             with reg.cursor() as cr:
-                env = api.Environment(cr, 1, {})
+                env = api.Environment(cr, self._uid, {})
                 env['res.users'].browse(1).write({'sso_key': False})
 
         res_users_obj = self.env['res.users']
