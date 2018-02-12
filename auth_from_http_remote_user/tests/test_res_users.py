@@ -6,9 +6,7 @@ from odoo import api, registry
 from odoo.tests import common
 from odoo.tests.common import TransactionCase
 import mock
-import os
 from contextlib import contextmanager
-import unittest
 
 
 @contextmanager
