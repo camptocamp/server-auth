@@ -37,6 +37,7 @@ class Home(main.Home):
         """
         new_roles = set()
         existing_roles = set(user.role_line_ids.mapped('role_id').ids)
+        # existing_roles = set(user.roles_ids.ids)
         role_codes = self._get_http_role_codes()
         if role_codes:
             new_roles = set(
@@ -44,6 +45,18 @@ class Home(main.Home):
                     [('user_role_code', 'in', role_codes)]).ids)
         roles2add = list(new_roles.difference(existing_roles))
         roles2remove = list(existing_roles.difference(new_roles))
+
+        #u = env['res.users'].browse(user.id)
+        if roles2add or roles2remove:
+            triplets = [(0, False, {'role_id': roleid, 'user_id': user.id})for roleid in roles2add]
+            user.role_line_ids = triplets
+        if roles2remove:
+            user.role_line_ids.search([
+                ('user_id', '=', user.id),
+                ('role_id', 'in', roles2remove)]).unlink()
+
+
+
         role_lines = env['res.users.role.line']
         if roles2add:
             for role_id in roles2add:
