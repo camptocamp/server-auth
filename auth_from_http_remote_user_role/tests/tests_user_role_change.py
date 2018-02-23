@@ -4,8 +4,6 @@
 
 from odoo.tests.common import TransactionCase
 
-from ..controllers import main
-
 
 class TestUserRoleChange(TransactionCase):
 
@@ -30,5 +28,6 @@ class TestUserRoleChange(TransactionCase):
     def test_update_user_role(self):
         u = self.env['res.users'].browse(1)
         new_roles = [self.rolea.id, self.roleb.id]
-        u.change_roles_remote_user(new_roles)
-        self.assertEqual(u.role_ids.ids, new_roles)
+        self.env['res.users.role'].change_roles_remote_user(
+            self.env, 1, new_roles)
+        self.assertListEqual(u.role_ids.ids, new_roles)

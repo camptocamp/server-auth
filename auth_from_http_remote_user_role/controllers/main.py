@@ -2,7 +2,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
 from odoo import http
-from odoo.http import request
 
 from odoo.addons.auth_from_http_remote_user.controllers import main
 
@@ -30,39 +29,16 @@ class Home(main.Home):
         return roles
 
     def logging_http_remote_user(self, env, user):
-        """Update roles assigned to user
+        """Update roles assigned to user.
 
         Read roles codes from the http header and compare with the actual roles
         of the logging user. If there is a difference, changes are applied.
         """
         new_roles = set()
-        existing_roles = set(user.role_line_ids.mapped('role_id').ids)
-        # existing_roles = set(user.roles_ids.ids)
         role_codes = self._get_http_role_codes()
         if role_codes:
-            new_roles = set(
-                request.env['res.users.role'].sudo().search(
-                    [('user_role_code', 'in', role_codes)]).ids)
-        roles2add = list(new_roles.difference(existing_roles))
-        roles2remove = list(existing_roles.difference(new_roles))
-
-        #u = env['res.users'].browse(user.id)
-        if roles2add or roles2remove:
-            triplets = [(0, False, {'role_id': roleid, 'user_id': user.id})for roleid in roles2add]
-            user.role_line_ids = triplets
-        if roles2remove:
-            user.role_line_ids.search([
-                ('user_id', '=', user.id),
-                ('role_id', 'in', roles2remove)]).unlink()
-
-
-
-        role_lines = env['res.users.role.line']
-        if roles2add:
-            for role_id in roles2add:
-                role_lines.create({'user_id': user.id, 'role_id': role_id})
-        if roles2remove:
-            role_lines.search([
-                ('user_id', '=', user.id),
-                ('role_id', 'in', roles2remove)]).unlink()
+            new_roles = set(env['res.users.role'].search(
+                [('user_role_code', 'in', role_codes)]).ids
+            )
+        env['res.users.role'].change_roles_remote_user(env, user.id, new_roles)
         return super().logging_http_remote_user(env, user)

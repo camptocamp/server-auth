@@ -32,9 +32,9 @@ Those codes can be assigned to preconfigured user roles directly on ther edition
 Usage
 =====
 
-.. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
-:alt: Try me on Runbot
-:target: https://runbot.odoo-community.org/runbot/251/11.0
+ .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
+    :target: https://runbot.odoo-community.org/runbot/251/11.0
+    :alt: Try me on Runbot :
 
 
 Known issues / Roadmap
@@ -68,8 +68,8 @@ Maintainer
 ----------
 
  .. image:: https://odoo-community.org/logo.png
- :alt: Odoo Community Association
- :target: https://odoo-community.org
+    :target: https://odoo-community.org
+    :alt: Odoo Community Association
 
 This module is maintained by the OCA.
 
