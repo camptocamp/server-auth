@@ -1,11 +1,14 @@
-# -*- coding: utf-8 -*-
+# Copyright (C) 2010-2016 XCG Consulting <http://odoo.consulting>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import lasso
-import simplejson
+import json as simplejson
 
-from openerp import api
-from openerp import fields
-from openerp import models
+from odoo import api, fields, models
+
+try:
+    import lasso
+except ImportError:
+    _logger.debug('Cannot `import lasso`.')
 
 
 class AuthSamlProvider(models.Model):
