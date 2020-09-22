@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_wim_backend_form" model="ir.ui.view">
+        <field name="name">wim.backend.form</field>
+        <field name="model">wim.backend</field>
+        <field name="arch" type="xml">
+            <form string="WIM Backend">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name" class="oe_inline" />
+                    </h1>
+                    <group name="main">
+                        <group name="config">
+                            <field name="uri" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wim_backend" model="ir.actions.act_window">
+        <field name="name">WIM Backend</field>
+        <field name="res_model">wim.backend</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_wim_backend"
+              name="WIM Backends"
+              parent="connector.menu_connector"
+              action="action_wim_backend"
+              sequence="10"
+    />
+</odoo>

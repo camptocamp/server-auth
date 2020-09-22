@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="res.users" id="res_users_wim">
+        <field name="name">WIM Interface</field>
+        <field name="login">wim@example.com</field>
+    </record>
+    <record model="auth.api.key" id="auth_api_key_wim_interface">
+        <field name="name">WIM Interface</field>
+        <field name="key">123456789</field>
+        <field name="user_id" ref="res_users_wim" />
+    </record>
+</odoo>

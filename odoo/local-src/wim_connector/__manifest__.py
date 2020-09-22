@@ -9,11 +9,17 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
+    "external_dependencies": {
+        "python": ["requests"]
+    },
     "depends": [
         "auth_api_key",
         "connector",
     ],
     "data": [
         "data/res_users.xml",
+        "security/ir.model.access.csv",
+        "views/res_partner.xml",
+        "views/wim_backend.xml",
     ],
 }
