@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_subscription_view_form" model="ir.ui.view">
+      <field name="name">sale.subscription.form.inherit</field>
+      <field name="model">sale.subscription</field>
+      <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//notebook" position="inside">
+              <page string="Connector" name="connector">
+                  <group string="WIM" name="wim">
+                      <field name="wim_bind_ids">
+                          <tree editable="top">
+                              <field name="backend_id" />
+                              <field name="external_id" />
+                          </tree>
+                          <form>
+                              <group>
+                                  <field name="backend_id" />
+                                  <field name="external_id" />
+                              </group>
+                          </form>
+                      </field>
+                  </group>
+              </page>
+          </xpath>
+      </field>
+    </record>
+</odoo>

@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
 # import httplib
 import logging
+from urllib.parse import urljoin
 
 from odoo.addons.component.core import Component
 
@@ -21,6 +22,8 @@ class WIMWebserviceAdapter(Component):
     _inherit = ['base.backend.adapter.crud', 'wim.base']
     _usage = 'backend.adapter'
 
+    _endpoint_mapping = {}
+
     def __init__(self, work_context):
         super().__init__(work_context)
         self._client = None
@@ -32,13 +35,8 @@ class WIMWebserviceAdapter(Component):
             self._client = self.backend_record.get_api_client()
         return self._client
 
-    # TODO Check if needed
-    # def create(self, *args, **kwargs):
-    #     """ Create a record on the external system """
-    #     raise NotImplementedError
-
     def write(self, external_id, data):
         """ Update records on the external system """
-        data.update({"customerNr": external_id})
-        req_data = {"member": data}
-        self.client.post(self.backend_record.uri + "/changeadress", req_data)
+        endpoint = self._endpoint_mapping["write"]
+        uri = urljoin(self.backend_record.uri, endpoint)
+        self.client.post(uri, data)

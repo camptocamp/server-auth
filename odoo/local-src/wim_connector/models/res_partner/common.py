@@ -16,6 +16,7 @@ class WIMResPartner(models.Model):
         index=True,
         ondelete='restrict',
     )
+    external_id = fields.Char(related="odoo_id.customer_number")
 
 
 class ResPartner(models.Model):

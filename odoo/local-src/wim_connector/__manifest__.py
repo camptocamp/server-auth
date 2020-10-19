@@ -13,15 +13,22 @@
         "python": ["requests"]
     },
     "depends": [
-        "auth_api_key",
         "connector",
+        # local-src
         "wim_sale",
+        "wim_base",
+        "wim_subscription",
+        # oca/server-env
+        "server_environment",
     ],
     "data": [
+        # data
         "data/res_users.xml",
         "data/connector_backend.xml",
         "security/ir.model.access.csv",
+        # views
         "views/res_partner.xml",
+        "views/sale_subscription.xml",
         "views/wim_backend.xml",
     ],
 }
