@@ -16,6 +16,8 @@
                     <group name="main">
                         <group name="config">
                             <field name="uri" />
+                            <field name="sale_order_template_id"/>
+                            <field name="sale_workflow_process_id"/>
                         </group>
                     </group>
                 </sheet>

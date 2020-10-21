@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 Camptocamp SA
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+
+  <record id="wim_backend_config" model="wim.backend">
+    <field name="name">WIM backend configuration</field>
+    <field name="uri">http://127.0.0.1</field>
+    <field name="sale_order_template_id" ref="wim_sale.sale_order_template_schweizmobil_plus"/>
+    <field name="sale_workflow_process_id" ref="sale_automatic_workflow.automatic_validation"/>
+  </record>
+
+</odoo>

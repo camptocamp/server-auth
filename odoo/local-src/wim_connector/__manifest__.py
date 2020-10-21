@@ -4,7 +4,7 @@
     "name": "WIM Connector",
     "summary": "Connector between Odoo and WIM",
     "version": "13.0.1.0.0",
-    "category": "Uncategorized",
+    "category": "Connector",
     "author": "Camptocamp",
     "license": "AGPL-3",
     "application": False,
@@ -15,9 +15,11 @@
     "depends": [
         "auth_api_key",
         "connector",
+        "wim_sale",
     ],
     "data": [
         "data/res_users.xml",
+        "data/connector_backend.xml",
         "security/ir.model.access.csv",
         "views/res_partner.xml",
         "views/wim_backend.xml",
