@@ -23,7 +23,6 @@
     ],
     "data": [
         # data
-        "data/res_users.xml",
         "data/connector_backend.xml",
         "security/ir.model.access.csv",
         # views

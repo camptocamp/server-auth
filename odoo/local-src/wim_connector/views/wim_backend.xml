@@ -20,6 +20,10 @@
                             <field name="sale_workflow_process_id"/>
                         </group>
                     </group>
+                    <group name="wim_credentials">
+                        <field name="user_name"/>
+                        <field name="user_password"/>
+                    </group>
                 </sheet>
             </form>
         </field>
