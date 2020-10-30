@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 Camptocamp SA
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record id="queue_job_log_view_form" model="ir.ui.view">
+      <field name="name">queue.job.log.form</field>
+      <field name="model">queue.job.log</field>
+      <field name="arch" type="xml">
+        <form string="Query Informations">
+          <sheet>
+            <field name="queue_job_id"/>
+            <field name="datetime_query"/>
+            <field name="data"/>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="queue_job_log_view_tree" model="ir.ui.view">
+        <field name="name">queue.job.log.tree</field>
+        <field name="model">queue.job.log</field>
+        <field name="arch" type="xml">
+            <tree
+                create="false"
+                delete="false"
+                decoration-danger="state == 'failed'"
+                decoration-muted="state == 'done'"
+            >
+                <field name="state" />
+                <field name="datetime_query" />
+                <field name="uuid" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_queue_job_log" model="ir.actions.act_window">
+        <field name="name">Job Logs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">queue.job.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="queue_job_log_view_tree" />
+    </record>
+
+    <menuitem
+        id="menu_queue_job_log"
+        name="Job Logs"
+        action="action_queue_job_log"
+        sequence="16"
+        parent="queue_job.menu_queue"
+    />
+</odoo>
