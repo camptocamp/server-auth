@@ -18,6 +18,7 @@
         "wim_sale",
         "wim_base",
         "wim_subscription",
+        "wim_queue",
         # oca/server-env
         "server_environment",
     ],

@@ -31,6 +31,9 @@ class WIMBackend(models.Model):
     payment_mode_id = fields.Many2one(
         "account.payment.mode", ondelete="restrict"
     )
+    swisspass_promotion_program_id = fields.Many2one(
+        "sale.coupon.program", ondelete="restrict"
+    )
     user_name = fields.Char(string="User Name")
     user_password = fields.Char(string="User Password")
 

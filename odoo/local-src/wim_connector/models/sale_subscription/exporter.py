@@ -13,7 +13,7 @@ class WIMSaleSubscriptionWebserviceAdapter(Component):
     _inherit = "wim.webservice.adapter"
     _apply_on = "wim.sale.subscription"
 
-    _endpoint_mapping = {"write": "UpdateMembership"}
+    _endpoint_mapping = {"write": "updatemembership"}
 
 
 class SaleSubscriptionListener(Component):

@@ -11,7 +11,7 @@ class WIMResPartnerWebserviceAdapter(Component):
     _inherit = "wim.webservice.adapter"
     _apply_on = "wim.res.partner"
 
-    _endpoint_mapping = {"write": "UpdateMember"}
+    _endpoint_mapping = {"write": "updatemember"}
 
 
 class ResPartnerListener(Component):
@@ -85,7 +85,7 @@ class WimResPartnerExportMapper(Component):
     def map_member(self, record):
         member_data = {}
         for odoo_field, external_field in self._direct:
-            member_data[external_field] = record[odoo_field]
+            member_data[external_field] = record[odoo_field] or None
         member_data.update(self.map_address(record))
         member_data.update(self.map_gender_code(record))
         member_data.update(self.map_lang_code(record))
@@ -105,9 +105,10 @@ class WimResPartnerExportMapper(Component):
 
     def map_lang_code(self, record):
         lang = self.env["res.lang"].search([("code", "=", record.lang)])
+        res = {"languageCode": None}
         if lang:
-            return {"languageCode": lang.iso_code}
-        return {}
+            res["languageCode"] = lang.iso_code
+        return res
 
     def map_address(self, record):
         mapping_methods = [
@@ -124,20 +125,24 @@ class WimResPartnerExportMapper(Component):
     # sub-object, should not be decorated with @mapping
 
     def map_street(self, record):
-        split_street = record.street.split()
-        return {
-            "houseNumber": split_street[-1],
-            "street": " ".join(split_street[:-1]),
-        }
+        res = {"houseNumber": None, "street": None}
+        if record.street:
+            split_street = record.street.split()
+            if len(split_street) < 2:
+                res["street"] = record.street
+            else:
+                res["houseNumber"] = split_street[-1]
+                res["street"] = " ".join(split_street[:-1])
+        return res
 
     def map_addendum(self, record):
-        return {"addendum": record.street2}
+        return {"addendum": record.street2 or None}
 
     def map_city(self, record):
-        return {"city": record.city}
+        return {"city": record.city or None}
 
     def map_zip(self, record):
-        return {"zip": record.zip}
+        return {"zip": record.zip or None}
 
     def map_country_code(self, record):
-        return {"countryCode": record.country_id.code}
+        return {"countryCode": record.country_id.code or None}

@@ -23,6 +23,15 @@
                   </group>
               </page>
           </xpath>
+          <!-- Those field are required on the remote API and shouldn't be empty.
+          I didn't modify the fields themselve in order to not alter the
+          database schema. -->
+          <field name="date_start" position="attributes">
+              <attribute name="attrs">{'required': [('wim_bind_ids', '!=', [])]}</attribute>
+          </field>
+          <field name="date" position="attributes">
+              <attribute name="attrs">{'required': [('wim_bind_ids', '!=', [])]}</attribute>
+          </field>
       </field>
     </record>
 </odoo>

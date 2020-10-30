@@ -23,7 +23,7 @@
                     </group>
                     <group name="wim_credentials">
                         <field name="user_name"/>
-                        <field name="user_password"/>
+                        <field name="user_password" password="1"/>
                     </group>
                 </sheet>
             </form>
