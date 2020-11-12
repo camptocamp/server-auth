@@ -9,6 +9,8 @@
     <field name="sale_order_template_id" ref="wim_sale.sale_order_template_schweizmobil_plus"/>
     <field name="sale_workflow_process_id" ref="sale_automatic_workflow.automatic_validation"/>
     <field name="swisspass_promotion_program_id" ref="wim_sale.sale_coupon_program_promo_swisspass"/>
+    <field name="first_invoice_payment_term_id" ref="account.account_payment_term_45days"/>
+    <field name="recurring_invoice_payment_term_id" ref="account.account_payment_term_30days"/>
   </record>
 
 </odoo>

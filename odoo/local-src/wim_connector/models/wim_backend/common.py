@@ -36,6 +36,8 @@ class WIMBackend(models.Model):
     )
     user_name = fields.Char(string="User Name")
     user_password = fields.Char(string="User Password")
+    first_invoice_payment_term_id = fields.Many2one("account.payment.term")
+    recurring_invoice_payment_term_id = fields.Many2one("account.payment.term")
 
     @property
     def _server_env_fields(self):

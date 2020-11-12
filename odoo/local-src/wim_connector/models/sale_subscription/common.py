@@ -30,6 +30,17 @@ class SaleSubscription(models.Model):
         context={'active_test': False},
     )
 
+    def _prepare_invoice_data(self):
+        """
+        Apply distinct payment term for subscriptions and sale orders.
+        """
+        res = super()._prepare_invoice_data()
+        if self.wim_bind_ids:
+            backend = self.env.ref("wim_connector.wim_backend_config")
+            payment_term = backend.recurring_invoice_payment_term_id
+            res.update(invoice_payment_term_id=payment_term.id)
+        return res
+
 
 class SaleSubscriptionStage(models.Model):
 
