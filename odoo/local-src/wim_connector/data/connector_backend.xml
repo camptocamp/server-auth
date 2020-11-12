@@ -11,6 +11,7 @@
     <field name="swisspass_promotion_program_id" ref="wim_sale.sale_coupon_program_promo_swisspass"/>
     <field name="first_invoice_payment_term_id" ref="account.account_payment_term_45days"/>
     <field name="recurring_invoice_payment_term_id" ref="account.account_payment_term_30days"/>
+    <field name="paid_online_payment_mode_id" ref="wim_sale.wim_paid_online_payment_mode" />
   </record>
 
 </odoo>

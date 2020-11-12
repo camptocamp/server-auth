@@ -28,7 +28,7 @@ class WIMBackend(models.Model):
     sale_workflow_process_id = fields.Many2one(
         "sale.workflow.process", ondelete="restrict"
     )
-    payment_mode_id = fields.Many2one(
+    paid_online_payment_mode_id = fields.Many2one(
         "account.payment.mode", ondelete="restrict"
     )
     swisspass_promotion_program_id = fields.Many2one(
