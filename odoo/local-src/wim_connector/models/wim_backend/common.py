@@ -28,6 +28,9 @@ class WIMBackend(models.Model):
     sale_workflow_process_id = fields.Many2one(
         "sale.workflow.process", ondelete="restrict"
     )
+    payment_mode_id = fields.Many2one(
+        "account.payment.mode", ondelete="restrict"
+    )
     user_name = fields.Char(string="User Name")
     user_password = fields.Char(string="User Password")
 
