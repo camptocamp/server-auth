@@ -1,0 +1,2 @@
+"id","sequence","name","active","program_type","promo_applicability","discount_line_product_id/id","discount_fixed_amount","discount_type","promo_code_usage","promo_code"
+"sale_coupon_program_promo_swisspass","0","10 % Swisspass","True","promotion_program","on_current_order","product_product_discount_10_percent_onetime","10.0","percentage","code_needed","SWISSPASS"
