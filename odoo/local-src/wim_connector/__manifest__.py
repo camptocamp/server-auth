@@ -16,7 +16,7 @@
         "connector",
         # local-src
         "wim_sale",
-        "wim_base",
+        "schweizmobil_base",
         "wim_subscription",
         "wim_queue",
         # oca/server-env
