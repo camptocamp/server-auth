@@ -15,9 +15,8 @@
     "depends": [
         "connector",
         # local-src
-        "wim_sale",
+        "schweizmobil_sale_subscription",
         "schweizmobil_base",
-        "wim_subscription",
         "wim_queue",
         # oca/server-env
         "server_environment",
