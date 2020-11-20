@@ -9,8 +9,8 @@
     <field name="sale_order_template_id" ref="schweizmobil_sale_subscription.sale_order_template_schweizmobil_plus"/>
     <field name="sale_workflow_process_id" ref="sale_automatic_workflow.automatic_validation"/>
     <field name="swisspass_promotion_program_id" ref="schweizmobil_sale_subscription.sale_coupon_program_promo_swisspass"/>
-    <field name="first_invoice_payment_term_id" ref="account.account_payment_term_45days"/>
-    <field name="recurring_invoice_payment_term_id" ref="account.account_payment_term_30days"/>
+    <field name="first_invoice_payment_term_id" ref="schweizmobil_sale_subscription.account_payment_term_55days"/>
+    <field name="recurring_invoice_payment_term_id" ref="schweizmobil_sale_subscription.account_payment_term_55days"/>
     <field name="paid_online_payment_mode_id" ref="schweizmobil_sale_subscription.wim_paid_online_payment_mode" />
   </record>
 
