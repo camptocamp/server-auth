@@ -14,7 +14,7 @@
         "sale",
         "sale_management",
         "sale_coupon",
-        "account",
+        "account_followup",
         # oca/sale-workflow
         "sale_automatic_workflow_payment_mode",
         # odoo/local-src
@@ -26,6 +26,8 @@
     ],
     "data": [
         "data/account_payment_mode.xml",
+        "data/account_payment_term.xml",
+        "data/account_followup_followup_line.xml",
         "data/sale.subscription.template.csv",
         "data/product.product.csv",
         "data/sale.order.template.csv",
