@@ -12,7 +12,7 @@
           <page string="WIM Data">
             <group name="wim_infos">
                 <field name="customer_number"/>
-                <field name="swisspass_customerid"/>
+                <field name="swisspass_customerid" groups="base.group_no_one"/>
                 <field name="newsletter"/>
             </group>
           </page>
