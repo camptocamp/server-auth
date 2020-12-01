@@ -3,13 +3,23 @@
 
 from odoo import fields, models
 
+RESULT_STATE = [("success", "Successful"), ("failed", "Failed")]
+
 
 class QueueJobLog(models.Model):
 
     _name = "queue.job.log"
 
     queue_job_id = fields.Many2one("queue.job")
-    state = fields.Selection(related="queue_job_id.state")
+    job_state = fields.Selection(
+        string="Job State", related="queue_job_id.state"
+    )
+    state = fields.Selection(
+        RESULT_STATE,
+        string="Action State",
+        help="Whether the action was successfully executed or not",
+    )
+    result = fields.Text(help="Result of the executed action")
     uuid = fields.Char(related="queue_job_id.uuid")
     datetime_query = fields.Datetime()
     data = fields.Text()

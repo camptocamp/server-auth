@@ -9,9 +9,12 @@
       <field name="arch" type="xml">
         <form string="Query Informations">
           <sheet>
-            <field name="queue_job_id"/>
-            <field name="datetime_query"/>
-            <field name="data"/>
+              <group name="job_log_infos">
+                <field name="queue_job_id"/>
+                <field name="datetime_query"/>
+                <field name="result"/>
+                <field name="data"/>
+              </group>
           </sheet>
         </form>
       </field>
@@ -25,9 +28,10 @@
                 create="false"
                 delete="false"
                 decoration-danger="state == 'failed'"
-                decoration-muted="state == 'done'"
+                decoration-muted="job_state == 'done'"
             >
                 <field name="state" />
+                <field name="job_state"/>
                 <field name="datetime_query" />
                 <field name="uuid" />
             </tree>
