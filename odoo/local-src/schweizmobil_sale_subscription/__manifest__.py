@@ -36,5 +36,6 @@
         # views
         "views/sale_order.xml",
         "views/account_move.xml",
+        "views/sale_subscription.xml",
     ]
 }

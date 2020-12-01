@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 Camptocamp SA
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+  <record id="sale_subscription_view_form" model="ir.ui.view">
+    <field name="name">sale.subscription.form.inherit</field>
+    <field name="model">sale.subscription</field>
+    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//page[@id='other_info']/group" position="inside">
+          <field name="first_invoice_to_be_paid_before"/>
+        </xpath>
+    </field>
+  </record>
+
+  <record id="sale_subscription_view_list" model="ir.ui.view">
+    <field name="name">sale.subscription.tree.inherit</field>
+    <field name="model">sale.subscription</field>
+    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_list"/>
+    <field name="arch" type="xml">
+        <field name="recurring_next_date" position="after">
+            <field name="first_invoice_to_be_paid_before"/>
+        </field>
+    </field>
+  </record>
+
+  <record id="sale_subscription_view_search" model="ir.ui.view">
+    <field name="name">sale.subscription.search.inherit</field>
+    <field name="model">sale.subscription</field>
+    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search"/>
+    <field name="arch" type="xml">
+        <xpath expr="//filter[@name='bad']" position="after">
+            <filter name="unpaid_invoice_overdue" string="Unpaid first invoice overdue"
+                    domain="[('first_invoice_id.paid_online', '=', False), ('first_invoice_to_be_paid_before', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+        </xpath>
+    </field>
+  </record>
+
+</odoo>
