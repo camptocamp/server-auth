@@ -51,6 +51,7 @@ class WIMWebserviceAdapter(Component):
         endpoint = self._endpoint_mapping["write"]
         uri = urljoin(self.backend_record.uri, endpoint)
         json_data = json.dumps(data)
+        job_log_id = False
         uuid = self.env.context.get("job_uuid")
         if uuid:
             # If job fails, everything's rollbacked.
@@ -63,11 +64,25 @@ class WIMWebserviceAdapter(Component):
                 )
                 now = datetime.datetime.now()
                 log_data = "uri: {}\ncontent: {}".format(uri, json_data)
-                new_env["queue.job.log"].sudo().create(
-                    {
-                        "queue_job_id": job.id,
-                        "datetime_query": now,
-                        "data": log_data,
-                    }
+                job_log = (
+                    new_env["queue.job.log"]
+                    .sudo()
+                    .create(
+                        {
+                            "queue_job_id": job.id,
+                            "datetime_query": now,
+                            "data": log_data,
+                        }
+                    )
                 )
-        self.client.post(uri, json_data)
+                job_log_id = job_log.id
+        response = self.client.post(uri, json_data)
+        __import__('pdb').set_trace()
+        if job_log_id:
+            job_log = self.env["queue.job.log"].browse(job_log_id)
+            job_log.write(
+                {
+                    "state": "success" if response.ok else "failed",
+                    "result": response.text,
+                }
+            )
