@@ -1,6 +1,6 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo import fields, models
+from odoo import _, exceptions, fields, models
 
 
 class WIMSaleSubscription(models.Model):
@@ -28,6 +28,7 @@ class SaleSubscription(models.Model):
         copy=False,
         string='Subscription Bindings',
         context={'active_test': False},
+        readonly=True,
     )
 
     def _prepare_invoice_data(self):
@@ -40,6 +41,24 @@ class SaleSubscription(models.Model):
             payment_term = backend.recurring_invoice_payment_term_id
             res.update(invoice_payment_term_id=payment_term.id)
         return res
+
+    def setup_binding(self):
+        backend = self.env["wim.backend"].get_singleton()
+        for sub in self:
+            if sub.wim_bind_ids:
+                raise exceptions.UserError(
+                    _("Connector binding already set on subscription %s")
+                    % sub.name
+                )
+            if not sub.partner_id.wim_bind_ids:
+                raise exceptions.UserError(
+                    _(
+                        "Connector binding cannot be set on subscription %s "
+                        "whose partner has no connector binding."
+                    )
+                    % sub.name
+                )
+            sub.write({"wim_bind_ids": [(0, 0, {"backend_id": backend.id})]})
 
 
 class SaleSubscriptionStage(models.Model):

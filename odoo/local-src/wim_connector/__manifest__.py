@@ -24,6 +24,8 @@
     "data": [
         # data
         "data/connector_backend.xml",
+        "data/ir_actions_server.xml",
+        "data/ir_cron.xml",
         "security/ir.model.access.csv",
         # views
         "views/res_partner.xml",
