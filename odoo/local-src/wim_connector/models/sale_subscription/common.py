@@ -37,7 +37,7 @@ class SaleSubscription(models.Model):
         """
         res = super()._prepare_invoice_data()
         if self.wim_bind_ids:
-            backend = self.env.ref("wim_connector.wim_backend_config")
+            backend = self.wim_bind_ids.backend_id
             payment_term = backend.recurring_invoice_payment_term_id
             res.update(invoice_payment_term_id=payment_term.id)
         return res
