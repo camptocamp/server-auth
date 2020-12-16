@@ -63,6 +63,7 @@ class WimResPartnerExportMapper(Component):
         "city",
         "title",
         "lang",
+        "country_id",
     )
     @mapping
     def map_customer_number(self, record):
@@ -80,6 +81,7 @@ class WimResPartnerExportMapper(Component):
         "city",
         "title",
         "lang",
+        "country_id",
     )
     @mapping
     def map_member(self, record):
@@ -89,6 +91,7 @@ class WimResPartnerExportMapper(Component):
         member_data.update(self.map_address(record))
         member_data.update(self.map_gender_code(record))
         member_data.update(self.map_lang_code(record))
+        member_data.update(self.map_newsletter(record))
         if member_data:
             member_data.update(
                 {"customerNr": record.customer_number, "email": record.email}
@@ -116,6 +119,7 @@ class WimResPartnerExportMapper(Component):
             self.map_addendum,
             self.map_zip,
             self.map_city,
+            self.map_country_code,
         ]
         address_vals = {}
         for mapping_method in mapping_methods:
@@ -146,3 +150,6 @@ class WimResPartnerExportMapper(Component):
 
     def map_country_code(self, record):
         return {"countryCode": record.country_id.code or None}
+
+    def map_newsletter(self, record):
+        return {"newsletter": record.newsletter}
