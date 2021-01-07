@@ -77,7 +77,6 @@ class WIMWebserviceAdapter(Component):
                 )
                 job_log_id = job_log.id
         response = self.client.post(uri, json_data)
-        __import__('pdb').set_trace()
         if job_log_id:
             job_log = self.env["queue.job.log"].browse(job_log_id)
             job_log.write(
