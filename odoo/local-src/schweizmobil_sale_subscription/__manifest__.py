@@ -28,6 +28,7 @@
         "data/account_payment_mode.xml",
         "data/account_payment_term.xml",
         "data/account_followup_followup_line.xml",
+        "data/ir_cron.xml",
         "data/sale.subscription.template.csv",
         "data/product.product.csv",
         "data/sale.order.template.csv",
