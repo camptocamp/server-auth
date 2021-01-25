@@ -4,6 +4,8 @@ from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
 from odoo.addons.connector.components.mapper import changed_by, mapping
 
+LANG_MAPPING = {"de_CH": "de", "fr_CH": "fr", "en_US": "en", "it_IT": "it"}
+
 
 class WIMResPartnerWebserviceAdapter(Component):
 
@@ -107,11 +109,7 @@ class WimResPartnerExportMapper(Component):
         return {"genderCode": title_mapping.get(record.title.id, "n")}
 
     def map_lang_code(self, record):
-        lang = self.env["res.lang"].search([("code", "=", record.lang)])
-        res = {"languageCode": None}
-        if lang:
-            res["languageCode"] = lang.iso_code
-        return res
+        return {"languageCode": LANG_MAPPING.get(record.lang)}
 
     def map_address(self, record):
         mapping_methods = [
