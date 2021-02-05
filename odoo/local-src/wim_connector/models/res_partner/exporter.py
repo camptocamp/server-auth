@@ -1,10 +1,11 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
+from odoo import _, exceptions
 from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
 from odoo.addons.connector.components.mapper import changed_by, mapping
 
-LANG_MAPPING = {"de_CH": "de", "fr_CH": "fr", "en_US": "en", "it_IT": "it"}
+ALLOWED_LANG_VALUES = ["de", "fr", "en", "it"]
 
 
 class WIMResPartnerWebserviceAdapter(Component):
@@ -109,7 +110,12 @@ class WimResPartnerExportMapper(Component):
         return {"genderCode": title_mapping.get(record.title.id, "n")}
 
     def map_lang_code(self, record):
-        return {"languageCode": LANG_MAPPING.get(record.lang)}
+        language_code = record.lang.split("_")[0]
+        if language_code not in ALLOWED_LANG_VALUES:
+            raise exceptions.UserError(
+                _("Partner lang {} is not valid.").format(record.lang)
+            )
+        return {"languageCode": language_code}
 
     def map_address(self, record):
         mapping_methods = [
