@@ -1,2 +1,0 @@
-"id","code","name","recurring_rule_type","payment_mode","user_closable","recurring_rule_boundary","recurring_rule_count","recurring_interval","date_extension_on_payment","closing_delay","closing_delay_type","recurring_next_date_advance","recurring_next_date_advance_type"
-"sale_subscription_template_schweizmobil_plus","","Schweizmobil PLUS","Years","validate_send","","Fixed","1","1","True","59","daily","56","daily"

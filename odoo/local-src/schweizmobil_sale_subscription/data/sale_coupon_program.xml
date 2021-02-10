@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+    <record id="sale_coupon_program_promo_swisspass" model="sale.coupon.program">
+        <field name="sequence" eval="0"/>
+        <field name="name">10 % Swisspass</field>
+        <field name="active" eval="True"/>
+        <field name="program_type">promotion_program</field>
+        <field name="promo_applicability">on_current_order</field>
+        <field name="discount_line_product_id" ref="product_product_discount_10_percent_onetime"/>
+        <field name="discount_fixed_amount" eval="10.0"/>
+        <field name="discount_type">percentage</field>
+        <field name="promo_code_usage">code_needed</field>
+        <field name="promo_code">SWISSPASS</field>
+    </record>
+</odoo>

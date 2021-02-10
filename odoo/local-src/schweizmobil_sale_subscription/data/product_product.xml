@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+    <record id="product_product_schweizmobil_plus" model="product.product">
+        <field name="name">Schweizmobil Plus</field>
+        <field name="lst_price" eval="35.0"/>
+        <field name="standard_price" eval="0.0"/>
+        <field name="recurring_invoice" eval="True"/>
+        <field name="subscription_template_id" ref="sale_subscription_template_schweizmobil_plus"/>
+        <field name="type">service</field>
+        <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]"/>
+    </record>
+
+    <record id="product_product_discount_10_percent_onetime" model="product.product">
+        <field name="name">10.0 % discount on total amount</field>
+        <field name="lst_price" eval="0.0"/>
+        <field name="standard_price" eval="0.0"/>
+        <field name="recurring_invoice" eval="False"/>
+        <field name="type">service</field>
+        <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]" />
+    </record>
+</odoo>
