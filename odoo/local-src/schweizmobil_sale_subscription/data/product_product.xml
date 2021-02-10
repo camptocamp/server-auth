@@ -10,8 +10,8 @@
         <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]"/>
     </record>
 
-    <record id="product_product_discount_10_percent_onetime" model="product.product">
-        <field name="name">10.0 % discount on total amount</field>
+    <record id="product_product_discount_5_chf_onetime" model="product.product">
+        <field name="name">5.0 CHF dicount on total amount</field>
         <field name="lst_price" eval="0.0"/>
         <field name="standard_price" eval="0.0"/>
         <field name="recurring_invoice" eval="False"/>
