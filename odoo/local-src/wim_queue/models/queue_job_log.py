@@ -9,6 +9,7 @@ RESULT_STATE = [("success", "Successful"), ("failed", "Failed")]
 class QueueJobLog(models.Model):
 
     _name = "queue.job.log"
+    _description = "Log queue job requests"
 
     queue_job_id = fields.Many2one("queue.job")
     job_state = fields.Selection(
