@@ -7,7 +7,7 @@ from odoo import models
 class SaleOrder(models.Model):
 
     _name = "sale.order"
-    _inherit = ["sale.order", "wim.payment.fields.mixin"]
+    _inherit = ["sale.order", "sale.payment.fields.mixin"]
 
     def _prepare_invoice(self):
         res = super()._prepare_invoice()

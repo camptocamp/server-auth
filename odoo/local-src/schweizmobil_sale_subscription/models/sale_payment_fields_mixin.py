@@ -10,9 +10,10 @@ INVOICING_METHOD_MAPPING = [
 ]
 
 
-class WimPaymentFieldsMixin(models.AbstractModel):
+class SalePaymentFieldsMixin(models.AbstractModel):
 
-    _name = "wim.payment.fields.mixin"
+    _name = "sale.payment.fields.mixin"
+    _description = "Payment fields for sale process"
 
     @api.model
     def _get_invoicing_method_selection(self):
