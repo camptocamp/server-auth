@@ -20,6 +20,8 @@ class SaleSubscription(models.Model):
         "sale.order.line", inverse_name="subscription_id"
     )
 
+    customer_number = fields.Char(related="partner_id.customer_number")
+    
     @api.depends("order_line_ids.invoice_lines.move_id")
     def _compute_first_invoice_id(self):
         for record in self:
