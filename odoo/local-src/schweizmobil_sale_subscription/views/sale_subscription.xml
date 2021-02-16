@@ -22,6 +22,10 @@
         <field name="recurring_next_date" position="after">
             <field name="first_invoice_to_be_paid_before"/>
         </field>
+        <field name="next_invoicing_date" position="before">
+            <field name="date_start"/>
+            <field name="date"/>
+        </field>
     </field>
   </record>
 
