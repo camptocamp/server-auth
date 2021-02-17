@@ -11,7 +11,7 @@
     </record>
 
     <record id="product_product_discount_5_chf_onetime" model="product.product">
-        <field name="name">5.0 CHF dicount on total amount</field>
+        <field name="name">5.0 CHF discount on total amount</field>
         <field name="lst_price" eval="0.0"/>
         <field name="standard_price" eval="0.0"/>
         <field name="recurring_invoice" eval="False"/>

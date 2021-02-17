@@ -1,0 +1,144 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* schweizmobil_sale_subscription
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-17 10:36+0000\n"
+"PO-Revision-Date: 2021-02-17 10:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: schweizmobil_sale_subscription
+#: model:product.product,name:schweizmobil_sale_subscription.product_product_discount_5_chf_onetime
+#: model:product.template,name:schweizmobil_sale_subscription.product_product_discount_5_chf_onetime_product_template
+msgid "5.0 CHF discount on total amount"
+msgstr "5,0 CHF Rabatt auf den Gesamtbetrag"
+
+#. module: schweizmobil_sale_subscription
+#: model:account.payment.term,name:schweizmobil_sale_subscription.account_payment_term_55days
+msgid "55 Days"
+msgstr "55 Tage"
+
+#. module: schweizmobil_sale_subscription
+#: code:addons/schweizmobil_sale_subscription/models/sale_payment_fields_mixin.py:0
+#, python-format
+msgid ""
+"Both paid_online and invoicing_method fields can't be set at the same time."
+msgstr ""
+"Die Felder 'payed_online' und 'Invoicing_method' können nicht gleichzeitig festgelegt werden."
+
+#. module: schweizmobil_sale_subscription
+#: model:sale.subscription.close.reason,name:schweizmobil_sale_subscription.close_reason_depreciated
+msgid "Depreciated"
+msgstr "Abgeschrieben"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_payment_fields_mixin__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_subscription__first_invoice_id
+msgid "First Invoice"
+msgstr "Erste Rechnung"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_subscription__first_invoice_to_be_paid_before
+msgid "First Invoice To Be Paid Before"
+msgstr "Erste Rechnung, die vorher bezahlt werden muss "
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_payment_fields_mixin__id
+msgid "ID"
+msgstr "ID"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_account_move__invoicing_method
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_order__invoicing_method
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_payment_fields_mixin__invoicing_method
+msgid "Invoicing Method"
+msgstr "Rechnungsmethode"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model,name:schweizmobil_sale_subscription.model_account_move
+msgid "Journal Entries"
+msgstr "Buchungssätze"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_payment_fields_mixin____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,help:schweizmobil_sale_subscription.field_sale_subscription__first_invoice_to_be_paid_before
+msgid "Limit date after which the first invoice should be paid"
+msgstr "Stichtag, nach dem die erste Rechnung bezahlt werden soll"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_subscription__order_line_ids
+msgid "Order Line"
+msgstr "Bestellposition"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_account_move__paid_online
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_order__paid_online
+#: model:ir.model.fields,field_description:schweizmobil_sale_subscription.field_sale_payment_fields_mixin__paid_online
+msgid "Paid Online"
+msgstr "Bezahlt online"
+
+#. module: schweizmobil_sale_subscription
+#: model:account.payment.mode,name:schweizmobil_sale_subscription.wim_paid_online_payment_mode
+msgid "Paid online"
+msgstr "Bezahlt online"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model,name:schweizmobil_sale_subscription.model_sale_payment_fields_mixin
+msgid "Payment fields for sale process"
+msgstr "Zahlungsfelder für den Verkaufsprozess"
+
+#. module: schweizmobil_sale_subscription
+#: model:account.payment.term,note:schweizmobil_sale_subscription.account_payment_term_55days
+msgid "Payment terms: 55 Days"
+msgstr "Zahlungsbedingungen: 55 Tage"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model,name:schweizmobil_sale_subscription.model_sale_order
+msgid "Sales Order"
+msgstr "Verkaufsauftrag "
+
+#. module: schweizmobil_sale_subscription
+#: model:product.product,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus
+#: model:product.template,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus_product_template
+#: model:sale.order.template.line,name:schweizmobil_sale_subscription.sale_order_template_line_schweizmobil_plus
+msgid "Schweizmobil Plus"
+msgstr "Schweizmobil Plus"
+
+#. module: schweizmobil_sale_subscription
+#: model:ir.model,name:schweizmobil_sale_subscription.model_sale_subscription
+msgid "Subscription"
+msgstr "Aboauftrag"
+
+#. module: schweizmobil_sale_subscription
+#: model:sale.coupon.program,name:schweizmobil_sale_subscription.sale_coupon_program_promo_swisspass
+msgid "SwissPass"
+msgstr "SwissPass"
+
+#. module: schweizmobil_sale_subscription
+#: model:product.product,uom_name:schweizmobil_sale_subscription.product_product_discount_5_chf_onetime
+#: model:product.product,uom_name:schweizmobil_sale_subscription.product_product_schweizmobil_plus
+#: model:product.template,uom_name:schweizmobil_sale_subscription.product_product_discount_5_chf_onetime_product_template
+#: model:product.template,uom_name:schweizmobil_sale_subscription.product_product_schweizmobil_plus_product_template
+msgid "Units"
+msgstr "Einheiten"
+
+#. module: schweizmobil_sale_subscription
+#: model_terms:ir.ui.view,arch_db:schweizmobil_sale_subscription.sale_subscription_view_search
+msgid "Unpaid first invoice overdue"
+msgstr "Unbezahlte erste Rechnung überfällig"
