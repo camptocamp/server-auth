@@ -86,3 +86,15 @@ class SaleSubscription(models.Model):
                 record.first_invoice_to_be_paid_before = date_due_extended
             else:
                 record.first_invoice_to_be_paid_before = False
+
+    def validate_and_send_invoice(self, invoice):
+        """actually don't send the invoice by email unless
+        context['send_invoice_by_email'] is True. Otherwise, post the invoice
+        and request a queue job to generate the PDF
+        """
+        if self.env.context.get('send_invoice_by_email', False):
+            return super().validate_and_send_invoice()
+        self.ensure_one()
+        invoice.post()
+        invoice.with_delay()._generate_invoice_pdf()
+        return True

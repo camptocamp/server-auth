@@ -23,8 +23,11 @@
         "sale_subscription_date_extension",
         "sale_subscription_closing_delay",
         "sale_subscription_recurring_next_date_advance",
+        # oca/queue
+        "queue_job"
     ],
     "data": [
+        "data/ir_cron.xml",
         "data/account_payment_mode.xml",
         "data/account_payment_term.xml",
         "data/account_followup_followup_line.xml",
@@ -38,5 +41,8 @@
         "views/sale_order.xml",
         "views/account_move.xml",
         "views/sale_subscription.xml",
-    ]
+    ],
+    'external_dependencies': {
+        'python': ['paramiko'],
+    }
 }

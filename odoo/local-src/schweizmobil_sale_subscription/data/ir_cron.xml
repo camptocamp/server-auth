@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_auto_post_draft_entry" model="ir.cron">
+        <field name="name">SchweizMobil Account Report Followup: print letters</field>
+        <field name="interval_number">7</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=4, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="code">model._cron_execute_followup_print_letters()</field>
+        <field name="state">code</field>
+        <field name="active" eval="0" />
+    </record>
+</odoo>
