@@ -29,6 +29,7 @@ class SaleSubscription(models.Model):
     duration_display = fields.Char(
         'Total Duration', compute="_compute_duration", store=True
     )
+    recurring_next_date = fields.Date(tracking=101)
 
     @api.depends('date_start', 'date')
     def _compute_duration(self):
