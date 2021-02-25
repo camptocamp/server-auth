@@ -15,6 +15,10 @@
       <xpath expr="//page[@id='other_info']/group" position="inside">
         <field name="first_invoice_to_be_paid_before"/>
       </xpath>
+      <field name="date_start" position="before">
+          <field name="duration_display"/>
+          <field name="duration"/>
+      </field>
     </field>
   </record>
 
@@ -27,6 +31,7 @@
         <field name="first_invoice_to_be_paid_before"/>
       </field>
       <field name="next_invoicing_date" position="before">
+        <field name="duration_display"/>
         <field name="date_start"/>
         <field name="date"/>
       </field>
@@ -43,7 +48,10 @@
           domain="[('first_invoice_id.paid_online', '=', False), ('first_invoice_to_be_paid_before', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
       </xpath>
       <xpath expr="//field[@name='name']" position="after">
-        <field name="customer_number"/>
+          <field name="customer_number"/>
+      </xpath>
+      <xpath expr="//filter[@name='end_month']" position="after">
+          <filter string="Total Duration" name="duration_display" domain="[]" context="{'group_by': 'duration_display'}"/>
       </xpath>
     </field>
   </record>

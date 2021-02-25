@@ -1,5 +1,6 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 
@@ -21,6 +22,35 @@ class SaleSubscription(models.Model):
     )
 
     customer_number = fields.Char(related="partner_id.customer_number")
+
+    duration = fields.Integer(
+        'Total Duration (days)', compute="_compute_duration", store=True
+    )
+    duration_display = fields.Char(
+        'Total Duration', compute="_compute_duration", store=True
+    )
+
+    @api.depends('date_start', 'date')
+    def _compute_duration(self):
+        for rec in self:
+            days = (rec.date - rec.date_start).days
+            rec.duration = days
+            delta = relativedelta(rec.date, rec.date_start)
+            parts = []
+            if delta.years:
+                parts.append(
+                    '%d year%s' % (delta.years, 's' if delta.years > 1 else '')
+                )
+            if delta.months:
+                parts.append(
+                    '%d month%s'
+                    % (delta.months, 's' if delta.months > 1 else '')
+                )
+            if delta.days:
+                parts.append(
+                    '%d day%s' % (delta.days, 's' if delta.days > 1 else '')
+                )
+            rec.duration_display = "% 5d days (" % days + " ".join(parts) + ")"
 
     @api.depends("order_line_ids.invoice_lines.move_id")
     def _compute_first_invoice_id(self):
