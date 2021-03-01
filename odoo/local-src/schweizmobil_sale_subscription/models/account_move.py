@@ -17,9 +17,32 @@ class AccountMove(models.Model):
     _inherit = ["account.move", "sale.payment.fields.mixin"]
 
     customer_number = fields.Char(related="partner_id.customer_number")
+    pdf_pushed_to_sftp = fields.Boolean()
+
+    def post(self):
+        res = super().post()
+        exec_time = safe_eval(
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("sftp.pdf.generation.time")
+        )
+        execution_date = fields.Datetime.now().replace(
+            hour=exec_time.get("hour"),
+            minute=exec_time.get("minute"),
+            second=exec_time.get("second"),
+        )
+        for move in self:
+            move.with_delay(
+                eta=execution_date.timestamp()
+            )._generate_invoice_pdf()
+        return res
 
     @job(default_channel='root.schweizmobil.print_invoice')
     def _generate_invoice_pdf(self):
+        if self.state != "posted":
+            return "Invoice must be posted in order to be printed"
+        if self.pdf_pushed_to_sftp:
+            return "Invoice PDF was already pushed to SFTP"
         # this will raise if the isr setup is not correct
         self.isr_print()
         # but actually we don't need the action, we need the report...
@@ -41,6 +64,7 @@ class AccountMove(models.Model):
         if not report_name.lower().endswith('.pdf'):
             report_name += '.pdf'
         sftp_upload(report_content, document_type, report_name)
+        self.pdf_pushed_to_sftp = True
         return True
 
     def _get_isr_report_xmlid(self):

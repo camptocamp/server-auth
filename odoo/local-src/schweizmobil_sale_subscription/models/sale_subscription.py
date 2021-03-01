@@ -97,5 +97,4 @@ class SaleSubscription(models.Model):
             return super().validate_and_send_invoice()
         self.ensure_one()
         invoice.post()
-        invoice.with_delay()._generate_invoice_pdf()
         return True
