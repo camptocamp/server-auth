@@ -2,8 +2,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 import logging
 
-from odoo import fields, models
+from odoo import _, fields, models
 from odoo.addons.queue_job.job import job
+from odoo.addons.server_environment import serv_config
+from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
 from ..lib.sftp_interface import sftp_upload
@@ -17,9 +19,63 @@ class AccountMove(models.Model):
     _inherit = ["account.move", "sale.payment.fields.mixin"]
 
     customer_number = fields.Char(related="partner_id.customer_number")
-    pdf_pushed_to_sftp = fields.Boolean()
+    sftp_pdf_path = fields.Char(readonly=True)
+
+    def button_draft(self):
+        """Check if any move was pushed onto SFTP to instantiate wizard"""
+        # Reimplement odoo checks from super method here. Goal is to avoid
+        # these errors popping up after the user did remove the PDF from SFTP
+        # COPY OF ODOO CODE
+        AccountMoveLine = self.env['account.move.line']
+        excluded_move_ids = []
+
+        if self._context.get('suspense_moves_mode'):
+            excluded_move_ids = (
+                AccountMoveLine.search(
+                    AccountMoveLine._get_suspense_moves_domain()
+                    + [('move_id', 'in', self.ids)]
+                )
+                .mapped('move_id')
+                .ids
+            )
+
+        for move in self:
+            if move in move.line_ids.mapped(
+                'full_reconcile_id.exchange_move_id'
+            ):
+                raise UserError(
+                    _(
+                        'You cannot reset to draft an exchange difference journal entry.'
+                    )
+                )
+            if move.tax_cash_basis_rec_id:
+                raise UserError(
+                    _(
+                        'You cannot reset to draft a tax cash basis journal entry.'
+                    )
+                )
+            if (
+                move.restrict_mode_hash_table
+                and move.state == 'posted'
+                and move.id not in excluded_move_ids
+            ):
+                raise UserError(
+                    _(
+                        'You cannot modify a posted entry of this journal because it is in strict mode.'
+                    )
+                )
+        # END COPY OF ODOO CODE
+        if not self.env.context.get("_bypass_draft_wizard_check") and any(
+            self.mapped("sftp_pdf_path")
+        ):
+            action = self.env.ref(
+                "schweizmobil_sale_subscription.account_move_to_draft_action"
+            )
+            return action.read()[0]
+        return super().button_draft()
 
     def post(self):
+        """Generate queue job to print PDF and push to SFTP for invoices"""
         res = super().post()
         exec_time = safe_eval(
             self.env["ir.config_parameter"]
@@ -31,17 +87,17 @@ class AccountMove(models.Model):
             minute=exec_time.get("minute"),
             second=exec_time.get("second"),
         )
-        for move in self:
-            move.with_delay(
-                eta=execution_date.timestamp()
-            )._generate_invoice_pdf()
+        for move in self.filtered(
+            lambda m: m.type in ('out_invoice', 'out_refund')
+        ):
+            move.with_delay(eta=execution_date)._generate_invoice_pdf()
         return res
 
     @job(default_channel='root.schweizmobil.print_invoice')
     def _generate_invoice_pdf(self):
         if self.state != "posted":
             return "Invoice must be posted in order to be printed"
-        if self.pdf_pushed_to_sftp:
+        if self.sftp_pdf_path:
             return "Invoice PDF was already pushed to SFTP"
         # this will raise if the isr setup is not correct
         self.isr_print()
@@ -63,9 +119,10 @@ class AccountMove(models.Model):
         report_name = safe_eval(report.print_report_name, {'object': self})
         if not report_name.lower().endswith('.pdf'):
             report_name += '.pdf'
-        sftp_upload(report_content, document_type, report_name)
-        self.pdf_pushed_to_sftp = True
-        return True
+        sftp_path = sftp_upload(report_content, document_type, report_name)
+        sftp_root_path = "/" + serv_config.get('sftp', 'root_path') or 'DUMMY'
+        self.sftp_pdf_path = sftp_path.lstrip(sftp_root_path)
+        return "Invoice PDF has been pushed to SFTP successfully"
 
     def _get_isr_report_xmlid(self):
         # overridden in schweizmobil_report

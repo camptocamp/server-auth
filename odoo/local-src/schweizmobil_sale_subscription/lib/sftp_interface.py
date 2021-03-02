@@ -170,12 +170,14 @@ def sftp_upload(content, document_type, filename):
     dirname = os.path.join(
         root_path, date.today().strftime('%Y-%V'), document_type
     )
+    sftp_path = os.path.join('/', dirname, filename)
     if os.environ.get('CI', '') == 'True':
         _logger.info(
             'CI Mode: would have uploaded to sftp %s/%s', dirname, filename
         )
-        return
+        return sftp_path
     with SFTPInterface() as sftp:
         sftp.mkdirs(dirname)
         fobj = BytesIO(content)
-        sftp.save_output_to_sftp(fobj, os.path.join('/', dirname, filename))
+        sftp.save_output_to_sftp(fobj, sftp_path)
+    return sftp_path

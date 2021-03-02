@@ -42,6 +42,7 @@
         "views/sale_order.xml",
         "views/account_move.xml",
         "views/sale_subscription.xml",
+        "wizard/account_move_to_draft.xml",
     ],
     'external_dependencies': {
         'python': ['paramiko'],

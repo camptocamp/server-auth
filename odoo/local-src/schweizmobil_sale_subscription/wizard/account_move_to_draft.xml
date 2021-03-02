@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="account_move_to_draft_view_form" model="ir.ui.view">
+        <field name="name">account.move.to.draft.from</field>
+        <field name="model">account.move.to.draft</field>
+        <field name="arch" type="xml">
+            <form string="Warning: PDFs pushed SFTP">
+                <p>One or more documents you are trying to set back to draft were already pushed onto SFTP.</p>
+                <p>Please make sure that these documents were not sent to customers and confirm that you already removed the following files from the SFTP:</p>
+                <field name="move_ids" invisible="1" />
+                <field name="message" />
+                <p>By confirming, you agree that attachments will be deleted and links to SFTP will be wiped.</p>
+                <group>
+                    <field name="removed_from_sftp" />
+                </group>
+                <footer>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            class="oe_highlight"
+                            context="{'_bypass_draft_wizard_check': True}"
+                            attrs="{'invisible': [('removed_from_sftp', '!=', True)]}"
+                    />
+                    <button special="cancel"
+                            string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_move_to_draft_action" model="ir.actions.act_window">
+        <field name="name">Confirm invoice reset to draft</field>
+        <field name="res_model">account.move.to.draft</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
