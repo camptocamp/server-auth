@@ -9,6 +9,16 @@ class SaleSubscription(models.Model):
 
     _inherit = "sale.subscription"
 
+    def _prepare_renewal_order_values(self):
+        vals = super(SaleSubscription, self)._prepare_renewal_order_values()
+        for subscription in self:
+            payment_term = (
+                subscription.wim_bind_ids.backend_id.first_invoice_payment_term_id
+            )
+            if payment_term:
+                vals[subscription.id]["payment_term_id"] = payment_term.id
+        return vals
+
     def increment_period(self):
         res = super().increment_period()
         if not self.env.context.get("_reset_sub_dates"):
