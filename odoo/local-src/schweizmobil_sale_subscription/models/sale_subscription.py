@@ -60,13 +60,18 @@ class SaleSubscription(models.Model):
             rec.duration = days
             rec.duration_display = duration_display
 
-    @api.depends("order_line_ids.invoice_lines.move_id")
+    @api.depends(
+        "order_line_ids.invoice_lines.move_id",
+        "order_line_ids.invoice_lines.move_id.state",
+        "order_line_ids.invoice_lines.move_id.type",
+    )
     def _compute_first_invoice_id(self):
         for record in self:
             order_line = fields.first(record.order_line_ids)
             if order_line:
                 account_move = order_line.invoice_lines.move_id.filtered(
                     lambda move: move.type in ('out_invoice', 'out_refund')
+                    and move.state == "posted"
                 )
                 if account_move:
                     record.first_invoice_id = account_move
