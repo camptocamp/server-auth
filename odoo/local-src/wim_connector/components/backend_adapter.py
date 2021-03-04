@@ -78,7 +78,7 @@ class WIMWebserviceAdapter(Component):
                 job_log_id = job_log.id
         response = self.client.post(uri, json_data)
         if job_log_id:
-            job_log = self.env["queue.job.log"].browse(job_log_id)
+            job_log = self.env["queue.job.log"].sudo().browse(job_log_id)
             job_log.write(
                 {
                     "state": "success" if response.ok else "failed",
