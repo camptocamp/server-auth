@@ -3,7 +3,7 @@
 import logging
 from datetime import date
 
-from odoo import models
+from odoo import fields, models
 from odoo.addons.queue_job.job import job
 from odoo.tools.translate import _
 
@@ -14,6 +14,11 @@ _logger = logging.getLogger(__name__)
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
+
+    # TODO: Drop me
+    # This field is used to define if a partner had multiple subscriptions
+    # before the import from dynamics
+    pre_import_multi_subs = fields.Boolean()
 
     def _cron_execute_followup_print_letters(self):
         followup_data = self._query_followup_level(all_partners=True)
