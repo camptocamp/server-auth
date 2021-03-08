@@ -18,7 +18,11 @@ class AccountMove(models.Model):
     _name = "account.move"
     _inherit = ["account.move", "sale.payment.fields.mixin"]
 
-    customer_number = fields.Char(related="partner_id.customer_number")
+    name = fields.Char(index=True)
+    state = fields.Selection(index=True)
+    customer_number = fields.Char(
+        related="partner_id.customer_number", store=True, index=True
+    )
     sftp_pdf_path = fields.Char(readonly=True)
 
     def button_draft(self):
