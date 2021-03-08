@@ -3,6 +3,7 @@
 import logging
 
 from odoo import _, fields, models
+from odoo.addons.queue_job.exception import RetryableJobError
 from odoo.addons.queue_job.job import job
 from odoo.addons.server_environment import serv_config
 from odoo.exceptions import UserError
@@ -95,7 +96,10 @@ class AccountMove(models.Model):
             move.with_delay(eta=execution_date)._generate_invoice_pdf()
         return res
 
-    @job(default_channel='root.schweizmobil.print_invoice')
+    @job(
+        default_channel='root.schweizmobil.print_invoice',
+        retry_pattern={1: 60, 2: 120, 3: 180, 5: 300},
+    )
     def _generate_invoice_pdf(self):
         if self.state != "posted":
             return "Invoice must be posted in order to be printed"
@@ -121,7 +125,11 @@ class AccountMove(models.Model):
         report_name = safe_eval(report.print_report_name, {'object': self})
         if not report_name.lower().endswith('.pdf'):
             report_name += '.pdf'
-        sftp_path = sftp_upload(report_content, document_type, report_name)
+        try:
+            sftp_path = sftp_upload(report_content, document_type, report_name)
+        except Exception as e:
+            raise RetryableJobError(str(e)) from e
+        # Write SFTP PDF path without environment managed folder (test/prod)
         sftp_root_path = "/" + serv_config.get('sftp', 'root_path') or 'DUMMY'
         self.sftp_pdf_path = sftp_path.lstrip(sftp_root_path)
         return "Invoice PDF has been pushed to SFTP successfully"
