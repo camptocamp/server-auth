@@ -70,11 +70,11 @@ class SaleSubscription(models.Model):
             order_line = fields.first(record.order_line_ids)
             if order_line:
                 account_move = order_line.invoice_lines.move_id.filtered(
-                    lambda move: move.type in ('out_invoice', 'out_refund')
+                    lambda move: move.type == 'out_invoice'
                     and move.state == "posted"
                 )
                 if account_move:
-                    record.first_invoice_id = account_move
+                    record.first_invoice_id = fields.first(account_move)
                     continue
             record.first_invoice_id = False
 
