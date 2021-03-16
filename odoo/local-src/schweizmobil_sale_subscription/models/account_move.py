@@ -91,9 +91,7 @@ class AccountMove(models.Model):
             minute=exec_time.get("minute"),
             second=exec_time.get("second"),
         )
-        for move in self.filtered(
-            lambda m: m.type in ('out_invoice', 'out_refund')
-        ):
+        for move in self.filtered(lambda m: m.type == 'out_invoice'):
             move.with_delay(eta=execution_date)._generate_invoice_pdf()
         return res
 
