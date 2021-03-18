@@ -67,6 +67,7 @@ class WimResPartnerExportMapper(Component):
         "title",
         "lang",
         "country_id",
+        "email",
     )
     @mapping
     def map_customer_number(self, record):
@@ -85,6 +86,7 @@ class WimResPartnerExportMapper(Component):
         "title",
         "lang",
         "country_id",
+        "email",
     )
     @mapping
     def map_member(self, record):
