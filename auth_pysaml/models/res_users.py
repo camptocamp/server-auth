@@ -143,9 +143,22 @@ class ResUser(models.Model):
             lambda rec: rec.id != SUPERUSER_ID and rec.saml_ids and rec.password
         )
         if to_remove_password:
+
             to_remove_password.with_context(
                 auth_saml_no_autoremove_password=True
-            ).write({"password": False})
+            ).write({"password": self._autoremove_password_if_saml_gen_password()})
+
+    @api.model
+    def _autoremove_password_if_saml_gen_password(self):
+        """
+        If password_security is installed, we cannot have a False-y password.
+        This is to avoid a very small bridging/compatbility module.
+        """
+        new_password = False
+        modules = self.env["ir.module.module"].sudo()._installed().keys()
+        if "password_security" in modules:
+            new_password = passlib.utils.generate_password(size=24, charset="ascii_72")
+        return new_password
 
     def write(self, vals):
         result = super().write(vals)
