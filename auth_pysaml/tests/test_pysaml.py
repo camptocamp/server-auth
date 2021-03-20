@@ -55,13 +55,13 @@ class TestPySaml(HttpCase):
                     "name": "User with Token",
                     "email": "test@example.com",
                     "login": "test@example.com",
-                    "password": "standard_password",
+                    "password": "Lu,ums-7vRU>0i]=YDLa",
                 }
             )
         )
 
         # Standard login using password
-        self.authenticate(user="test@example.com", password="standard_password")
+        self.authenticate(user="test@example.com", password="Lu,ums-7vRU>0i]=YDLa")
         self.assertEqual(self.session.uid, user.id)
 
         self.logout()
@@ -91,7 +91,7 @@ class TestPySaml(HttpCase):
                     "name": "User with Token",
                     "email": "test@example.com",
                     "login": "test@example.com",
-                    "password": "standard_password",
+                    "password": "Lu,ums-7vRU>0i]=YDLa",
                 }
             )
         )
