@@ -14,7 +14,8 @@
         <field name="name">5.0 CHF discount on total amount</field>
         <field name="lst_price" eval="0.0"/>
         <field name="standard_price" eval="0.0"/>
-        <field name="recurring_invoice" eval="False"/>
+        <field name="recurring_invoice" eval="True"/>
+        <field name="subscription_template_id" ref="sale_subscription_template_schweizmobil_plus"/>
         <field name="type">service</field>
         <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]" />
     </record>
