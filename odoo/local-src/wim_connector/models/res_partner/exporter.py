@@ -22,18 +22,39 @@ class ResPartnerListener(Component):
     _inherit = ['base.connector.listener']
     _apply_on = ['res.partner']
 
+    _trigger_fields = None
+
+    @property
+    def trigger_fields(self):
+        """
+        Gets a set of fields that triggers an export
+        based on mapper's changed_by fields
+        """
+        # TODO : find a way to get the mapper
+        # if not self._trigger_fields:
+        #     mapper = self.component(usage="mapper")
+        #     self._trigger_fields = mapper.changed_by_fields()
+        # return self._trigger_fields
+        return (
+            "name",
+            "swisspass_customerid",
+            "firstname",
+            "lastname",
+            "newsletter",
+            "street",
+            "street2",
+            "zip",
+            "city",
+            "title",
+            "lang",
+            "country_id",
+            "email",
+        )
+
     @skip_if(lambda self, record, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
-        if fields == ['wim_bind_ids'] or fields == ['message_follower_ids']:
-            # When vals is wim_bind_ids:
-            # Binding edited from the record's view. When only this field has
-            # been modified, an other job has already been delayed for the
-            # binding record so can exit this event early.
-
-            # When vals is message_follower_ids:
-            # MailThread.message_subscribe() has been called, this
-            # method does a write on the field message_follower_ids,
-            # we never want to export that.
+        if self._no_trigger_fields_modified(fields):
+            # Do not create a job when no modified field is a trigger field
             return
         for binding in record.wim_bind_ids:
             # if binding.sync_action == 'export':

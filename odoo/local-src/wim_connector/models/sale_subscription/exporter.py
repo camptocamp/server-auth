@@ -36,15 +36,6 @@ class SaleSubscriptionListener(Component):
         # return self._trigger_fields
         return ("date_start", "date", "stage_id")
 
-    def _no_trigger_fields_modified(self, fields):
-        """
-        Returns False if any trigger field has been modified
-        """
-        for field in fields:
-            if field in self.trigger_fields:
-                return False
-        return True
-
     @skip_if(lambda self, record, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
         if self._no_trigger_fields_modified(fields):
