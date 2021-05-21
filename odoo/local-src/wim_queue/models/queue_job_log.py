@@ -11,7 +11,7 @@ class QueueJobLog(models.Model):
     _name = "queue.job.log"
     _description = "Log queue job requests"
 
-    queue_job_id = fields.Many2one("queue.job")
+    queue_job_id = fields.Many2one("queue.job", index=True, ondelete='cascade')
     job_state = fields.Selection(
         string="Job State", related="queue_job_id.state"
     )
