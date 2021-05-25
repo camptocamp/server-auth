@@ -1,3 +1,4 @@
 # generated from manifests external_dependencies
 python-ldap
+saml2
 zxcvbn
