@@ -90,7 +90,26 @@ class AuthSamlProvider(models.Model):
         required=True,
         string="Signature Algorithm",
     )
-    sign = fields.Boolean(default=True, help="Whether requests should be signed or not")
+    sign_authn_requests = fields.Boolean(
+        string="Sign authentication request",
+        default=True,
+        help="Whether authentication requests by this SP will be signed or not",
+    )
+    sign_logout_requests = fields.Boolean(
+        string="Sign logout request",
+        default=True,
+        help="Whether logout requests by this SP will be signed or not",
+    )
+    want_assertions_signed = fields.Boolean(
+        string="Require signed assertions",
+        default=True,
+        help="Whether assertions requests to this SP must be signed or not",
+    )
+    want_response_signed = fields.Boolean(
+        string="Require signed response",
+        default=True,
+        help="Whether response requests to this SP must to be signed or not",
+    )
 
     @api.model
     def _sig_alg_selection(self):
@@ -176,11 +195,11 @@ class AuthSamlProvider(models.Model):
                         ],
                     },
                     "allow_unsolicited": False,
-                    "authn_requests_signed": self.sign,
-                    "logout_requests_signed": self.sign,
-                    "want_assertions_signed": self.sign,
-                    "want_response_signed": self.sign,
-                },
+                    "authn_requests_signed": self.sign_authn_requests,
+                    "logout_requests_signed": self.sign_logout_requests,
+                    "want_assertions_signed": self.want_assertions_signed,
+                    "want_response_signed": self.want_response_signed,
+                }
             },
             "cert_file": self._get_cert_key_path("sp_pem_public"),
             "key_file": self._get_cert_key_path("sp_pem_private"),

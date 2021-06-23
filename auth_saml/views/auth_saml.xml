@@ -115,7 +115,10 @@
                                 Algorithm used to sign requests.
                                 </p>
                             </div>
-                            <field name="sign" />
+                            <field name="sign_authn_requests" />
+                            <field name="sign_logout_requests" />
+                            <field name="want_assertions_signed" />
+                            <field name="want_response_signed" />
                             <label for="attribute_mapping_ids" />
                             <div>
                                 <field
