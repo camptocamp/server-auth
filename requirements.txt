@@ -3,3 +3,4 @@ cryptography
 pyjwt
 python-ldap
 zxcvbn
+pysaml2
