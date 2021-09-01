@@ -103,3 +103,55 @@ class SaleSubscription(models.Model):
         self.ensure_one()
         invoice.post()
         return True
+
+    @api.model
+    def cron_account_analytic_account(self):
+        # Cancel subscription if invoice is overdue and only one
+        # invoice has been sent, and the subscription is not to renew
+        account_invoice_obj = self.env['account.move']
+        today = fields.Date.today()
+        week_before = today - relativedelta(weeks=1)
+        subscription_closed_ids = []
+        domain_close = [('in_progress', '=', True), ('to_renew', '=', False)]
+        subscriptions_close_to_check = self.search(domain_close)
+        invoices_tocheck = account_invoice_obj.search(
+            [
+                (
+                    'invoice_line_ids.subscription_id',
+                    'in',
+                    subscriptions_close_to_check.ids,
+                ),
+                ('invoice_payment_state', 'not in', ['paid', 'in_payment']),
+                ('invoice_date_due', '<', week_before),
+            ]
+        )
+        for cpt, invoice in enumerate(invoices_tocheck):
+            subscription_ids = [
+                x.subscription_id.id for x in invoice.invoice_line_ids
+            ]
+            print(
+                "Invoice %s: %s on %s"
+                % (invoice.name, cpt, len(invoices_tocheck))
+            )
+            # Check how many invoice linked to this subscription, should be always one
+            if len(list(set(subscription_ids))) == 1:
+                invoices_linked = account_invoice_obj.search(
+                    [
+                        (
+                            'invoice_line_ids.subscription_id',
+                            'in',
+                            subscription_ids,
+                        )
+                    ]
+                )
+                if len(invoices_linked) == 1:
+                    # We have only one invoice linked
+                    for invoice in invoices_linked:
+                        print("Invoice: %s" % (invoice.name))
+                        invoice.button_cancel()
+                    self.browse(subscription_ids).set_close()
+                    subscription_closed_ids += subscription_ids
+        val_dict = super().cron_account_analytic_account()
+        if subscription_closed_ids:
+            val_dict['closed'] += subscription_closed_ids
+        return val_dict
