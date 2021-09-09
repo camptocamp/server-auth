@@ -142,3 +142,10 @@ msgstr "Einheiten"
 #: model_terms:ir.ui.view,arch_db:schweizmobil_sale_subscription.sale_subscription_view_search
 msgid "Unpaid first invoice overdue"
 msgstr "Unbezahlte erste Rechnung überfällig"
+
+
+#. module: schweizmobil_sale_subscription
+#: code:addons/sale_subscription/models/sale_subscription.py:0
+#, python-format
+msgid "This invoice covers the following period: %s - %s"
+msgstr "Rechnungszeitraum: %s - %s"
