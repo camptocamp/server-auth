@@ -29,6 +29,7 @@
     "data": [
         "data/ir_cron.xml",
         "data/ir_config_parameter.xml",
+        "data/ir_filters.xml",
         "data/account_payment_mode.xml",
         "data/account_payment_term.xml",
         "data/account_followup_followup_line.xml",
