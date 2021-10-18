@@ -1,0 +1,23 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* schweizmobil_sale_subscription
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-15 14:37+0000\n"
+"PO-Revision-Date: 2021-10-15 14:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: schweizmobil_sale_subscription
+#: model:product.product,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus
+#: model:product.template,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus_product_template
+#: model:sale.order.template.line,name:schweizmobil_sale_subscription.sale_order_template_line_schweizmobil_plus
+msgid "Schweizmobil Plus"
+msgstr "SvizzeraMobile Plus"

@@ -118,7 +118,7 @@ msgstr "Verkaufsauftrag "
 #: model:product.template,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus_product_template
 #: model:sale.order.template.line,name:schweizmobil_sale_subscription.sale_order_template_line_schweizmobil_plus
 msgid "Schweizmobil Plus"
-msgstr "Schweizmobil Plus"
+msgstr "SchweizMobil Plus"
 
 #. module: schweizmobil_sale_subscription
 #: model:ir.model,name:schweizmobil_sale_subscription.model_sale_subscription
