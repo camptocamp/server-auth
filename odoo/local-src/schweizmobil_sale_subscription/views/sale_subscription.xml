@@ -45,7 +45,7 @@
     <field name="arch" type="xml">
       <xpath expr="//filter[@name='bad']" position="after">
         <filter name="unpaid_invoice_overdue" string="Unpaid first invoice overdue"
-          domain="[('first_invoice_id.paid_online', '=', False), ('first_invoice_to_be_paid_before', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+          domain="[('has_first_invoice_overdue', '=', True)]"/>
         <filter name="customer_with_newsletter" string="Customer with newsletter" domain="[('partner_id.newsletter', '=', True)]"/>
       </xpath>
       <xpath expr="//field[@name='name']" position="after">

@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class SaleSubscription(models.Model):
@@ -16,6 +17,10 @@ class SaleSubscription(models.Model):
         compute="_compute_first_invoice_to_be_paid_before",
         store=True,
         help="Limit date after which the first invoice should be paid",
+    )
+    has_first_invoice_overdue = fields.Boolean(
+        compute="_compute_has_first_invoice_overdue",
+        search="_search_has_first_invoice_overdue",
     )
     order_line_ids = fields.One2many(
         "sale.order.line", inverse_name="subscription_id"
@@ -78,7 +83,12 @@ class SaleSubscription(models.Model):
                     continue
             record.first_invoice_id = False
 
-    @api.depends("first_invoice_id", "first_invoice_id.invoice_date_due")
+    @api.depends(
+        "first_invoice_id",
+        "first_invoice_id.invoice_date_due",
+        "closing_delay_type",
+        "closing_delay",
+    )
     def _compute_first_invoice_to_be_paid_before(self):
         for record in self:
             date_due = record.first_invoice_id.invoice_date_due
@@ -92,6 +102,54 @@ class SaleSubscription(models.Model):
                 record.first_invoice_to_be_paid_before = date_due_extended
             else:
                 record.first_invoice_to_be_paid_before = False
+
+    def _first_invoice_overdue_domain(self):
+        return [
+            ("in_progress", "=", True),
+            ("first_invoice_id.paid_online", "=", False),
+            ("first_invoice_to_be_paid_before", "<=", fields.Date.today()),
+            ("first_invoice_id.invoice_payment_state", "=", "not_paid"),
+        ]
+
+    @api.depends(
+        "in_progress",
+        "first_invoice_id.paid_online",
+        "first_invoice_to_be_paid_before",
+        "first_invoice_id.invoice_payment_state",
+    )
+    def _compute_has_first_invoice_overdue(self):
+        with_invoice_overdue = self.search(
+            expression.AND(
+                [
+                    self._first_invoice_overdue_domain(),
+                    [("id", "in", self.ids)],
+                ]
+            )
+        )
+        if with_invoice_overdue:
+            with_invoice_overdue.has_first_invoice_overdue = True
+        without_invoice_overdue_ids = set(self.ids) - set(
+            with_invoice_overdue.ids
+        )
+        if without_invoice_overdue_ids:
+            without_invoice_overdue = self.browse(without_invoice_overdue_ids)
+            without_invoice_overdue.has_first_invoice_overdue = False
+
+    def _search_has_first_invoice_overdue(self, operator, value):
+        # Code inspired by odoo search on is_follower
+        with_invoice_overdue = self.search(
+            self._first_invoice_overdue_domain()
+        )
+        # Cases ('has_first_invoice_overdue', '=', True) or ('has_first_invoice_overdue', '!=', False)
+        if (operator == '=' and value) or (operator == '!=' and not value):
+            return [('id', 'in', with_invoice_overdue.ids)]
+        else:
+            return [('id', 'not in', with_invoice_overdue.ids)]
+
+    @api.model
+    def _cron_close_subscriptions_with_first_invoice_overdue(self):
+        subs_to_close = self.search(self._first_invoice_overdue_domain())
+        subs_to_close.set_close()
 
     def validate_and_send_invoice(self, invoice):
         """actually don't send the invoice by email unless
