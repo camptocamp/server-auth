@@ -14,6 +14,7 @@
     'website': 'http://www.camptocamp.com',
     'data': [
         # views
+        'views/account_bank_statement.xml'
     ],
     'installable': True,
 }
