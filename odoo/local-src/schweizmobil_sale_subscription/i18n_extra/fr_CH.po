@@ -28,3 +28,9 @@ msgstr "Période de facturation: %s - %s"
 #, python-format
 msgid "Discount: "
 msgstr "Réduction: "
+
+#. module: sale_subscription
+#: code:addons/sale_subscription/models/sale_order.py:0
+#, python-format
+msgid "Invoicing period: %s - %s"
+msgstr "Période de facturation: %s - %s"
