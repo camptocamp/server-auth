@@ -1,6 +1,5 @@
 # Copyright 2016-2017 LasLabs Inc.
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-
 from datetime import datetime, timedelta
 import base64
 import json
@@ -55,23 +54,38 @@ class JsonSecureCookie(SecureCookie):
 
 
 class AuthTotp(Home):
+
     @http.route()
     def web_login(self, *args, **kwargs):
-        response = super(AuthTotp, self).web_login(*args, **kwargs)
+        if request.params.get('login') and request.params.get('password'):
+            User = request.env["res.users"]
+            uid = User.sudo().authenticate(
+                request.params.get('db'),
+                request.params.get('login'),
+                request.params.get('password'),
+                {}
+            )
+            if uid:
+                user = User.browse(uid).sudo()
+                if user.mfa_enabled:
+                    return self.redirect(http)
+                elif user.has_group("base.group_user"):
+                    kwargs.update({'redirect': "/web"})
+        return super(AuthTotp, self).web_login(*args, **kwargs)
 
+    def redirect(self, http=None, redirect=None):
         if request.session.get('mfa_login_needed'):
             request.session.update({
-                'mfa_login_needed': False,
-                'login': kwargs.get('login', None),
-                'password': kwargs.get('password', None),
+                'login': request.params.get('login', None),
+                'password': request.params.get('password', None),
             })
             return http.local_redirect(
                 '/auth_totp/login',
                 query={'redirect': request.params.get('redirect')},
                 keep_hash=True,
             )
-
-        return response
+        else:
+            return http.redirect_with_hash(redirect)
 
     @http.route(
         '/auth_totp/login',
@@ -132,7 +146,10 @@ class AuthTotp(Home):
                 },
                 keep_hash=True,
             )
-        request.session['mfa_login_active'] = user.id
+        request.session.update({
+            'mfa_login_needed': False,
+            'mfa_login_active': user.id,
+        })
 
         user_pass = request.session.get('password')
         uid = request.session.authenticate(request.db, user.login, user_pass)
@@ -140,7 +157,7 @@ class AuthTotp(Home):
             request.params['login_success'] = True
 
         redirect = request.params.get('redirect')
-        if not redirect:
+        if not redirect or user.has_group("base.group_user"):
             redirect = '/web'
         response = http.redirect_with_hash(redirect)
         if not isinstance(response, WerkzeugResponse):
