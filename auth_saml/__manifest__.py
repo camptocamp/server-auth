@@ -22,6 +22,7 @@
         "views/auth_saml.xml",
         "views/res_config_settings.xml",
         "views/res_users.xml",
+        "data/ir_config_parameter.xml",
     ],
     "installable": True,
     "auto_install": False,

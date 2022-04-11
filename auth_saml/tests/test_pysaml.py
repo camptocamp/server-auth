@@ -46,7 +46,6 @@ class TestPySaml(HttpCase):
         )
 
         self.idp = FakeIDP([self.saml_provider._metadata_string()])
-        self.browse_ref("auth_saml.allow_saml_uid_and_internal_password").value = "True"
 
         # Create a user with only password, and another with both password and saml id
         self.user, self.user2 = (
