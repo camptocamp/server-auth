@@ -106,9 +106,9 @@ class AccountMove(models.Model):
         if self.sftp_pdf_path:
             return "Invoice PDF was already pushed to SFTP"
         # this will raise if the isr setup is not correct
-        self.isr_print()
+        self.print_ch_qr_bill()
         # but actually we don't need the action, we need the report...
-        report_xmlid = self._get_isr_report_xmlid()
+        report_xmlid = self._get_qr_report_xmlid()
         report = self.env.ref(report_xmlid)
         report_content, report_type = report.render(self.ids)
         if report_type != 'pdf':
@@ -118,7 +118,7 @@ class AccountMove(models.Model):
                 )
         if not report_content:
             raise ValueError("The report empty")
-        if 'isr' in report_xmlid:
+        if 'qr' in report_xmlid:
             document_type = 'invoice'
         else:
             document_type = 'confirmation'
@@ -134,6 +134,6 @@ class AccountMove(models.Model):
         self.sftp_pdf_path = sftp_path.lstrip(sftp_root_path)
         return "Invoice PDF has been pushed to SFTP successfully"
 
-    def _get_isr_report_xmlid(self):
+    def _get_qr_report_xmlid(self):
         # overridden in schweizmobil_report
-        return "l10n_ch.l10n_ch_isr_report"
+        return "l10n_ch.l10n_ch_swissqr_template"
