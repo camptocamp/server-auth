@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 from odoo.osv import expression
+from odoo.tools import float_is_zero
 
 
 class SaleSubscription(models.Model):
@@ -162,3 +163,15 @@ class SaleSubscription(models.Model):
         self.ensure_one()
         invoice.post()
         return True
+
+    def _prepare_invoice_data(self):
+        res = super()._prepare_invoice_data()
+        if float_is_zero(
+            self.recurring_amount_total,
+            precision_rounding=self.currency_id.rounding,
+        ):
+            report_to_send = "invoice_confirmation"
+        else:
+            report_to_send = "invoice_report"
+        res.update({"report_to_send": report_to_send})
+        return res

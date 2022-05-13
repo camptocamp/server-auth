@@ -4,6 +4,7 @@
 from odoo import _, fields, models
 from odoo.addons.stock.models.product import OPERATORS
 from odoo.exceptions import UserError
+from odoo.tools import float_is_zero
 
 
 class SaleOrder(models.Model):
@@ -20,10 +21,30 @@ class SaleOrder(models.Model):
 
     def _prepare_invoice(self):
         res = super()._prepare_invoice()
+        if self.online_renewal == "iOS IAP":
+            report_to_send = "none"
+        elif self.paid_online or float_is_zero(
+            self.amount_total, precision_rounding=self.currency_id.rounding
+        ):
+            report_to_send = "invoice_confirmation"
+        else:
+            report_to_send = "invoice_report"
         res.update(
             {
                 "invoicing_method": self.invoicing_method,
                 "paid_online": self.paid_online,
+                "report_to_send": report_to_send,
+            }
+        )
+        return res
+
+    def _prepare_subscription_data(self, template):
+        # Propagates subscription fields values to the subscription
+        res = super()._prepare_subscription_data(template)
+        res.update(
+            {
+                "wim_payment_type": self.wim_payment_type,
+                "online_renewal": self.online_renewal,
             }
         )
         return res
