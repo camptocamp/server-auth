@@ -14,6 +14,8 @@
     <field name="arch" type="xml">
       <xpath expr="//page[@id='other_info']/group" position="inside">
         <field name="first_invoice_to_be_paid_before"/>
+        <field name="wim_payment_type"/>
+        <field name="online_renewal"/>
       </xpath>
       <field name="date_start" position="before">
           <field name="duration_display"/>

@@ -8,7 +8,8 @@ from odoo.osv import expression
 
 class SaleSubscription(models.Model):
 
-    _inherit = "sale.subscription"
+    _name = "sale.subscription"
+    _inherit = ["sale.subscription", "sale.payment.subscription.fields.mixin"]
 
     first_invoice_id = fields.Many2one(
         "account.move", compute="_compute_first_invoice_id", store=True

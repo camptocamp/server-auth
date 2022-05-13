@@ -11,6 +11,7 @@
       <xpath expr="//group[@name='sale_info_group']" position="inside">
         <field name="invoicing_method"/>
         <field name="paid_online"/>
+        <field name="report_to_send"/>
         <field name="sftp_pdf_path" groups="base.group_no_one"/>
       </xpath>
     </field>

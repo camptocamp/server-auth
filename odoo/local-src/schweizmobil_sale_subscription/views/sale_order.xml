@@ -11,6 +11,8 @@
       <xpath expr="//group[@name='sale_info']" position="inside">
         <field name="invoicing_method"/>
         <field name="paid_online"/>
+        <field name="wim_payment_type"/>
+        <field name="online_renewal"/>
       </xpath>
     </field>
   </record>

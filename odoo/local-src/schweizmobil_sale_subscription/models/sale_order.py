@@ -9,7 +9,11 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
 
     _name = "sale.order"
-    _inherit = ["sale.order", "sale.payment.fields.mixin"]
+    _inherit = [
+        "sale.order",
+        "sale.payment.fields.mixin",
+        "sale.payment.subscription.fields.mixin",
+    ]
 
     customer_number = fields.Char(related="partner_id.customer_number")
     invoice_count = fields.Integer(search="_search_invoice_count")

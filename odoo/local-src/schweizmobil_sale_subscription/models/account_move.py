@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 import logging
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.addons.queue_job.exception import RetryableJobError
 from odoo.addons.queue_job.job import job
 from odoo.addons.server_environment import serv_config
@@ -13,11 +13,21 @@ from ..lib.sftp_interface import sftp_upload
 
 _logger = logging.getLogger(__name__)
 
+REPORT_TO_SEND_MAPPING = [
+    ("none", "None"),
+    ("invoice_report", "Invoice Report"),
+    ("invoice_confirmation", "Invoice Confirmation"),
+]
+
 
 class AccountMove(models.Model):
 
     _name = "account.move"
     _inherit = ["account.move", "sale.payment.fields.mixin"]
+
+    @api.model
+    def _get_report_to_send_selection(self):
+        return REPORT_TO_SEND_MAPPING
 
     name = fields.Char(index=True)
     state = fields.Selection(index=True)
@@ -25,6 +35,11 @@ class AccountMove(models.Model):
         related="partner_id.customer_number", store=True, index=True
     )
     sftp_pdf_path = fields.Char(readonly=True)
+    report_to_send = fields.Selection(
+        selection="_get_report_to_send_selection",
+        default="invoice_report",
+        readonly=True,
+    )
 
     def button_draft(self):
         """Check if any move was pushed onto SFTP to instantiate wizard"""
