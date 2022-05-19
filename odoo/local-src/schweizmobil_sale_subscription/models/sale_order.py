@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
 
     def _prepare_invoice(self):
         res = super()._prepare_invoice()
-        if self.online_renewal == "iOS IAP":
+        if self.online_renewal == "ios_iap":
             report_to_send = "none"
         elif self.paid_online or float_is_zero(
             self.amount_total, precision_rounding=self.currency_id.rounding

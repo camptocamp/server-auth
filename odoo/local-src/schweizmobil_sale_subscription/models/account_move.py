@@ -13,12 +13,6 @@ from ..lib.sftp_interface import sftp_upload
 
 _logger = logging.getLogger(__name__)
 
-REPORT_TO_SEND_MAPPING = [
-    ("none", "None"),
-    ("invoice_report", "Invoice Report"),
-    ("invoice_confirmation", "Invoice Confirmation"),
-]
-
 
 class AccountMove(models.Model):
 
@@ -26,8 +20,12 @@ class AccountMove(models.Model):
     _inherit = ["account.move", "sale.payment.fields.mixin"]
 
     @api.model
-    def _get_report_to_send_selection(self):
-        return REPORT_TO_SEND_MAPPING
+    def _selection_report_to_send(self):
+        return [
+            ("none", "None"),
+            ("invoice_report", "Invoice Report"),
+            ("invoice_confirmation", "Invoice Confirmation"),
+        ]
 
     name = fields.Char(index=True)
     state = fields.Selection(index=True)
@@ -36,7 +34,7 @@ class AccountMove(models.Model):
     )
     sftp_pdf_path = fields.Char(readonly=True)
     report_to_send = fields.Selection(
-        selection="_get_report_to_send_selection",
+        selection="_selection_report_to_send",
         default="invoice_report",
         readonly=True,
     )

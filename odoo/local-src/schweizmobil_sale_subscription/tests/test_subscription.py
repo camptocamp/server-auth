@@ -14,7 +14,7 @@ MAPPING_ORDER_VALUES = {
         {"online_renewal": "none", "paid_online": False, "price_unit": 12.0}
     ],
     "none": [
-        {"online_renewal": "iOS IAP", "paid_online": True, "price_unit": 0.0}
+        {"online_renewal": "ios_iap", "paid_online": True, "price_unit": 0.0}
     ],
 }
 
