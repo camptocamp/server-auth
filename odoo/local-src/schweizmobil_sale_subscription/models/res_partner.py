@@ -62,7 +62,7 @@ class ResPartner(models.Model):
         if not report_content:
             raise ValueError("The report empty")
         self.message_post(body=_('Follow-up letter printed'))
-        filename = 'Followup-ISR_{}_{}.pdf'.format(
+        filename = 'Followup-QR_{}_{}.pdf'.format(
             date.today().strftime('%Y-%m-%d'),
             self.customer_number or 'no_customer_number',
         )
