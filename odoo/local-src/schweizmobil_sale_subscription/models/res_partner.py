@@ -66,5 +66,5 @@ class ResPartner(models.Model):
             date.today().strftime('%Y-%m-%d'),
             self.customer_number or 'no_customer_number',
         )
-        sftp_upload(report_content, 'followup', filename)
+        sftp_upload(report_content, 'followup_2pages', filename)
         return True

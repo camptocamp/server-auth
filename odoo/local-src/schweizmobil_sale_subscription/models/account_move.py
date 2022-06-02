@@ -134,9 +134,9 @@ class AccountMove(models.Model):
         if not report_content:
             raise ValueError("The report empty")
         if 'qr' in report_xmlid:
-            document_type = 'invoice'
+            document_type = 'invoice_2pages'
         else:
-            document_type = 'confirmation'
+            document_type = 'confirmation_1page'
         report_name = safe_eval(report.print_report_name, {'object': self})
         if not report_name.lower().endswith('.pdf'):
             report_name += '.pdf'
