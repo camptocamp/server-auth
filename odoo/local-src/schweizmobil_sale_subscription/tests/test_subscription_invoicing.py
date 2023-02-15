@@ -24,7 +24,7 @@ MAPPING_SUBSCRIPTION_VALUES = {
 }
 
 
-class TestSubscription(TestSubscriptionCommon):
+class TestSubscriptionInvoicing(TestSubscriptionCommon):
     def test_invoice_from_order(self):
         for report_to_send, order_vals in MAPPING_ORDER_VALUES.items():
             for vals in order_vals:
