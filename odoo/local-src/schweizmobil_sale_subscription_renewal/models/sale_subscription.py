@@ -12,12 +12,15 @@ class SaleSubscription(models.Model):
     def _prepare_renewal_order_values(self):
         vals = super(SaleSubscription, self)._prepare_renewal_order_values()
         for subscription in self:
-            payment_term = (
-                subscription.wim_bind_ids.backend_id.first_invoice_payment_term_id
-            )
+            payment_term = subscription._get_renewal_payment_term()
             if payment_term:
                 vals[subscription.id]["payment_term_id"] = payment_term.id
         return vals
+
+    def _get_renewal_payment_term(self):
+        """Hook allowing to redefine payment term for renewal orders"""
+        self.ensure_one()
+        return self.env["account.payment.term"].browse()
 
     def increment_period(self):
         res = super().increment_period()
