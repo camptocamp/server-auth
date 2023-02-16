@@ -22,6 +22,13 @@ class SaleSubscription(models.Model):
         self.ensure_one()
         return self.env["account.payment.term"].browse()
 
+    def wipe(self):
+        """Reset online_renewal to none when renewing closed subscription"""
+        res = super().wipe()
+        if self.env.context.get("_reset_sub_dates"):
+            self.write({"online_renewal": "none"})
+        return res
+
     def increment_period(self):
         res = super().increment_period()
         if not self.env.context.get("_reset_sub_dates"):

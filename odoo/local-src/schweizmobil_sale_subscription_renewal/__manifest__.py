@@ -8,7 +8,7 @@
     'license': 'LGPL-3',
     'category': 'Others',
     'depends': [
-        "sale_subscription",
+        "schweizmobil_sale_subscription",
     ],
     'website': 'http://www.camptocamp.com',
     'installable': True,
