@@ -27,6 +27,9 @@ class SaleSubscription(models.Model):
     order_line_ids = fields.One2many(
         "sale.order.line", inverse_name="subscription_id"
     )
+    invoice_line_ids = fields.One2many(
+        "account.move.line", inverse_name="subscription_id"
+    )
 
     customer_number = fields.Char(related="partner_id.customer_number")
 
@@ -37,6 +40,34 @@ class SaleSubscription(models.Model):
         'Total Duration', compute="_compute_duration", store=True
     )
     recurring_next_date = fields.Date(tracking=101)
+
+    next_online_renewal_date = fields.Date(
+        compute="_compute_next_online_renewal_date", store=True
+    )
+
+    @api.depends(
+        "in_progress",
+        "to_close",
+        "online_renewal",
+        "next_invoicing_date",
+        "invoice_line_ids.move_id.invoice_payment_state",
+    )
+    def _compute_next_online_renewal_date(self):
+        for sub in self:
+            next_renewal_date = False
+            if (
+                sub.online_renewal == "ios_iap"
+                and sub.in_progress
+                and not sub.to_close
+            ):
+                has_open_invoice = any(
+                    inv.invoice_payment_state == "not_paid"
+                    for inv in sub.invoice_line_ids.mapped("move_id")
+                )
+                if has_open_invoice:
+                    continue
+                next_renewal_date = sub.next_invoicing_date
+            sub.next_online_renewal_date = next_renewal_date
 
     @api.depends('date_start', 'date')
     def _compute_duration(self):
