@@ -31,6 +31,12 @@ class SaleSubscription(models.Model):
         readonly=True,
     )
 
+    def _get_renewal_payment_term(self):
+        res = super()._get_renewal_payment_term()
+        if not res:
+            res = self.wim_bind_ids.backend_id.first_invoice_payment_term_id
+        return res
+
     def _prepare_invoice_data(self):
         """
         Apply distinct payment term for subscriptions and sale orders.

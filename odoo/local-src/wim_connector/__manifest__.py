@@ -16,6 +16,7 @@
         "connector",
         # local-src
         "schweizmobil_sale_subscription",
+        "schweizmobil_sale_subscription_renewal",
         "schweizmobil_base",
         "wim_queue",
         # oca/server-env
