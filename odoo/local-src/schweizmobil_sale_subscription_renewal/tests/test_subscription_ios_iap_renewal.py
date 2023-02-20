@@ -1,23 +1,18 @@
 # Copyright 2023 Camptocamp SA
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl)
-from odoo.addons.schweizmobil_sale_subscription.tests.test_subscription_ios_iap_renewal import (
+from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
     TestSubscriptionIosIapRenewal,
 )
 
 
 class TestSubscriptionIosIapReactivation(TestSubscriptionIosIapRenewal):
     def test_ios_iap_reactivation(self):
-        self.sale_order_5.write(
-            {
-                "online_renewal": "ios_iap",
-                "wim_payment_type": "inAppAppleStore",
-            }
-        )
-        self.sale_order_5.action_confirm()
-        subscription = self.sale_order_5.order_line.subscription_id
+        subscription = self.sale_order_ios_iap.order_line.subscription_id
+        subscription.set_open()
+        self.sale_order_ios_iap.action_confirm()
         actual_renewal_date = subscription.next_online_renewal_date
         self.assertEqual(actual_renewal_date, subscription.next_invoicing_date)
-        first_invoice = self.sale_order_5._create_invoices()
+        first_invoice = self.sale_order_ios_iap._create_invoices()
         first_invoice.action_post()
         self._pay_invoice(first_invoice)
         subscription._recurring_create_invoice()
