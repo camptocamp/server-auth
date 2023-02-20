@@ -1,9 +1,9 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.addons.stock.models.product import OPERATORS
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero
 
 
@@ -18,6 +18,23 @@ class SaleOrder(models.Model):
 
     customer_number = fields.Char(related="partner_id.customer_number")
     invoice_count = fields.Integer(search="_search_invoice_count")
+
+    @api.constrains("online_renewal")
+    def _check_payment_status(self):
+        for rec in self:
+            unpaid_inv = rec.invoice_ids.filtered(
+                lambda i: i.invoice_payment_state
+                in ("not_paid", "partially_paid")
+                and i.state == "posted"
+            )
+
+            if unpaid_inv:
+                raise ValidationError(
+                    _(
+                        "All related posted invoices should be paid\n%s"
+                        % ", ".join(unpaid_inv.mapped("name"))
+                    )
+                )
 
     def _prepare_invoice(self):
         res = super()._prepare_invoice()

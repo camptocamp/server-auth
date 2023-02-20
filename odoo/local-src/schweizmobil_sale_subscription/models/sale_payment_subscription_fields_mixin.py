@@ -1,7 +1,7 @@
 # Copyright 2022 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
-from odoo import api, fields, models
+from odoo import _, api, exceptions, fields, models
 
 
 class SalePaymentSubscriptionFieldsMixin(models.AbstractModel):
@@ -27,5 +27,17 @@ class SalePaymentSubscriptionFieldsMixin(models.AbstractModel):
         selection="_selection_wim_payment_type", readonly=True
     )
     online_renewal = fields.Selection(
-        selection="_selection_online_renewal", default="none", readonly=True
+        selection="_selection_online_renewal",
+        default="none",
+        help="""This defines if the payment is being renewed online.
+        In case of an online renewal, no invoice will be sent to the customer.""",
     )
+
+    def write(self, vals):
+        renewal = vals.get("online_renewal")
+        forbidden_records = self.filtered(lambda s: s.online_renewal == 'none')
+        if renewal and renewal == 'ios_iap' and forbidden_records:
+            raise exceptions.UserError(
+                _("Update to iOS IAP allowed only from customer device")
+            )
+        return super().write(vals)

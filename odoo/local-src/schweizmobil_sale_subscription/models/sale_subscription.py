@@ -2,7 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 from odoo.osv import expression
 from odoo.tools import float_is_zero
 
@@ -32,7 +33,6 @@ class SaleSubscription(models.Model):
     )
 
     customer_number = fields.Char(related="partner_id.customer_number")
-
     duration = fields.Integer(
         'Total Duration (days)', compute="_compute_duration", store=True
     )
@@ -68,6 +68,27 @@ class SaleSubscription(models.Model):
                     continue
                 next_renewal_date = sub.next_invoicing_date
             sub.next_online_renewal_date = next_renewal_date
+
+    @api.constrains("online_renewal")
+    def _check_payment_status(self):
+        unpaid_inv = self.env["account.move"].search(
+            [
+                ('invoice_line_ids.subscription_id', 'in', self.ids),
+                (
+                    'invoice_payment_state',
+                    'in',
+                    ("not_paid", "partially_paid"),
+                ),
+                ("state", "=", "posted"),
+            ]
+        )
+        if unpaid_inv:
+            raise ValidationError(
+                _(
+                    "All related posted invoices should be paid\n%s"
+                    % ", ".join(unpaid_inv.mapped("name"))
+                )
+            )
 
     @api.depends('date_start', 'date')
     def _compute_duration(self):

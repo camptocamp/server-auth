@@ -1,44 +1,11 @@
 # Copyright 2023 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo.addons.sale_subscription.tests.common_sale_subscription import (
-    TestSubscriptionCommon,
+from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
+    TestSubscriptionIosIapRenewalCommon,
 )
 
 
-class TestSubscriptionIosIapRenewal(TestSubscriptionCommon):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.subscription_tmpl_3.write(
-            {
-                "recurring_rule_type": "yearly",
-                "recurring_next_date_advance": 30,
-                "recurring_next_date_advance_type": "daily",
-                "payment_mode": "validate_send",
-            }
-        )
-
-    @classmethod
-    def _pay_invoice(cls, invoice):
-        payment_method = cls.env["account.payment.method"].search(
-            [("code", "=", "manual"), ("payment_type", "=", "inbound")]
-        )
-        bank_journal = cls.env["account.journal"].search(
-            [("type", "=", "bank")], limit=1
-        )
-        wiz_action = invoice.action_invoice_register_payment()
-        payment_wiz = (
-            cls.env[wiz_action["res_model"]]
-            .with_context(wiz_action["context"])
-            .create(
-                {
-                    "journal_id": bank_journal.id,
-                    "payment_method_id": payment_method.id,
-                }
-            )
-        )
-        payment_wiz.post()
-
+class TestSubscriptionIosIapRenewal(TestSubscriptionIosIapRenewalCommon):
     def test_no_online_renewal_next_online_renewal_date(self):
         self.assertEqual(self.sale_order_5.online_renewal, "none")
         self.sale_order_5.action_confirm()
@@ -47,14 +14,8 @@ class TestSubscriptionIosIapRenewal(TestSubscriptionCommon):
         self.assertFalse(subscription.next_online_renewal_date)
 
     def test_remove_online_renewal_next_online_renewal_date(self):
-        self.sale_order_5.write(
-            {
-                "online_renewal": "ios_iap",
-                "wim_payment_type": "inAppAppleStore",
-            }
-        )
-        self.sale_order_5.action_confirm()
-        subscription = self.sale_order_5.order_line.subscription_id
+        self.sale_order_ios_iap.action_confirm()
+        subscription = self.sale_order_ios_iap.order_line.subscription_id
         self.assertEqual(subscription.online_renewal, "ios_iap")
         self.assertEqual(
             subscription.next_online_renewal_date,
@@ -64,14 +25,8 @@ class TestSubscriptionIosIapRenewal(TestSubscriptionCommon):
         self.assertFalse(subscription.next_online_renewal_date)
 
     def test_set_to_close_next_online_renewal_date(self):
-        self.sale_order_5.write(
-            {
-                "online_renewal": "ios_iap",
-                "wim_payment_type": "inAppAppleStore",
-            }
-        )
-        self.sale_order_5.action_confirm()
-        subscription = self.sale_order_5.order_line.subscription_id
+        self.sale_order_ios_iap.action_confirm()
+        subscription = self.sale_order_ios_iap.order_line.subscription_id
         self.assertEqual(subscription.online_renewal, "ios_iap")
         self.assertEqual(
             subscription.next_online_renewal_date,
@@ -81,19 +36,13 @@ class TestSubscriptionIosIapRenewal(TestSubscriptionCommon):
         self.assertFalse(subscription.next_online_renewal_date)
 
     def test_ios_iap_renewal_date(self):
-        self.sale_order_5.write(
-            {
-                "online_renewal": "ios_iap",
-                "wim_payment_type": "inAppAppleStore",
-            }
-        )
-        self.sale_order_5.action_confirm()
-        subscription = self.sale_order_5.order_line.subscription_id
+        self.sale_order_ios_iap.action_confirm()
+        subscription = self.sale_order_ios_iap.order_line.subscription_id
         self.assertEqual(subscription.online_renewal, 'ios_iap')
         self.assertEqual(subscription.wim_payment_type, 'inAppAppleStore')
         actual_renewal_date = subscription.next_online_renewal_date
         self.assertEqual(actual_renewal_date, subscription.next_invoicing_date)
-        first_invoice = self.sale_order_5._create_invoices()
+        first_invoice = self.sale_order_ios_iap._create_invoices()
         self.assertEqual(
             subscription.next_online_renewal_date, actual_renewal_date
         )
@@ -112,6 +61,7 @@ class TestSubscriptionIosIapRenewal(TestSubscriptionCommon):
                 ("id", "!=", first_invoice.id),
             ]
         )
+        recurring_invoice.action_post()
         self.assertEqual(recurring_invoice.invoice_payment_state, "not_paid")
         self.assertEqual(
             subscription.next_online_renewal_date, actual_renewal_date
