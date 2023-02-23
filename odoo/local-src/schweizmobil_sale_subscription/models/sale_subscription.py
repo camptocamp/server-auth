@@ -202,6 +202,8 @@ class SaleSubscription(models.Model):
             precision_rounding=self.currency_id.rounding,
         ):
             report_to_send = "invoice_confirmation"
+        elif self.online_renewal == 'ios_iap':
+            report_to_send = "none"
         else:
             report_to_send = "invoice_report"
         res.update({"report_to_send": report_to_send})
