@@ -23,6 +23,7 @@
         "sale_subscription_date_extension",
         "sale_subscription_closing_delay",
         "sale_subscription_recurring_next_date_advance",
+        "sale_subscription_to_close",
         # oca/queue
         "queue_job"
     ],

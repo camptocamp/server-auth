@@ -29,9 +29,12 @@ class ResPartner(models.Model):
                 if d['followup_status'] == 'in_need_of_action'
             ]
         )
+
         in_need_of_action_print_letter = in_need_of_action.filtered(
             lambda p: p.followup_level.print_letter
+            and any(inv.report_to_send != "none" for inv in p.unpaid_invoices)
         )
+
         _logger.info(
             'Generating jobs for %d partner follow ups', len(in_need_of_action)
         )
