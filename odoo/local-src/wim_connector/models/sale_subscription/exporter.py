@@ -38,12 +38,13 @@ class SaleSubscriptionListener(Component):
 
     @skip_if(lambda self, record, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
+        eta = self.env.context.get("job_export_eta")
         if self._no_trigger_fields_modified(fields):
             # Do not create a job when no modified field is a trigger field
             return
         for binding in record.wim_bind_ids:
             # if binding.sync_action == 'export':
-            binding.with_delay(priority=10).export_record(fields=fields)
+            binding.with_delay(priority=10, eta=eta).export_record(fields=fields)
 
 
 class WimSaleSubscriptionMapper(Component):

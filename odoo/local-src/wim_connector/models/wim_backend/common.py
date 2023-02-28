@@ -38,6 +38,7 @@ class WIMBackend(models.Model):
     user_password = fields.Char(string="User Password")
     first_invoice_payment_term_id = fields.Many2one("account.payment.term")
     recurring_invoice_payment_term_id = fields.Many2one("account.payment.term")
+    subscription_export_job_delay = fields.Integer(default=10)
 
     @property
     def _server_env_fields(self):
