@@ -1,11 +1,11 @@
 # Copyright 2023 Camptocamp SA
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl)
 from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
-    TestSubscriptionIosIapRenewal,
+    TestSubscriptionIosIapRenewalCommon,
 )
 
 
-class TestSubscriptionIosIapReactivation(TestSubscriptionIosIapRenewal):
+class TestSubscriptionIosIapReactivation(TestSubscriptionIosIapRenewalCommon):
     def test_ios_iap_reactivation(self):
         subscription = self.sale_order_ios_iap.order_line.subscription_id
         subscription.set_open()
