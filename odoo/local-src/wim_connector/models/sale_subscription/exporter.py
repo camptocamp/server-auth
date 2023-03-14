@@ -34,7 +34,7 @@ class SaleSubscriptionListener(Component):
         #     mapper = self.component(usage="mapper")
         #     self._trigger_fields = mapper.changed_by_fields()
         # return self._trigger_fields
-        return ("date_start", "date", "stage_id")
+        return ("date_start", "date", "stage_id", "next_online_renewal_date")
 
     @skip_if(lambda self, record, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
@@ -61,9 +61,13 @@ class WimSaleSubscriptionMapper(Component):
 
     def map_active(self, record):
         return {"active": record.in_progress}
+    
+    def map_start_of_renewal_period(self, record):
+        return {"startOfRenewalPeriod": record.next_online_renewal_date}
+
 
     # TODO : If needs to be updated, update trigger_fields() as well
-    @changed_by("date_start", "date", "stage_id")
+    @changed_by("date_start", "date", "stage_id", "next_online_renewal_date")
     @mapping
     def map_customer_number(self, record):
         customer_number = record.partner_id.customer_number
@@ -71,7 +75,7 @@ class WimSaleSubscriptionMapper(Component):
         return {"customerNr": customer_number}
 
     # TODO : If needs to be updated, update trigger_fields() as well
-    @changed_by("date_start", "date", "stage_id")
+    @changed_by("date_start", "date", "stage_id", "next_online_renewal_date")
     @mapping
     def map_membership(self, record):
         membership_data = {}
@@ -79,6 +83,7 @@ class WimSaleSubscriptionMapper(Component):
             self.map_valid_from,
             self.map_valid_until,
             self.map_active,
+            self.map_start_of_renewal_period,
         ]
         for mapping_method in mapping_methods:
             membership_data.update(mapping_method(record))
