@@ -44,7 +44,9 @@ class SaleSubscriptionListener(Component):
             return
         for binding in record.wim_bind_ids:
             # if binding.sync_action == 'export':
-            binding.with_delay(priority=10, eta=eta).export_record(fields=fields)
+            binding.with_delay(priority=10, eta=eta).export_record(
+                fields=fields
+            )
 
 
 class WimSaleSubscriptionMapper(Component):
@@ -61,10 +63,9 @@ class WimSaleSubscriptionMapper(Component):
 
     def map_active(self, record):
         return {"active": record.in_progress}
-    
+
     def map_start_of_renewal_period(self, record):
         return {"startOfRenewalPeriod": record.next_online_renewal_date}
-
 
     # TODO : If needs to be updated, update trigger_fields() as well
     @changed_by("date_start", "date", "stage_id", "next_online_renewal_date")
