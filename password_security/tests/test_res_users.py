@@ -17,6 +17,7 @@ class TestResUsers(SavepointCase):
         }
         cls.password = "asdQWE123$%^"
         cls.main_comp = cls.env.ref("base.main_company")
+        cls.main_comp.password_policy_enabled = True
         cls.vals = {
             "name": "User",
             "login": cls.login,

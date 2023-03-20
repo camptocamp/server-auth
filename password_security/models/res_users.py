@@ -46,7 +46,7 @@ class ResUsers(models.Model):
         return super(ResUsers, self).create(vals)
 
     def write(self, vals):
-        if vals.get("password"):
+        if vals.get("password") and self.env.user.company_id.password_policy_enabled:
             self._check_password(vals["password"])
             vals["password_write_date"] = fields.Datetime.now()
         return super(ResUsers, self).write(vals)
@@ -55,25 +55,28 @@ class ResUsers(models.Model):
     def get_password_policy(self):
         data = super(ResUsers, self).get_password_policy()
         company_id = self.env.user.company_id
-        data.update(
-            {
-                "password_lower": company_id.password_lower,
-                "password_upper": company_id.password_upper,
-                "password_numeric": company_id.password_numeric,
-                "password_special": company_id.password_special,
-                "password_length": company_id.password_length,
-                "password_estimate": company_id.password_estimate,
-            }
-        )
+        if company_id.password_policy_enabled:
+            data.update(
+                {
+                    "password_lower": company_id.password_lower,
+                    "password_upper": company_id.password_upper,
+                    "password_numeric": company_id.password_numeric,
+                    "password_special": company_id.password_special,
+                    "password_length": company_id.password_length,
+                    "password_estimate": company_id.password_estimate,
+                }
+            )
         return data
 
     def _check_password_policy(self, passwords):
         result = super(ResUsers, self)._check_password_policy(passwords)
+        company_id = self.env.user.company_id
 
         for password in passwords:
             if not password:
                 continue
-            self._check_password(password)
+            if company_id.password_policy_enabled:
+                self._check_password(password)
 
         return result
 
@@ -124,20 +127,21 @@ class ResUsers(models.Model):
         if not password:
             return True
         company_id = self.company_id
-        password_regex = [
-            "^",
-            "(?=.*?[a-z]){" + str(company_id.password_lower) + ",}",
-            "(?=.*?[A-Z]){" + str(company_id.password_upper) + ",}",
-            "(?=.*?\\d){" + str(company_id.password_numeric) + ",}",
-            r"(?=.*?[\W_]){" + str(company_id.password_special) + ",}",
-            ".{%d,}$" % int(company_id.password_length),
-        ]
-        if not re.search("".join(password_regex), password):
-            raise ValidationError(self.password_match_message())
+        if company_id.password_policy_enabled:
+            password_regex = [
+                "^",
+                "(?=.*?[a-z]){" + str(company_id.password_lower) + ",}",
+                "(?=.*?[A-Z]){" + str(company_id.password_upper) + ",}",
+                "(?=.*?\\d){" + str(company_id.password_numeric) + ",}",
+                r"(?=.*?[\W_]){" + str(company_id.password_special) + ",}",
+                ".{%d,}$" % int(company_id.password_length),
+            ]
+            if not re.search("".join(password_regex), password):
+                raise ValidationError(self.password_match_message())
 
-        estimation = self.get_estimation(password)
-        if estimation["score"] < company_id.password_estimate:
-            raise UserError(estimation["feedback"]["warning"])
+            estimation = self.get_estimation(password)
+            if estimation["score"] < company_id.password_estimate:
+                raise UserError(estimation["feedback"]["warning"])
 
         return True
 
