@@ -25,6 +25,20 @@
                         <div class="content-group">
                             <div class="mt16">
                                 <span>
+                                    Password policy enabled
+                                    <field
+                                        name="password_policy_enabled"
+                                        class="oe_inline"
+                                    />
+                                </span>
+                            </div>
+                        </div>
+                        <div
+                            class="content-group"
+                            attrs="{'invisible': [('password_policy_enabled','=', False)]}"
+                        >
+                            <div class="mt16">
+                                <span>
                                     Password expires in
                                     <field
                                         name="password_expiration"

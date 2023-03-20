@@ -9,6 +9,8 @@ from odoo.exceptions import ValidationError
 class ResCompany(models.Model):
     _inherit = "res.company"
 
+    password_policy_enabled = fields.Boolean(default=False)
+
     password_expiration = fields.Integer(
         "Days",
         default=60,
