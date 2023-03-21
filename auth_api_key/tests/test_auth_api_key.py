@@ -43,3 +43,12 @@ class TestAuthApiKey(SavepointCase):
         )
         with self.assertRaises(ValidationError):
             self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+
+    def test_user_archived_unarchived(self):
+        demo_user = self.env.ref("base.user_demo")
+        self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key"), demo_user.id
+        demo_user.active = False
+        with self.assertRaises(ValidationError):
+            self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key"), demo_user.id
+        demo_user.active = True
+        self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key"), demo_user.id
