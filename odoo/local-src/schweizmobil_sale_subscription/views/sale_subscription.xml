@@ -21,6 +21,9 @@
           <field name="duration_display"/>
           <field name="duration"/>
       </field>
+      <field name="date" position="after">
+        <field name="next_online_renewal_date" groups="base.group_no_one" />
+      </field>
     </field>
   </record>
 
@@ -36,6 +39,7 @@
         <field name="duration_display"/>
         <field name="date_start"/>
         <field name="date"/>
+        <field name="next_online_renewal_date" groups="base.group_no_one" />
       </field>
     </field>
   </record>
