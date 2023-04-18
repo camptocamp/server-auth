@@ -65,7 +65,13 @@ class WimSaleSubscriptionMapper(Component):
         return {"active": record.in_progress}
 
     def map_start_of_renewal_period(self, record):
-        return {"startOfRenewalPeriod": record.next_online_renewal_date}
+        date = record.next_online_renewal_date
+        res = {
+            "startOfRenewalPeriod": date.strftime(WIM_DATE_FORMAT)
+            if date
+            else ""
+        }
+        return res
 
     # TODO : If needs to be updated, update trigger_fields() as well
     @changed_by("date_start", "date", "stage_id", "next_online_renewal_date")

@@ -66,6 +66,16 @@ class SaleSubscription(models.Model):
                 )
             sub.write({"wim_bind_ids": [(0, 0, {"backend_id": backend.id})]})
 
+    def _write(self, vals):
+        """Force triggering of connector export after field computation"""
+        res = super()._write(vals)
+        if "next_online_renewal_date" in vals:
+            for record in self:
+                self._event("on_record_write").notify(
+                    record, fields=["next_online_renewal_date"]
+                )
+        return res
+
 
 class SaleSubscriptionStage(models.Model):
 
