@@ -238,3 +238,25 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
         self.assertEqual(self.sale_order.online_renewal, "none")
         with self.assertRaises(exceptions.UserError):
             self.sale_order.write({"online_renewal": "ios_iap"})
+
+    def test_subscription_product_name_change_invoice_line_should_reflect(
+        self
+    ):
+        new_name = "NEW NAME"
+        product = self.subscription_ios.recurring_invoice_line_ids.product_id
+        for lang in ["fr", "en", "de"]:
+            product.with_context(
+                lang=self.env.ref("base.lang_" + lang).code
+            ).name = new_name
+        self.sale_order_ios_iap.action_confirm()
+        self.subscription_ios._recurring_create_invoice()
+        recurring_invoice = self.env["account.move"].search(
+            [
+                (
+                    'invoice_line_ids.subscription_id',
+                    '=',
+                    self.subscription_ios.id,
+                )
+            ]
+        )
+        self.assertEqual(recurring_invoice.invoice_line_ids.name, new_name)
