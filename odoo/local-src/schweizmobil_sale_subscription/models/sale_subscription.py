@@ -232,12 +232,3 @@ class SaleSubscription(models.Model):
             report_to_send = "invoice_report"
         res.update({"report_to_send": report_to_send})
         return res
-
-    def _prepare_invoice_line(
-        self, line, fiscal_position, date_start=False, date_stop=False
-    ):
-        res = super()._prepare_invoice_line(
-            line, fiscal_position, date_start, date_stop
-        )
-        res["name"] = line.product_id.name or line.name
-        return res
