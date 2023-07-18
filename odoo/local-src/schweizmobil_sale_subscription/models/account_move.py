@@ -38,6 +38,9 @@ class AccountMove(models.Model):
         default="invoice_report",
         readonly=True,
     )
+    # NOTE: performance improvement of 'res.partner._compute_unpaid_invoices'
+    # from 'enterprise/account_followup' module
+    commercial_partner_id = fields.Many2one(index=True)
 
     def button_draft(self):
         """Check if any move was pushed onto SFTP to instantiate wizard"""

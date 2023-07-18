@@ -14,6 +14,8 @@
         "sale",
         "sale_management",
         "sale_coupon",
+        # enterprise
+        # TODO: extract this dependency in another module, AGPL not compatible with OPL
         "account_followup",
         # oca/sale-workflow
         "sale_automatic_workflow_payment_mode",
