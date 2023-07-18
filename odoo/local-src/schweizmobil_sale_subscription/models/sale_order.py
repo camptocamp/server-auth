@@ -90,3 +90,9 @@ class SaleOrder(models.Model):
             tpl[0] for tpl in query_res if OPERATORS[operator](tpl[1], value)
         ]
         return [('id', 'in', res)]
+
+
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
+
+    subscription_id = fields.Many2one(index=True)

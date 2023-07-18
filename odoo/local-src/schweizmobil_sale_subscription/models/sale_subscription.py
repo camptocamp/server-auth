@@ -232,3 +232,9 @@ class SaleSubscription(models.Model):
             report_to_send = "invoice_report"
         res.update({"report_to_send": report_to_send})
         return res
+
+
+class SaleSubscriptionLine(models.Model):
+    _inherit = "sale.subscription.line"
+
+    analytic_account_id = fields.Many2one(index=True)
