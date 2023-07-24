@@ -28,6 +28,7 @@ class SaleSubscription(models.Model):
         res = super().wipe()
         if self.env.context.get("_reset_sub_dates"):
             self.write({"online_renewal": "none"})
+        self.write({"to_close": False})
         return res
 
     def increment_period(self):
