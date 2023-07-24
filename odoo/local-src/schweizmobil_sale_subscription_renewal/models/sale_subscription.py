@@ -15,6 +15,7 @@ class SaleSubscription(models.Model):
             payment_term = subscription._get_renewal_payment_term()
             if payment_term:
                 vals[subscription.id]["payment_term_id"] = payment_term.id
+            vals[subscription.id]['user_id'] = self.env.uid
         return vals
 
     def _get_renewal_payment_term(self):
