@@ -9,6 +9,9 @@
                 <xpath expr="//field[@name='ref']" position="before">
                   <field name="partner_name_alternate" />
                 </xpath>
+                <xpath expr="//field[@name='line_ids']//button[@name='button_cancel_reconciliation']" position="attributes">
+                  <attribute name="context">{'force_partner_removal': True}</attribute>
+                </xpath>
             </field>
     </record>
 </odoo>
