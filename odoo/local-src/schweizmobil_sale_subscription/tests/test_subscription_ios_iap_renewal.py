@@ -1,11 +1,11 @@
 # Copyright 2023 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
 from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
-    TestSubscriptionIosIapRenewalCommon,
+    TestSMSubscriptionCommon,
 )
 
 
-class TestSubscriptionIosIapRenewal(TestSubscriptionIosIapRenewalCommon):
+class TestSubscriptionIosIapRenewal(TestSMSubscriptionCommon):
     def test_no_online_renewal_next_online_renewal_date(self):
         self.assertEqual(self.sale_order_5.online_renewal, "none")
         self.sale_order_5.action_confirm()
@@ -36,8 +36,10 @@ class TestSubscriptionIosIapRenewal(TestSubscriptionIosIapRenewalCommon):
         self.assertFalse(subscription.next_online_renewal_date)
 
     def test_ios_iap_renewal_date(self):
-        self.sale_order_ios_iap.action_confirm()
-        subscription = self.sale_order_ios_iap.order_line.subscription_id
+        self.schweizmobil_plus_product.subscription_template_id.payment_mode = (
+            "draft_invoice"
+        )
+        subscription = self._confirm_get_subscription(self.sale_order_ios_iap)
         self.assertEqual(subscription.online_renewal, 'ios_iap')
         self.assertEqual(subscription.wim_payment_type, 'inAppAppleStore')
         actual_renewal_date = subscription.next_online_renewal_date

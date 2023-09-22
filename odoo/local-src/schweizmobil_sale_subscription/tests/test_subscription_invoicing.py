@@ -7,7 +7,7 @@ import mock
 from freezegun import freeze_time
 from odoo import exceptions
 from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
-    TestSubscriptionIosIapRenewalCommon,
+    TestSMSubscriptionCommon,
 )
 
 MAPPING_ORDER_VALUES = {
@@ -36,7 +36,29 @@ MAPPING_SUBSCRIPTION_VALUES = {
 }
 
 
-class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
+RESULTS = {
+    "invoice_35": {
+        "from_so": {"invoice": "invoice_report", "followup": "invoice_report"},
+        "from_sub": {
+            "invoice": "invoice_report",
+            "followup": "invoice_report",
+        },
+    },
+    "invoice_0": {
+        "from_so": {"invoice": "invoice_confirmation", "followup": False},
+        "from_sub": {"invoice": "invoice_confirmation", "followup": False},
+    },
+    "ios_iap": {
+        "from_so": {"invoice": "invoice_confirmation", "followup": False},
+        "from_sub": {
+            "invoice": "invoice_report",
+            "followup": "invoice_report",
+        },
+    },
+}
+
+
+class TestSubscriptionInvoicing(TestSMSubscriptionCommon):
     def test_invoice_from_order(self):
         def test_sub(order, vals, result):
             price_unit = vals.pop("price_unit")
@@ -70,21 +92,23 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
                 )
 
     def test_invoice_from_subscription_ios_renewal(self):
-        self.sale_order_ios_iap.action_confirm()
+        self.schweizmobil_plus_product.subscription_template_id.payment_mode = (
+            "draft_invoice"
+        )
+        subscription_ios = self._confirm_get_subscription(
+            self.sale_order_ios_iap
+        )
         for report_to_send, order_vals in MAPPING_SUBSCRIPTION_VALUES.items():
             for vals in order_vals:
-                self.subscription.write(vals)
-                self.assertEqual(
-                    self.subscription_ios.online_renewal, "ios_iap"
-                )
+                self.assertEqual(subscription_ios.online_renewal, "ios_iap")
 
-                self.subscription_ios._recurring_create_invoice()
+                subscription_ios._recurring_create_invoice()
                 recurring_invoice = self.env["account.move"].search(
                     [
                         (
                             'invoice_line_ids.subscription_id',
                             '=',
-                            self.subscription_ios.id,
+                            subscription_ios.id,
                         )
                     ]
                 )
@@ -99,18 +123,20 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
                 self.assertFalse(recurring_invoice.sftp_pdf_path)
 
     def test_followup_no_report_to_send(self):
-
-        self.sale_order_ios_iap.action_confirm()
+        self.schweizmobil_plus_product.subscription_template_id.payment_mode = (
+            "draft_invoice"
+        )
+        subscription_ios = self._confirm_get_subscription(
+            self.sale_order_ios_iap
+        )
         for report_to_send, order_vals in MAPPING_SUBSCRIPTION_VALUES.items():
             for vals in order_vals:
-                self.subscription_ios.write(vals)
-                self.assertEqual(
-                    self.subscription_ios.online_renewal, "ios_iap"
-                )
+                subscription_ios.write(vals)
+                self.assertEqual(subscription_ios.online_renewal, "ios_iap")
 
                 # create 2 unpaid invoices
-                self.subscription_ios._recurring_create_invoice()
-                self.subscription_ios._recurring_create_invoice()
+                subscription_ios._recurring_create_invoice()
+                subscription_ios._recurring_create_invoice()
                 recurring_invoice, recurring_invoice_2 = self.env[
                     "account.move"
                 ].search(
@@ -118,7 +144,7 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
                         (
                             'invoice_line_ids.subscription_id',
                             '=',
-                            self.subscription_ios.id,
+                            subscription_ios.id,
                         )
                     ]
                 )
@@ -154,17 +180,20 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
                         mocked_function.assert_not_called()
 
     def test_followup_invoice_report_to_send(self):
-        self.sale_order_ios_iap.action_confirm()
+        self.schweizmobil_plus_product.subscription_template_id.payment_mode = (
+            "draft_invoice"
+        )
+        subscription_ios = self._confirm_get_subscription(
+            self.sale_order_ios_iap
+        )
         for report_to_send, order_vals in MAPPING_SUBSCRIPTION_VALUES.items():
             for vals in order_vals:
-                self.subscription_ios.write(vals)
-                self.assertEqual(
-                    self.subscription_ios.online_renewal, "ios_iap"
-                )
+                subscription_ios.write(vals)
+                self.assertEqual(subscription_ios.online_renewal, "ios_iap")
 
                 # create 2 unpaid invoices with different type of report to send
-                self.subscription_ios._recurring_create_invoice()
-                self.subscription_ios._recurring_create_invoice()
+                subscription_ios._recurring_create_invoice()
+                subscription_ios._recurring_create_invoice()
                 recurring_invoice, recurring_invoice_2 = self.env[
                     "account.move"
                 ].search(
@@ -172,7 +201,7 @@ class TestSubscriptionInvoicing(TestSubscriptionIosIapRenewalCommon):
                         (
                             'invoice_line_ids.subscription_id',
                             '=',
-                            self.subscription_ios.id,
+                            subscription_ios.id,
                         )
                     ]
                 )

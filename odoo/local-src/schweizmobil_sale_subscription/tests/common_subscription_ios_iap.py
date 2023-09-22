@@ -5,34 +5,57 @@ from odoo.addons.sale_subscription.tests.common_sale_subscription import (
 )
 
 
-class TestSubscriptionIosIapRenewalCommon(TestSubscriptionCommon):
+class TestSMSubscriptionCommon(TestSubscriptionCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.sale_order_ios_iap = cls.env["sale.order"].create(
+        cls.schweizmobil_plus_product = cls.env.ref(
+            "schweizmobil_sale_subscription.product_product_schweizmobil_plus"
+        )
+        cls.sale_order_ios_iap = cls._create_sale_order(
+            cls.user_portal.partner_id,
+            "inAppAppleStore",
+            "ios_iap",
+            paid_online=True,
+        )
+
+    @classmethod
+    def _create_sale_order(
+        cls,
+        partner,
+        wim_payment_type,
+        online_renewal,
+        invoicing_method="",
+        paid_online=False,
+    ):
+        return cls.env["sale.order"].create(
             {
                 'name': 'TestSO5',
-                'partner_id': cls.user_portal.partner_id.id,
+                'partner_id': partner.id,
                 'order_line': [
                     (
                         0,
                         0,
                         {
-                            'name': cls.product4.name,
-                            'product_id': cls.product4.id,
+                            'name': cls.schweizmobil_plus_product.name,
+                            'product_id': cls.schweizmobil_plus_product.id,
                             'product_uom_qty': 1.0,
-                            'product_uom': cls.product4.uom_id.id,
-                            'price_unit': cls.product4.list_price,
+                            'product_uom': cls.schweizmobil_plus_product.uom_id.id,
+                            'price_unit': cls.schweizmobil_plus_product.list_price,
                         },
                     )
                 ],
-                "online_renewal": "ios_iap",
-                "wim_payment_type": "inAppAppleStore",
+                "online_renewal": online_renewal,
+                "wim_payment_type": wim_payment_type,
+                "invoicing_method": invoicing_method,
+                "paid_online": paid_online,
             }
         )
-        cls.subscription_ios = cls.env["sale.subscription"].browse(
-            cls.sale_order_ios_iap.create_subscriptions()
-        )
+
+    @classmethod
+    def _confirm_get_subscription(self, sale_order):
+        sale_order.action_confirm()
+        return sale_order.order_line.subscription_id
 
     @classmethod
     def _pay_invoice(cls, invoice):
