@@ -1,15 +1,13 @@
 # Copyright 2023 Camptocamp SA
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl)
 from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
-    TestSubscriptionIosIapRenewalCommon,
+    TestSMSubscriptionCommon,
 )
 
 
-class TestSubscriptionIosIapReactivation(TestSubscriptionIosIapRenewalCommon):
+class TestSubscriptionIosIapReactivation(TestSMSubscriptionCommon):
     def test_ios_iap_reactivation(self):
-        subscription = self.sale_order_ios_iap.order_line.subscription_id
-        subscription.set_open()
-        self.sale_order_ios_iap.action_confirm()
+        subscription = self._confirm_get_subscription(self.sale_order_ios_iap)
         actual_renewal_date = subscription.next_online_renewal_date
         self.assertEqual(actual_renewal_date, subscription.next_invoicing_date)
         first_invoice = self.sale_order_ios_iap._create_invoices()
