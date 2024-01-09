@@ -76,6 +76,15 @@
                     </div>
                     <group name="idp_settings">
                         <group string="Identity Provider Settings">
+                            <div>
+                                <field name="idp_metadata_url" />
+                                <button
+                                    type="object"
+                                    string="Refresh"
+                                    name="action_refresh_metadata_from_url"
+                                    attrs="{'invisible': [('idp_metadata_url', '=', False)]}"
+                                />
+                            </div>
                             <label for="idp_metadata" />
                             <div>
                                 <field
