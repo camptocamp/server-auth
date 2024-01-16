@@ -4,6 +4,8 @@ import html
 import os
 from unittest.mock import patch
 
+import responses
+
 from odoo.exceptions import AccessDenied, UserError, ValidationError
 from odoo.tests import HttpCase, tagged
 
@@ -336,3 +338,18 @@ class TestPySaml(HttpCase):
             self.base_url()
             + "/web#action=37&model=ir.module.module&view_type=kanban&menu_id=5",
         )
+
+    @responses.activate
+    def test_download_metadata(self):
+        expected_metadata = self.idp.get_metadata()
+        responses.add(
+            responses.GET,
+            "http://localhost:8000/metadata",
+            status=200,
+            content_type="text/xml",
+            body=expected_metadata,
+        )
+        self.saml_provider.idp_metadata_url = "http://localhost:8000/metadata"
+        self.saml_provider.idp_metadata = ""
+        self.saml_provider.action_refresh_metadata_from_url()
+        self.assertEqual(self.saml_provider.idp_metadata, expected_metadata)
