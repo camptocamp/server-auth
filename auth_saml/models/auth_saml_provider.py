@@ -244,10 +244,19 @@ class AuthSamlProvider(models.Model):
             "cert_file": self._get_cert_key_path("sp_pem_public"),
             "key_file": self._get_cert_key_path("sp_pem_private"),
         }
-        sp_config = Saml2Config()
-        sp_config.load(settings)
-        sp_config.allow_unknown_attributes = True
-        return sp_config
+        try:
+            sp_config = Saml2Config()
+            sp_config.load(settings)
+            sp_config.allow_unknown_attributes = True
+            return sp_config
+        except saml2.SAMLError:
+            if self.env.context.get("saml2_retry_after_refresh_metadata", False):
+                raise
+            # Retry after refresh metadata
+            self.action_refresh_metadata_from_url()
+            return self.with_context(
+                saml2_retry_after_refresh_metatata=1
+            )._get_config_for_provider(base_url)
 
     def _get_client_for_provider(self, base_url: str = None) -> Saml2Client:
         sp_config = self._get_config_for_provider(base_url)
@@ -292,9 +301,8 @@ class AuthSamlProvider(models.Model):
     def _validate_auth_response(self, token: str, base_url: str = None):
         """return the validation data corresponding to the access token"""
         self.ensure_one()
-
-        client = self._get_client_for_provider(base_url)
         try:
+            client = self._get_client_for_provider(base_url)
             response = client.parse_authn_request_response(
                 token,
                 saml2.entity.BINDING_HTTP_POST,
@@ -305,6 +313,7 @@ class AuthSamlProvider(models.Model):
             if self.idp_metadata_url:
                 self.action_refresh_metadata_from_url()
                 # retry: if it fails again, we let the exception flow
+                client = self._get_client_for_provider(base_url)
                 response = client.parse_authn_request_response(
                     token,
                     saml2.entity.BINDING_HTTP_POST,
