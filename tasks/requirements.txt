@@ -1,0 +1,24 @@
+cookiecutter==2.1.1
+future==0.16.0
+
+invoke==1.1.1
+
+PyYAML==5.4.1
+kaptan==0.5.12
+ruamel.yaml>=0.15.66
+
+requests
+gnupg==2.3.1
+psycopg2-binary>=2.7.6
+python-dateutil==2.7.3
+git-aggregator >= 1.7.2
+
+git-autoshare >= 1.0.0b2
+passlib
+
+clipboard==0.0.4
+
+marabunta >= 0.9.0
+
+gitpython >= 3.1.11
+pre-commit

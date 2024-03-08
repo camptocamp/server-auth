@@ -1,0 +1,41 @@
+migration:
+  versions:
+    - version: setup
+      operations:
+        pre:
+          - odoo -i base --stop-after-init --workers=0 --no-xmlrpc
+          - anthem songs.install.pre::main
+        post:
+          ## PLATFORM
+          - anthem odoo.addons.cloud_platform.songs::install
+          #- anthem songs.install.accounting::main
+          #- anthem songs.install.logistics::main
+          - anthem songs.install.data_all::main
+      modes:
+        full:
+          operations:
+            post:
+              - anthem songs.install.data_full::main
+              #### import heavy stuff
+              #- importer.sh songs.install.inventory::setup_locations /odoo/data/install/stock.location.csv
+              #- anthem songs.install.inventory::location_compute_parents
+        sample:
+          operations:
+            post:
+              - anthem songs.sample.data_sample::main
+      addons:
+        upgrade:
+          ## PLATFORM
+          - cloud_platform_azure
+          #### local-src
+          - schweizmobil-subs_bundle
+          - schweizmobil-subs_bundle_ee
+    # update step example
+    # - version: 17.0.x.y.z
+    #   addons:
+    #     upgrade:
+    #       - foo_module
+    #       - baz_module
+    #   operations:
+    #     post:
+    #       - anthem songs.updates.update_10_0_x_y_z::main

@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+*/__pycache__/*
+*.py[cod]
+
+# Translations
+*.mo
+
+# undo and swp files
+*.un~*
+*.sw?
+
+# backup files
+*.~*
+
+# project specific
+rancher/*/rancher.env
+
+# local dev requirements
+odoo/dev_requirements.txt
+
+# local dev composition
+docker-compose.override*
+
+# ensure we commit no dump to github
+*.pg
+*.pg.gpg
+*.dump
+
+# local dev python version for pyenv
+.python-version

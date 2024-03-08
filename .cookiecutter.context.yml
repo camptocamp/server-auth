@@ -1,0 +1,11 @@
+customer_name: schweizmobil-subs
+odoo_version: '17.0'
+customer_shortname: schweizmobil-subs
+repo_name: schweizmobil-subs_odoo
+project_id: '21078'
+project_name: schweizmobil-subs_odoo
+odoo_company_name: Schweiz Mobil Subscriptions
+country: ch
+odoo_main_lang: fr_FR
+odoo_aux_langs: fr_CH;it_IT;en_US
+platform_name: azure

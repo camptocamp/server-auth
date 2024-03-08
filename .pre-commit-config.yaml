@@ -1,0 +1,80 @@
+default_language_version:
+  # pylint-odoo does not (yet) support Python 3.10.
+  python: python3.9
+
+repos:
+
+# black
+- repo: https://github.com/ambv/black
+  rev: 23.1.0
+  hooks:
+  - id: black
+    language_version: python3.9
+    exclude: __openerp__.py|__manifest__.py|odoo/external-src/
+
+# pylint
+- repo: https://github.com/pycqa/pylint
+  rev: v3.0.1
+  hooks:
+  - id: pylint
+    name: pylint odoo
+    # check only specific Odoo addons
+    files: odoo/local-src/
+    types: ['file', 'python']   # to not check .csv and .conf files
+    args: ["--rcfile=travis/pylintrc_odoo"]
+    additional_dependencies: [pylint-odoo==v9.0.5]
+  - id: pylint
+    name: pylint misc
+    # check all Python code excepting Odoo addons
+    exclude: odoo/local-src/|odoo/external-src/
+    args: ["--rcfile=travis/pylintrc"]
+
+# yaml, flake8...
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-yaml
+    files: odoo/migration.yml|odoo/pending-merges.yaml
+  - id: debug-statements
+    exclude: odoo/external-src/
+
+- repo: https://github.com/pycqa/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+    name: flake8 except __init__.py
+    args: [--exclude=__init__.py]
+    exclude: odoo/external-src/
+  - id: flake8
+    name: flake8 only __init__.py
+    args: [--ignore=F401]  # ignore imported unused in __init__.py
+    files: __init__.py
+    exclude: odoo/external-src/
+
+# pyupgrade
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.3.1
+  hooks:
+  - id: pyupgrade
+    exclude: odoo/external-src/
+
+# isort
+- repo: https://github.com/PyCQA/isort
+  rev: 5.12.0
+  hooks:
+  - id: isort
+    exclude: __init__.py|odoo/external-src/
+
+# local
+# This hook ensures that our exclude list is still in sync with
+# the addons we don't want to check (uninstalled addons).
+# If this issue gets some support, we should replace it by a dynamic exclude list:
+# https://github.com/pre-commit/pre-commit/issues/1035
+# (Jira card for the follow-up https://jira.camptocamp.com/browse/BSRD-257)
+- repo: local
+  hooks:
+    - id: check_pre_commit_config_exclude
+      name: check_pre_commit_config_exclude
+      entry: ./travis/check_pre_commit_config_exclude.sh
+      language: script
+      files: check_pre_commit_config_exclude.sh

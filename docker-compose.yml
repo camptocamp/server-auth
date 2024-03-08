@@ -1,0 +1,106 @@
+# Root file for the dev composition.
+#
+# This contains the common configuration for all developers
+#
+# You can create a 'docker-compose.override.yml' to customize it according
+# to your needs it will automatically be applied on top of this
+# file when the option '-f' of docker-compose is not used
+
+version: '2'
+services:
+  odoo:
+    build: ./odoo/
+    depends_on:
+      - db
+      - kwkhtmltopdf
+    tty: true
+    stdin_open: true
+    ports:
+      - 8069
+      - 8072
+    volumes:
+      - "data-odoo:/data/odoo"
+      - "data-odoo-db-cache:/.cachedb"
+      - "data-odoo-pytest-cache:/odoo/.cache"
+      - "./odoo/src:/odoo/src"
+      - "./odoo/local-src:/odoo/local-src"
+      - "./odoo/external-src:/odoo/external-src"
+      - "./odoo/songs:/odoo/songs"
+      - "./odoo/migration.yml:/odoo/migration.yml"
+      - "./odoo/data:/odoo/data"
+    environment:
+      DB_USER: odoo
+      DB_PASSWORD: odoo
+      DB_NAME: odoodb
+      ADMIN_PASSWD: mijaebohb8Thae1g
+      RUNNING_ENV: dev
+      PYTHONDONTWRITEBYTECODE: 1
+      # Enable if you use oca/connector:
+      # ODOO_QUEUE_JOB_CHANNELS: root:4
+      MARABUNTA_MODE: sample  # could be 'full' for the db with all the data
+      MARABUNTA_ALLOW_SERIE: 'True'  # should not be set in production
+      SERVER_WIDE_MODULES: web
+      ODOO_REPORT_URL: http://odoo:8069
+      KWKHTMLTOPDF_SERVER_URL: http://kwkhtmltopdf:8080
+
+  kwkhtmltopdf:
+    image: acsone/kwkhtmltopdf:0.12.5-latest
+    ports:
+      - 8080
+
+  db:
+    image: ghcr.io/camptocamp/postgres:12-postgis3
+    command: -c shared_buffers=256MB -c maintenance_work_mem=256MB -c wal_buffers=8MB -c effective_cache_size=1024MB
+    ports:
+      - 5432
+    environment:
+      POSTGRES_INITDB_ARGS: --encoding=UTF-8 --lc-collate=C --lc-ctype=C
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - "data-db:/var/lib/postgresql/data"
+## Migration placeholder [db_options]
+
+## Migration placeholder [migrate_db_service]
+
+  nginx:
+    image: camptocamp/odoo-nginx:1.8.3
+    depends_on:
+      - odoo
+    ports:
+      - 80:80
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+
+  mailcatcher:
+    image: estelora/mailcatcher-imap
+    environment:
+      MAILCATCHER_USERNAME: mailcatcher
+      MAILCATCHER_PASSWORD: mailcatcher
+    ports:
+      - 1080:80
+      - 993:993
+      - "1025:25"
+
+## If you need a CUPS server for `base_report_to_printer`
+## See `cups-test-server/README.md`.
+  # cups-server:
+  #   build: ./cups-test-server/
+  #   ports:
+  #     - "6631:631"
+  #   expose:
+  #     - 631
+  #   volumes:
+  #     - "/tmp/cups-pdf:/var/spool/cups-pdf:rw"
+  #   environment:
+  #     CUPS_USER_ADMIN: admin
+  #     CUPS_USER_PASSWORD: secr3t
+
+volumes:
+  data-odoo:
+  data-db:
+  data-odoo-db-cache:
+  data-odoo-pytest-cache:

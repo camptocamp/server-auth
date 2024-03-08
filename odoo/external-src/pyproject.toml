@@ -1,0 +1,3 @@
+# Block `black` inheritance of project settings.
+# By default `black` will lookup for this file in parent folders:
+# if you have submodules using black, you'll get weird results without this file.
