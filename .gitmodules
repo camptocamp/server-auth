@@ -167,10 +167,10 @@
 	path = odoo/external-src/server-env
 	url = git@github.com:OCA/server-env.git
 	branch = 17.0
-;[submodule "odoo/external-src/server-tools"]
-;	path = odoo/external-src/server-tools
-;	url = git@github.com:OCA/server-tools.git
-;	branch = 17.0
+[submodule "odoo/external-src/server-tools"]
+	path = odoo/external-src/server-tools
+	url = git@github.com:OCA/server-tools.git
+	branch = 17.0
 [submodule "odoo/external-src/server-ux"]
 	path = odoo/external-src/server-ux
 	url = git@github.com:OCA/server-ux.git
