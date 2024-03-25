@@ -68,8 +68,8 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/server-env, \
   /odoo/external-src/server-ux, \
   /odoo/external-src/web, \
-/odoo/external-src/odoo-cloud-platform, \
-/odoo/local-src" \
+  /odoo/external-src/odoo-cloud-platform, \
+  /odoo/local-src" \
   LIMIT_TIME_CPU=86400 \
   LIMIT_TIME_REAL=86400 \
   LIMIT_MEMORY_SOFT=1342177280 \
