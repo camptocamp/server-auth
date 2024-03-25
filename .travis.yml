@@ -77,8 +77,6 @@ script:
   # This will force a complete build when odoo/VERSION has been edited and doesn't
   # match a cached database dump because such dump has not been created yet.
   - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE run --rm -e MARABUNTA_MODE=sample -e MARABUNTA_ALLOW_SERIE=True -e CREATE_DB_CACHE=${CREATE_DB_CACHE} -e MIG_LOAD_VERSION_CEIL=${TRAVIS_TAG} odoo runmigration ; fi
-  # run the database migration
-  - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE run --rm -e MARABUNTA_MODE=sample -e CREATE_DB_CACHE=${CREATE_DB_CACHE} -e MIG_LOAD_VERSION_CEIL=${TRAVIS_TAG} migrate-db migrate-db ; fi
 
 after_success:
   - if [ "$TESTS" == "1" ] ; then ./travis/publish.sh ; fi
