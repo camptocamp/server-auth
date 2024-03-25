@@ -41,6 +41,10 @@ RUN chmod +x /before-migrate-entrypoint.d/* \
 # `parallel` + `importer.sh` are needed to load heavy files
 COPY ./bin/importer.sh /odoo-bin/
 
+
+COPY ./bin/make-db-snapshot /odoo-bin/
+COPY ./bin/migrate-* /odoo-bin/
+
 ## Prepare pip install
 # frequency: never
 # cost     : very light
