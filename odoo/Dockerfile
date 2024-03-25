@@ -1,4 +1,4 @@
-FROM ghcr.io/camptocamp/odoo-project:17.0-4.5.8
+FROM ghcr.io/camptocamp/odoo-project:17.0-4.5.8 AS odoo-image
 LABEL maintainer="Camptocamp"
 LABEL org.opencontainers.image.source https://github.com/camptocamp/schweizmobil-subs_odoo
 
@@ -76,4 +76,18 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   LIMIT_MEMORY_HARD=1610612736 \
   ODOO_DATA_PATH=/odoo/data
 
-## Migration placeholder [migrate-db]
+# Specific database migration image
+FROM odoo-image AS migrate-db-image
+
+COPY ./bin/make-db-snapshot /odoo-bin/
+COPY ./bin/migrate-db /odoo-bin/
+COPY ./bin/migrate-db-cleanup /odoo-bin/
+COPY ./bin/migrate-db-core /odoo-bin/
+COPY ./bin/migrate-db-external /odoo-bin/
+COPY ./bin/migrate-db-local /odoo-bin/
+
+RUN set -x; pip install -r /odoo/songs/migration_db/requirements.txt
+
+ENV ADDONS_PATH="$ADDONS_PATH, /odoo/external-src/server-tools"
+
+CMD ["migrate-db"]

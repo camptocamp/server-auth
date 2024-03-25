@@ -6,10 +6,12 @@
 # to your needs it will automatically be applied on top of this
 # file when the option '-f' of docker-compose is not used
 
-version: '2'
+version: '3.4'
 services:
-  odoo:
-    build: ./odoo/
+  odoo: &odoo_conf
+    build:
+      context: ./odoo/
+      target: odoo-image
     depends_on:
       - db
       - kwkhtmltopdf
@@ -59,9 +61,16 @@ services:
       POSTGRES_PASSWORD: odoo
     volumes:
       - "data-db:/var/lib/postgresql/data"
-## Migration placeholder [db_options]
+# With migrated database, we need more shared memory on db container
+    shm_size: '1gb'
 
-## Migration placeholder [migrate_db_service]
+# Specific database migration image
+  migrate-db:
+    <<: *odoo_conf
+    build:
+      context: ./odoo/
+      target: migrate-db-image
+    command: migrate-db
 
   nginx:
     image: camptocamp/odoo-nginx:1.8.3

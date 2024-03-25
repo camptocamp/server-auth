@@ -1,0 +1,36 @@
+# This Marabunta migration file aims to provide an upgrade path from a core
+# migrated database (only standard modules upgraded, see 'migration_core.yml'
+# file) to a database migrated with all the external addons used by the
+# instance (OCA, etc).
+# It is used by the 'migrate-db-external' script.
+migration:
+  versions:
+    - version: setup
+      modes:
+        migration:
+          operations:
+            pre:
+              - psql -f odoo/songs/migration_db/songs/generic/disable_addons_upgrade.sql
+              - anthem songs.migration_db.songs.generic::update_available_addons
+              - anthem songs.migration_db.songs.external::pre
+              - psql -f odoo/songs/migration_db/songs/generic/enable_addons_upgrade.sql
+            post:
+              - anthem odoo.addons.cloud_platform.songs::install
+              - anthem songs.migration_db.songs.generic.platform::post
+              - anthem songs.migration_db.songs.external::post
+      addons:
+        # NOTE: you could add only new addons to install here. Addons already
+        # installed in the previous version are already flagged as 'to upgrade'
+        upgrade:
+          #### camptocamp/odoo-cloud-platform
+          - cloud_platform_azure
+          - monitoring_prometheus
+          #### oca/server-tools
+          - database_cleanup  # Used for project migrations
+          #### oca/server-ux
+          - base_technical_features
+          #### oca/server-env
+          - mail_environment
+          - server_environment
+          #### oca/web
+          - web_environment_ribbon

@@ -1,0 +1,24 @@
+# This Marabunta migration file aims to cleanup the database once all
+# other migration steps are done, e.g.:
+#   - uninstall unwanted or not yet migrated addons
+#   - use of 'database_cleanup' OCA addon to clean up the database
+# It is used by the 'migrate-db-cleanup' script.
+migration:
+  versions:
+    - version: setup
+      modes:
+        migration:
+          operations:
+            pre:
+              - psql -f odoo/songs/migration_db/songs/generic/disable_addons_upgrade.sql
+              # Set all addons to uninstall as 'uninstalled'
+              # + clean up metadata related to 'uninstalled' addons
+              - anthem songs.migration_db.songs.generic.uninstall::pre
+              - psql -f odoo/songs/migration_db/songs/generic/pre_clean.sql
+              - anthem songs.migration_db.songs.cleanup::pre
+              - psql -f odoo/songs/migration_db/songs/generic/enable_addons_upgrade.sql
+            post:
+              - anthem songs.migration_db.songs.generic.uninstall::post
+              - anthem songs.migration_db.songs.generic.cleanup::post
+              - anthem songs.migration_db.songs.generic.check_fields::post
+              - anthem songs.migration_db.songs.cleanup::post

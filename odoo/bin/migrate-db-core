@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+export MARABUNTA_MODE=migration
+export MARABUNTA_MIGRATION_FILE="/odoo/songs/migration_db/migration_core.yml"
+export MARABUNTA_DB_HOST=$DB_HOST
+export MARABUNTA_DATABASE=$DB_NAME
+export MARABUNTA_DB_USER=$DB_USER
+export MARABUNTA_DB_PASSWORD=$DB_PASSWORD
+export MARABUNTA_DB_PORT=$DB_PORT
+# Restrict ADDONS_PATH to core+enterprise
+ADDONS_PATH="/odoo/src/addons,/odoo/external-src/enterprise"
+DB_NAME_BACKUP="${DB_NAME}_core"
+
+echo "Starting core migration..."
+
+# Put restricted ADDONS_PATH and server_wide_modules in Odoo configuration file
+cp -a /etc/odoo.cfg /etc/odoo.cfg.bak
+sed -i "s~addons_path.*~addons_path = $ADDONS_PATH~g" /etc/odoo.cfg
+sed -i "s~server_wide_modules.*~server_wide_modules = web~g" /etc/odoo.cfg
+
+wait_postgres.sh
+
+if [ "$( psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" )" != '1' ]
+then
+    echo "You must launch the database migration on the migrated database"
+    exit 1
+fi
+
+echo "Removing 'marabunta_version' table..."
+psql -c "DROP TABLE IF EXISTS marabunta_version;"
+
+echo "Launching before-migrate-entrypoint..."
+run-parts --verbose "/before-migrate-entrypoint.d"
+
+echo "Launching marabunta migration..."
+gosu odoo unbuffer marabunta
+mv -f /etc/odoo.cfg.bak /etc/odoo.cfg   # Restore addons_path
+echo "Core migration finished"
+
+if [[ $MAKE_DB_SNAPSHOT ]]; then
+    make-db-snapshot $DB_NAME $DB_NAME_BACKUP
+fi

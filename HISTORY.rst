@@ -25,4 +25,6 @@ latest (unreleased)
 
 **Build**
 
+* Migration scripts install 2024-03-25
+
 **Documentation**

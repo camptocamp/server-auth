@@ -18,7 +18,7 @@ env:
   matrix:
     - LINT_CHECK="1"
     - TESTS="1"
-## Migration placeholder [env_matrix]
+
   global:
     - DOCKER_COMPOSE_VERSION="1.17.1"
     - ADDONS_DIR="${TRAVIS_BUILD_DIR}/odoo/local-src"
@@ -27,7 +27,7 @@ env:
     - COMPOSE_PROJECT_NAME=schweizmobil-subs
     - GENERATED_IMAGE="${COMPOSE_PROJECT_NAME}_odoo"
     - TRAVIS_COMPOSE="travis/docker-compose.yml"
-## Migration placeholder [env_global]
+    - GENERATED_MIGRATION_DB_IMAGE="${COMPOSE_PROJECT_NAME}_migrate-db"
 
 before_install:
   - git config --global user.name "TravisCI"
@@ -40,7 +40,7 @@ before_install:
   - if [ "$TESTS" == "1" -a "$TRAVIS_PULL_REQUEST" == "false" -a -z "$TRAVIS_TAG" ] ; then export CREATE_DB_CACHE="true" ; fi
   - if [ "$LINT_CHECK" == "1" ] ; then pip3 install -q pre-commit ; fi
   - if [ "$TESTS" == "1" ] ; then pip3 install -q gitpython requests pyOpenSSL ndg-httpsclient pyasn1 pyyaml; fi
-## Migration placeholder [before_install]
+
 
 install:
   - if [ "$TESTS" == "1" ] ; then python3 ./travis/git_submodule_update.py ; fi
@@ -49,7 +49,7 @@ install:
   - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE build --pull ; fi
   - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE up -d db ; fi
   - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE ps ; fi
-## Migration placeholder [install]
+
 
 # We run the tests and migration in the same build, so we can push the docker image
 # after that we validated it has tests and migration passing
@@ -77,8 +77,9 @@ script:
   # This will force a complete build when odoo/VERSION has been edited and doesn't
   # match a cached database dump because such dump has not been created yet.
   - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE run --rm -e MARABUNTA_MODE=sample -e MARABUNTA_ALLOW_SERIE=True -e CREATE_DB_CACHE=${CREATE_DB_CACHE} -e MIG_LOAD_VERSION_CEIL=${TRAVIS_TAG} odoo runmigration ; fi
-## Migration placeholder [script]
+  # run the database migration
+  - if [ "$TESTS" == "1" ] ; then docker-compose -f $TRAVIS_COMPOSE run --rm -e MARABUNTA_MODE=sample -e CREATE_DB_CACHE=${CREATE_DB_CACHE} -e MIG_LOAD_VERSION_CEIL=${TRAVIS_TAG} migrate-db migrate-db ; fi
 
 after_success:
   - if [ "$TESTS" == "1" ] ; then ./travis/publish.sh ; fi
-## Migration placeholder [after_success]
+  - if [ "$TESTS" == "1" ] ; then ./travis/publish-migrate-db.sh ; fi

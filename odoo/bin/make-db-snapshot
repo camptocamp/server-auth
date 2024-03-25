@@ -1,0 +1,16 @@
+#!/bin/sh
+# This script is used to create a backup template of a database
+
+# Usage: make-db-snapshot db_name db_name_backup
+
+set -e
+
+DB_NAME=$1
+DB_NAME_BACKUP=$2
+
+echo "Creating database snapshot '$DB_NAME_BACKUP'..."
+if [ "$( psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME_BACKUP'" )" = '1' ]
+then
+    dropdb $DB_NAME_BACKUP
+fi
+createdb $DB_NAME_BACKUP -T $DB_NAME

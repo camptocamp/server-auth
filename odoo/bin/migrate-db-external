@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+export MARABUNTA_MODE=migration
+export MARABUNTA_MIGRATION_FILE="/odoo/songs/migration_db/migration_external.yml"
+export MARABUNTA_DB_HOST=$DB_HOST
+export MARABUNTA_DATABASE=$DB_NAME
+export MARABUNTA_DB_USER=$DB_USER
+export MARABUNTA_DB_PASSWORD=$DB_PASSWORD
+export MARABUNTA_DB_PORT=$DB_PORT
+# Remove local addons from ADDONS_PATH to upgrade only external ones
+ADDONS_PATH_TO_REMOVE=("/odoo/local-src")
+for addons_path in ${ADDONS_PATH_TO_REMOVE[@]}
+do
+    ADDONS_PATH=("${ADDONS_PATH[@]/$addons_path}")
+done
+ADDONS_PATH=$(IFS=, ; echo "${ADDONS_PATH[*]}")
+DB_NAME_BACKUP="${DB_NAME}_external"
+
+echo "Starting external migration..."
+
+# Put restricted ADDONS_PATH in Odoo configuration file
+cp -a /etc/odoo.cfg /etc/odoo.cfg.bak
+sed -i "s~addons_path.*~addons_path = $ADDONS_PATH~g" /etc/odoo.cfg
+
+wait_postgres.sh
+
+echo "Removing 'marabunta_version' table..."
+psql -c "DROP TABLE IF EXISTS marabunta_version;"
+
+echo "Launching marabunta migration..."
+gosu odoo unbuffer marabunta
+mv -f /etc/odoo.cfg.bak /etc/odoo.cfg   # Restore addons_path
+echo "External migration finished"
+
+if [[ $MAKE_DB_SNAPSHOT ]]; then
+    make-db-snapshot $DB_NAME $DB_NAME_BACKUP
+fi

@@ -1,0 +1,27 @@
+# This Marabunta migration file will replay an upgrade for all standard and
+# enterprise addons installed in a migrated database (by Odoo S.A. upgrade
+# service) to ensure everything is working well.
+# This database is also called 'naked database', meaning that no other addons
+# excepting standard+enterprise ones are installed.
+# It is used by the 'migrate-db-core' script.
+migration:
+  versions:
+    - version: setup
+      modes:
+        migration:
+          operations:
+            pre:
+              - psql -f odoo/songs/migration_db/songs/generic/disable_addons_upgrade.sql
+              - psql -f odoo/songs/migration_db/songs/generic/prepare_views_for_upgrade.sql
+              - psql -f odoo/songs/migration_db/songs/generic/core_pre.sql
+              - anthem songs.install.pre::main  # if migration fails may be comment this songs (and fix it later if it's possible)
+              - anthem songs.migration_db.songs.generic.core::pre
+              - anthem songs.migration_db.songs.generic.check_fields::pre
+              - anthem songs.migration_db.songs.core::pre
+              - psql -f odoo/songs/migration_db/songs/generic/pre_clean.sql
+              - psql -f odoo/songs/migration_db/songs/generic/enable_addons_upgrade.sql
+            post:
+              - anthem songs.migration_db.songs.core::post
+      addons:
+        upgrade:
+          - base

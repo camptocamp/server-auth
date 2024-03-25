@@ -2,10 +2,12 @@
 # docker-compose.override.yml is automatically used by docker-compose when no
 # option -f is provided
 
-version: '2'
+version: '3.4'
 services:
-  odoo:
-    build: ../odoo/
+  odoo: &odoo_conf
+    build:
+      context: ../odoo/
+      target: odoo-image
     depends_on:
       - db
     volumes:
@@ -29,7 +31,13 @@ services:
     volumes:
       - "data-db:/var/lib/postgresql/data"
 
-## Migration placeholder [migrate_db_service]
+# Specific database migration image
+  migrate-db:
+    <<: *odoo_conf
+    build:
+      context: ../odoo/
+      target: migrate-db-image
+    command: migrate-db
 
 volumes:
   data-odoo:

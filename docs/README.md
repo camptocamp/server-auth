@@ -14,7 +14,7 @@
 * [Using automated tasks with Invoke](./invoke.md)
 * [Odoo Cloud Platform](https://confluence.camptocamp.com/confluence/display/BS/Odoo+Cloud+Platform+-+Technical)
 * [pre-commit installation](./pre-commit.md)
-## Migration placeholder [guides]
+* [Migration project](./migration-project.md)
 
 ## How-to
 

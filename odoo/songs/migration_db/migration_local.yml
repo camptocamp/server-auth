@@ -1,0 +1,27 @@
+# This Marabunta migration file aims to provide an upgrade path from an
+# 'external' migrated database (standard modules + external ones upgraded,
+# see 'migration_external.yml' file) to a database migrated with all the local
+# addons used by the instance (specific ones).
+# It is used by the 'migrate-db-local' script.
+migration:
+  versions:
+    - version: setup
+      modes:
+        migration:
+          operations:
+            pre:
+              - psql -f odoo/songs/migration_db/songs/generic/disable_addons_upgrade.sql
+              - anthem songs.migration_db.songs.generic::update_available_addons
+              - anthem songs.migration_db.songs.local::pre
+              - psql -f odoo/songs/migration_db/songs/generic/enable_addons_upgrade.sql
+            post:
+              - anthem songs.migration_db.songs.local::post
+              - psql -f odoo/songs/migration_db/songs/generic/enable_views_after_upgrade.sql
+      addons:
+        # NOTE: you could add only new addons to install here. Addons already
+        # installed in the previous version are already flagged as 'to upgrade'
+        upgrade:
+          # Ensure this module gets installed for next DB migrations
+          - camptocamp_migration_tools
+          #### local-src
+          # - my_custom_module

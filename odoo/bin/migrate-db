@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+migrate-db-core
+migrate-db-external
+migrate-db-local
+migrate-db-cleanup
