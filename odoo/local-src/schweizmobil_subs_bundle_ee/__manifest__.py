@@ -9,6 +9,9 @@
     'website': 'http://www.camptocamp.com',
     'depends': [
         # enterprise
+        'account_bank_statement_import_camt',
+        'account_followup',
+        'sale_subscription',
     ],
     'installable': True,
     'auto_install': False,

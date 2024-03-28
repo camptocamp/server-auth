@@ -28,7 +28,7 @@ migration:
           ## PLATFORM
           - cloud_platform_azure
           #### local-src
-          - schweizmobil-subs_bundle
-          - schweizmobil-subs_bundle_ee
+          - schweizmobil_subs_bundle
+          - schweizmobil_subs_bundle_ee
     - version: 17.0.0.1.0
     - version: 17.0.0.1.1

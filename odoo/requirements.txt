@@ -20,3 +20,6 @@ openupgradelib==3.6.0
 ## Migration placeholder [import]
 
 ## custom
+
+## oca/connector
+cachetools==5.3.3

@@ -69,6 +69,10 @@ RUN cd /odoo && pip install -r src_requirements.txt
 # cost:      very light
 ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/enterprise, \
+  /odoo/external-src/connector, \
+  /odoo/external-src/bank-payment, \
+  /odoo/external-src/partner-contact, \
+  /odoo/external-src/sale-workflow, \
   /odoo/external-src/server-env, \
   /odoo/external-src/server-ux, \
   /odoo/external-src/server-tools, \
