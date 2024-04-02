@@ -34,3 +34,5 @@ migration:
           - server_environment
           #### oca/web
           - web_environment_ribbon
+          #### oca/queue
+          - queue_job

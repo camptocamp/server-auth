@@ -17,6 +17,8 @@
         'base_technical_features',
         # oca/web
         'web_environment_ribbon',
+        # oca/queue
+        'queue_job',
         # local-src
     ],
     'installable': True,
