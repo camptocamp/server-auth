@@ -14,7 +14,7 @@ migration:
               - psql -f odoo/songs/migration_db/songs/generic/disable_addons_upgrade.sql
               - psql -f odoo/songs/migration_db/songs/generic/prepare_views_for_upgrade.sql
               - psql -f odoo/songs/migration_db/songs/generic/core_pre.sql
-              - anthem songs.install.pre::main  # if migration fails may be comment this songs (and fix it later if it's possible)
+              # - anthem songs.install.pre::main  # if migration fails may be comment this songs (and fix it later if it's possible)
               - anthem songs.migration_db.songs.generic.core::pre
               - anthem songs.migration_db.songs.generic.check_fields::pre
               - anthem songs.migration_db.songs.core::pre

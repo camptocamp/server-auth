@@ -24,4 +24,5 @@ migration:
           # Ensure this module gets installed for next DB migrations
           - camptocamp_migration_tools
           #### local-src
-          # - my_custom_module
+          - schweizmobil_subs_bundle
+          - schweizmobil_subs_bundle_ee

@@ -10,15 +10,14 @@ import anthem
 # NOTE: this is an example, to uncomment/update
 # from ..contrib.bi_sql_view import pre as pre_bi_sql_view
 # from .my_addon import post as post_my_addon
+from .post import post as post_cleanup
 
 
 @anthem.log
 def pre(ctx):
-    # pre_bi_sql_view(ctx)
     pass
 
 
 @anthem.log
 def post(ctx):
-    # post_my_addon(ctx)
-    pass
+    post_cleanup(ctx)

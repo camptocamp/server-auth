@@ -25,7 +25,6 @@ docker-compose.override*
 *.pg
 *.pg.gpg
 *.dump
-*.sql
 
 # local dev python version for pyenv
 .python-version

@@ -46,7 +46,10 @@ def uninstall_modules(ctx):
                     )
                     continue
                 ctx.log_line("%s Try to uninstall module: %s" % params)
-                module.button_immediate_uninstall()
+                try:
+                    module.button_immediate_uninstall()
+                except Exception as exc:
+                    ctx.log_line(exc)
     else:
         ctx.log_line("No modules to uninstall")
 

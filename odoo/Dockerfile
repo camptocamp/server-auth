@@ -71,6 +71,7 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/enterprise, \
   /odoo/external-src/server-env, \
   /odoo/external-src/server-ux, \
+  /odoo/external-src/server-tools, \
   /odoo/external-src/web, \
   /odoo/external-src/odoo-cloud-platform, \
   /odoo/local-src" \

@@ -15,7 +15,7 @@ azure-storage-blob==12.16.0
 azure-identity==1.13.0
 
 ## data_model/modules changes
-openupgradelib==3.4.0
+openupgradelib==3.6.0
 
 ## Migration placeholder [import]
 
