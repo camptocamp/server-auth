@@ -28,7 +28,7 @@ latest (unreleased)
 **Documentation**
 
 
-17.0.0.1.0 (2024-04-02)
+17.0.0.1.1 (2024-04-03)
 +++++++++++++++++++++++
 
 **Features and Improvements**
@@ -42,3 +42,9 @@ latest (unreleased)
 * Migration scripts install 2024-03-25
 
 **Documentation**
+
+
+17.0.0.1.0 (2024-04-02)
++++++++++++++++++++++++
+
+** YANKED **
