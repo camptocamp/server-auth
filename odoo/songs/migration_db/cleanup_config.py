@@ -41,12 +41,6 @@ UNINSTALL_MODULES_LIST = [
     'connector',
     'component',
     'component_event',
-    # OCA/odoo-cloud-platform
-    'monitoring_status',
-    'session_redis',
-    'cloud_platform',
-    'attachment_azure',
-    'base_attachment_object_storage',
     # OCA/partner-contact
     'partner_firstname',
     # OCA/queue
@@ -57,12 +51,9 @@ UNINSTALL_MODULES_LIST = [
     'base_rest',
     # OCA/server-auth
     'auth_api_key',
-    # OCA/server-env
-    'server_environment_ir_config_parameter',
     # OCA/l10n-switzerland
     'l10n_ch_qr_no_amount',
     # local-src
-    'camptocamp_tools',
     'sale_subscription_invoice_cancel',
     'schweizmobil_account',
     'schweizmobil_account_bank_statement_import',

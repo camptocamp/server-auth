@@ -19,7 +19,17 @@
         'web_environment_ribbon',
         # oca/queue
         'queue_job',
+        # oca/server-tools
+        'database_cleanup',
+        # camptocamp/odoo-cloud-platform
+        'attachment_azure',
+        'monitoring_status',
+        'monitoring_prometheus',
+        'session_redis',
+        'base_attachment_object_storage',
+        'logging_json',
         # local-src
+        'camptocamp_tools',
     ],
     'installable': True,
     'auto_install': False,
