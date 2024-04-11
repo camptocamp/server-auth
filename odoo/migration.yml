@@ -32,3 +32,6 @@ migration:
           - schweizmobil_subs_bundle_ee
     - version: 17.0.0.1.0
     - version: 17.0.0.1.1
+      addons:
+        upgrade:
+          - schweizmobil_subs_bundle_ee

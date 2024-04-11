@@ -18,11 +18,11 @@ UNINSTALL_MODULES_LIST = [
     # ===> Specific modules not migrated yet, but we don't know if we want
     # odoo-enterprise-addons
     'sale_subscription_date_extension',
-    'sale_subscription_closing_delay',
     'sale_subscription_recurring_next_date_advance',
     'sale_subscription_coupon',
-    'sale_subscription_to_close',
-    'sale_subscription_to_close_next_date_advance',
+    # OCA/sale-workflow
+    'sale_automatic_workflow',
+    'sale_automatic_workflow_payment_mode',
     # OCA/account-reconcile
     'account_reconcile_model_strict_match_amount',  # not needed anymore, default behavior now
     # OCA/account-financial-tools

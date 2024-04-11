@@ -78,6 +78,8 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/server-tools, \
   /odoo/external-src/queue, \
   /odoo/external-src/web, \
+  /odoo/external-src/queue, \
+  /odoo/external-src/odoo-enterprise-addons, \
   /odoo/external-src/odoo-cloud-platform, \
   /odoo/local-src" \
   LIMIT_TIME_CPU=86400 \
