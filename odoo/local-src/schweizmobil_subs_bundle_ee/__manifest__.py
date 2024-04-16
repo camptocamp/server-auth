@@ -12,7 +12,7 @@
         'account_bank_statement_import_camt',
         'account_followup',
         'sale_subscription',
-        # external-src/odoo-enterprise-addons
+        # camptocamp/odoo-enterprise-addons
         'sale_subscription_to_close',
         'sale_subscription_closing_delay',
         'sale_subscription_invoice_cancel',
