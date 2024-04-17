@@ -143,10 +143,10 @@
 ;	path = odoo/external-src/report-print-send
 ;	url = git@github.com:OCA/report-print-send.git
 ;	branch = 17.0
-;[submodule "odoo/external-src/reporting-engine"]
-;	path = odoo/external-src/reporting-engine
-;	url = git@github.com:OCA/reporting-engine.git
-;	branch = 17.0
+[submodule "odoo/external-src/reporting-engine"]
+	path = odoo/external-src/reporting-engine
+	url = git@github.com:camptocamp/reporting-engine.git
+	branch = 17.0
 [submodule "odoo/external-src/sale-workflow"]
 	path = odoo/external-src/sale-workflow
 	url = git@github.com:camptocamp/sale-workflow.git

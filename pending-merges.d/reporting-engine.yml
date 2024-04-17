@@ -1,0 +1,10 @@
+../odoo/external-src/reporting-engine:
+  remotes:
+    camptocamp: git@github.com:camptocamp/reporting-engine.git
+    OCA: git@github.com:OCA/reporting-engine.git
+  target: camptocamp merge-branch-21078-17.0
+  merges:
+  - OCA 17.0
+  # [17.0][MIG] report_wkhtmltopdf_param: Migration to 17.0
+  #   https://github.com/OCA/reporting-engine/pull/861
+  - OCA refs/pull/861/head
