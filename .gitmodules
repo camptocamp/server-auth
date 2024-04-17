@@ -215,10 +215,6 @@
 	path = odoo/external-src/queue
 	url = git@github.com:OCA/queue.git
 	branch = 17.0
-;[submodule "odoo/external-src/connector"]
-;	path = odoo/external-src/connector
-;	url = git@github.com:OCA/connector.git
-;	branch = 17.0
 [submodule "odoo/external-src/connector"]
 	path = odoo/external-src/connector
 	url = git@github.com:OCA/connector.git

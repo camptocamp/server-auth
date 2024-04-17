@@ -39,6 +39,10 @@
         # oca/queue
         'queue_job',
         'queue_job_cron',
+        # oca/connector
+        'connector',
+        'component',
+        'component_event',
         # oca/server-tools
         'database_cleanup',
         # camptocamp/odoo-cloud-platform
