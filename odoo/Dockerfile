@@ -74,6 +74,7 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/partner-contact, \
   /odoo/external-src/rest-framework, \
   /odoo/external-src/sale-workflow, \
+  /odoo/external-src/server-auth, \
   /odoo/external-src/server-env, \
   /odoo/external-src/server-ux, \
   /odoo/external-src/server-tools, \

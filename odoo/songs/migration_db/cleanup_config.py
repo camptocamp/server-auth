@@ -32,8 +32,6 @@ UNINSTALL_MODULES_LIST = [
     'account_bank_statement_import_oca_camt54',
     # OCA/reporting-engine
     'report_wkhtmltopdf_param',
-    # OCA/server-auth
-    'auth_api_key',
     # OCA/l10n-switzerland
     'l10n_ch_qr_no_amount',
     # local-src
