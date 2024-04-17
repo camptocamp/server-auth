@@ -38,6 +38,7 @@
         'web_environment_ribbon',
         # oca/queue
         'queue_job',
+        'queue_job_cron',
         # oca/server-tools
         'database_cleanup',
         # camptocamp/odoo-cloud-platform
