@@ -236,6 +236,12 @@
 ;	url = git@github.com:OCA/connector-interfaces.git
 ;	branch = 17.0
 
+; REST
+[submodule "odoo/external-src/rest-framework"]
+	path = odoo/external-src/rest-framework
+	url = git@github.com:OCA/rest-framework.git
+	branch = 17.0
+
 ; Odoo themes
 ;[submodule "odoo/external-src/design-themes"]
 ;	path = odoo/external-src/design-themes
