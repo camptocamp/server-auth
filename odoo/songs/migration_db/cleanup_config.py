@@ -20,9 +20,6 @@ UNINSTALL_MODULES_LIST = [
     'sale_subscription_date_extension',  # Not needed anymore
     'sale_subscription_recurring_next_date_advance',  # Not needed anymore
     'sale_subscription_coupon',  # Not needed anymore
-    # OCA/sale-workflow
-    'sale_automatic_workflow',
-    'sale_automatic_workflow_payment_mode',
     # OCA/account-reconcile
     'account_reconcile_model_strict_match_amount',  # not needed anymore, default behavior now
     # OCA/account-financial-tools

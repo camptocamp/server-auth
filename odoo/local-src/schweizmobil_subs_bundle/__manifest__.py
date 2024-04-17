@@ -43,6 +43,9 @@
         'connector',
         'component',
         'component_event',
+        # oca/sale-workflow
+        'sale_automatic_workflow',
+        'sale_automatic_workflow_payment_mode',
         # oca/server-tools
         'database_cleanup',
         # camptocamp/odoo-cloud-platform
