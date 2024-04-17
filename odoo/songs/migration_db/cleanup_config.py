@@ -23,28 +23,13 @@ UNINSTALL_MODULES_LIST = [
     'sale_subscription_coupon',
     'sale_subscription_to_close',
     'sale_subscription_to_close_next_date_advance',
-    # OCA/sale-workflow
-    'sale_automatic_workflow',
-    'sale_automatic_workflow_payment_mode',
     # OCA/account-reconcile
-    'account_reconcile_model_strict_match_amount',
+    'account_reconcile_model_strict_match_amount',  # not needed anymore, default behavior now
     # OCA/account-financial-tools
     'account_chart_update',
     # OCA/bank-statement-import
     'account_bank_statement_import_camt_oca',
     'account_bank_statement_import_oca_camt54',
-    # OCA/bank-payment
-    'account_payment_sale',
-    'account_payment_mode',
-    'account_payment_partner',
-    # OCA/connector
-    'connector',
-    'component',
-    'component_event',
-    # OCA/partner-contact
-    'partner_firstname',
-    # OCA/queue
-    'queue_job_cron',
     # OCA/reporting-engine
     'report_wkhtmltopdf_param',
     # OCA/rest-framework

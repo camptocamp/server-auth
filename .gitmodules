@@ -51,10 +51,10 @@
 ;	path = odoo/external-src/account-reconcile
 ;	url = git@github.com:OCA/account-reconcile.git
 ;	branch = 17.0
-;[submodule "odoo/external-src/bank-payment"]
-;	path = odoo/external-src/bank-payment
-;	url = git@github.com:OCA/bank-payment.git
-;	branch = 17.0
+[submodule "odoo/external-src/bank-payment"]
+	path = odoo/external-src/bank-payment
+	url = git@github.com:OCA/bank-payment.git
+	branch = 17.0
 ;[submodule "odoo/external-src/bank-statement-import"]
 ;	path = odoo/external-src/bank-statement-import
 ;	url = git@github.com:OCA/bank-statement-import.git
@@ -111,10 +111,10 @@
 ;	path = odoo/external-src/mis-builder
 ;	url = git@github.com:OCA/mis-builder.git
 ;	branch = 17.0
-;[submodule "odoo/external-src/partner-contact"]
-;	path = odoo/external-src/partner-contact
-;	url = git@github.com:OCA/partner-contact.git
-;	branch = 17.0
+[submodule "odoo/external-src/partner-contact"]
+	path = odoo/external-src/partner-contact
+	url = git@github.com:OCA/partner-contact.git
+	branch = 17.0
 ;[submodule "odoo/external-src/pos"]
 ;	path = odoo/external-src/pos
 ;	url = git@github.com:OCA/pos.git
@@ -147,10 +147,10 @@
 ;	path = odoo/external-src/reporting-engine
 ;	url = git@github.com:OCA/reporting-engine.git
 ;	branch = 17.0
-;[submodule "odoo/external-src/sale-workflow"]
-;	path = odoo/external-src/sale-workflow
-;	url = git@github.com:OCA/sale-workflow.git
-;	branch = 17.0
+[submodule "odoo/external-src/sale-workflow"]
+	path = odoo/external-src/sale-workflow
+	url = git@github.com:camptocamp/sale-workflow.git
+	branch = 17.0
 ;[submodule "odoo/external-src/server-auth"]
 ;	path = odoo/external-src/server-auth
 ;	url = git@github.com:OCA/server-auth.git
@@ -219,6 +219,10 @@
 ;	path = odoo/external-src/connector
 ;	url = git@github.com:OCA/connector.git
 ;	branch = 17.0
+[submodule "odoo/external-src/connector"]
+	path = odoo/external-src/connector
+	url = git@github.com:OCA/connector.git
+	branch = 17.0
 ;[submodule "odoo/external-src/connector-ecommerce"]
 ;	path = odoo/external-src/connector-ecommerce
 ;	url = git@github.com:OCA/connector-ecommerce.git

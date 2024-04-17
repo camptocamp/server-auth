@@ -9,12 +9,31 @@
     'website': 'http://www.camptocamp.com',
     'depends': [
         # odoo
+        'contacts',
+        'l10n_ch',
+        'sale_loyalty',
+        # oca/bank-payment,
+        'account_payment_mode',
+        'account_payment_partner',
+        'account_payment_sale',
+        # oca/connector
+        'component',
+        'component_event',
+        'connector',
+        # oca/partner-contact
+        'partner_firstname',
+        # oca/sale-workflow
+        'sale_automatic_workflow',
+        'sale_automatic_workflow_payment_mode',
         # oca/server-env
         'mail_environment',
         'server_environment',
         'server_environment_ir_config_parameter',
         # oca/server-ux
         'base_technical_features',
+        # oca/queue
+        'queue_job',
+        'queue_job_cron',
         # oca/web
         'web_environment_ribbon',
         # oca/queue
