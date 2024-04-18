@@ -21,6 +21,11 @@ latest (unreleased)
 
 **Features and Improvements**
 
+* BSSMS-345: Migration Spe - sale_subscription_to_close_next_date_advance
+* BSSMS-347: Migration Spe - sale_subscription_invoice_cancel
+* BSSMS-344: Migration Spe - sale_subscription_to_close
+* BSSMS-343: Migration Spe - sale_subscription_recurring_next_date_advance (replaced by sale_subscription_next_invoice_date_advance)
+
 **Bugfixes**
 
 **Build**

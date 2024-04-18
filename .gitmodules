@@ -13,10 +13,10 @@
 	path = odoo/external-src/odoo-cloud-platform
 	url = git@github.com:camptocamp/odoo-cloud-platform.git
 	branch = 17.0
-;[submodule "odoo/external-src/odoo-enterprise-addons"]
-;	path = odoo/external-src/odoo-enterprise-addons
-;	url = git@github.com:camptocamp/odoo-enterprise-addons.git
-;	branch = 17.0
+[submodule "odoo/external-src/odoo-enterprise-addons"]
+	path = odoo/external-src/odoo-enterprise-addons
+	url = git@github.com:camptocamp/odoo-enterprise-addons.git
+	branch = 17.0
 ; Enterprise
 [submodule "odoo/external-src/enterprise"]
 	path = odoo/external-src/enterprise

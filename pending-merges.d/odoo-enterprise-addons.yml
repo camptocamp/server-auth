@@ -1,0 +1,16 @@
+../odoo/external-src/odoo-enterprise-addons:
+  remotes:
+    camptocamp: git@github.com:camptocamp/odoo-enterprise-addons.git
+  target: camptocamp merge-branch-21078-master
+  merges:
+  - camptocamp 17.0
+  # [MIG] sale_subscription_to_close_next_date_advance: Migration to 17.0
+  - camptocamp refs/pull/254/head
+  # [MIG] sale_subscription_next_invoice_date_advance: Migration to 17.0
+  - camptocamp refs/pull/253/head
+  # [ADD] Add sale_subscription_invoice_cancel module
+  - camptocamp refs/pull/252/head
+  # [MIG] sale_subscription_closing_delay: Migration to version 17.0 
+  - camptocamp refs/pull/251/head
+  # [MIG] sale_subscription_to_close: Migration to version 17.0
+  - camptocamp refs/pull/250/head
