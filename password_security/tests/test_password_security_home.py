@@ -53,7 +53,6 @@ class TestPasswordSecurityHome(TransactionCase):
         """It mocks and returns assets used by this controller"""
         methods = [
             "do_signup",
-            "web_login",
             "web_auth_signup",
             "web_auth_reset_password",
         ]
@@ -65,15 +64,17 @@ class TestPasswordSecurityHome(TransactionCase):
                 mocks[method] = _super[method]
                 mocks[method].return_value = MockResponse()
             with mock.patch("%s.request" % IMPORT) as request:
-                with mock.patch("%s.http" % IMPORT) as http:
-                    http.request.redirect.return_value = MockResponse()
-                    mocks.update(
-                        {
-                            "request": request,
-                            "http": http,
-                        }
-                    )
-                    yield mocks
+                with mock.patch("odoo.http.db_filter") as filter_db:
+                    with mock.patch("%s.http" % IMPORT) as http:
+                        http.request.redirect.return_value = MockResponse()
+                        mocks.update(
+                            {
+                                "request": request,
+                                "db_filter": filter_db,
+                                "http": http,
+                            }
+                        )
+                        yield mocks
 
     def test_do_signup_check(self):
         """It should check password on user"""
@@ -86,21 +87,18 @@ class TestPasswordSecurityHome(TransactionCase):
                 self.passwd,
             )
 
+    def test_web_login_db_filter(self):
+        """It should verify available db"""
+        with self.mock_assets() as assets:
+            assets["db_filter"].side_effect = EndTestException
+            with self.assertRaises(EndTestException):
+                self.password_security_home.web_login()
+
     def test_do_signup_return(self):
         """It should return result of super"""
         with self.mock_assets() as assets:
             res = self.password_security_home.do_signup(self.qcontext)
             self.assertEqual(assets["do_signup"](), res)
-
-    def test_web_login_super(self):
-        """It should call superclass w/ proper args"""
-        expect_list = [1, 2, 3]
-        expect_dict = {"test1": "good1", "test2": "good2"}
-        with self.mock_assets() as assets:
-            assets["web_login"].side_effect = EndTestException
-            with self.assertRaises(EndTestException):
-                self.password_security_home.web_login(*expect_list, **expect_dict)
-            assets["web_login"].assert_called_once_with(*expect_list, **expect_dict)
 
     def test_web_login_log_out_if_expired(self):
         """It should log out user if password expired"""
