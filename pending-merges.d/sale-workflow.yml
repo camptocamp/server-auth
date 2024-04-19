@@ -2,8 +2,12 @@
   remotes:
     camptocamp: git@github.com:camptocamp/sale-workflow.git
     OCA: git@github.com:OCA/sale-workflow.git
-  target: camptocamp merge-branch-21078-master
+  target: camptocamp merge-branch-21078-17.0
   merges:
   - OCA 17.0
-  - OCA refs/pull/2892/head
+  # [17.0][MIG] sale_automatic_workflow
+  #   https://github.com/OCA/sale-workflow/pull/2826
   - OCA refs/pull/2826/head
+  # [MIG][17.0] sale_automatic_workflow_payment_mode: Migration to 17.0
+  #   https://github.com/OCA/sale-workflow/pull/2892
+  - OCA refs/pull/2892/head

@@ -17,12 +17,9 @@ UNINSTALL_MODULES_LIST = [
     # OCA/example-2
     # ===> Specific modules not migrated yet, but we don't know if we want
     # odoo-enterprise-addons
-    'sale_subscription_date_extension',
-    'sale_subscription_recurring_next_date_advance',
-    'sale_subscription_coupon',
-    # OCA/sale-workflow
-    'sale_automatic_workflow',
-    'sale_automatic_workflow_payment_mode',
+    'sale_subscription_date_extension',  # Not needed anymore
+    'sale_subscription_recurring_next_date_advance',  # Not needed anymore
+    'sale_subscription_coupon',  # Not needed anymore
     # OCA/account-reconcile
     'account_reconcile_model_strict_match_amount',  # not needed anymore, default behavior now
     # OCA/account-financial-tools
@@ -30,16 +27,9 @@ UNINSTALL_MODULES_LIST = [
     # OCA/bank-statement-import
     'account_bank_statement_import_camt_oca',
     'account_bank_statement_import_oca_camt54',
-    # OCA/reporting-engine
-    'report_wkhtmltopdf_param',
-    # OCA/rest-framework
-    'base_rest',
-    # OCA/server-auth
-    'auth_api_key',
     # OCA/l10n-switzerland
     'l10n_ch_qr_no_amount',
     # local-src
-    'sale_subscription_invoice_cancel',
     'schweizmobil_account',
     'schweizmobil_account_bank_statement_import',
     'schweizmobil_base',

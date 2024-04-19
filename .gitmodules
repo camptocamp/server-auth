@@ -143,18 +143,18 @@
 ;	path = odoo/external-src/report-print-send
 ;	url = git@github.com:OCA/report-print-send.git
 ;	branch = 17.0
-;[submodule "odoo/external-src/reporting-engine"]
-;	path = odoo/external-src/reporting-engine
-;	url = git@github.com:OCA/reporting-engine.git
-;	branch = 17.0
+[submodule "odoo/external-src/reporting-engine"]
+	path = odoo/external-src/reporting-engine
+	url = git@github.com:camptocamp/reporting-engine.git
+	branch = 17.0
 [submodule "odoo/external-src/sale-workflow"]
 	path = odoo/external-src/sale-workflow
 	url = git@github.com:camptocamp/sale-workflow.git
 	branch = 17.0
-;[submodule "odoo/external-src/server-auth"]
-;	path = odoo/external-src/server-auth
-;	url = git@github.com:OCA/server-auth.git
-;	branch = 17.0
+[submodule "odoo/external-src/server-auth"]
+	path = odoo/external-src/server-auth
+	url = git@github.com:OCA/server-auth.git
+	branch = 17.0
 ; [submodule "odoo/external-src/server-backend"]
 ; 	path = odoo/external-src/server-backend
 ; 	url = git@github.com:OCA/server-backend.git
@@ -215,10 +215,6 @@
 	path = odoo/external-src/queue
 	url = git@github.com:OCA/queue.git
 	branch = 17.0
-;[submodule "odoo/external-src/connector"]
-;	path = odoo/external-src/connector
-;	url = git@github.com:OCA/connector.git
-;	branch = 17.0
 [submodule "odoo/external-src/connector"]
 	path = odoo/external-src/connector
 	url = git@github.com:OCA/connector.git
@@ -239,6 +235,12 @@
 ;	path = odoo/external-src/connector-interfaces
 ;	url = git@github.com:OCA/connector-interfaces.git
 ;	branch = 17.0
+
+; REST
+[submodule "odoo/external-src/rest-framework"]
+	path = odoo/external-src/rest-framework
+	url = git@github.com:OCA/rest-framework.git
+	branch = 17.0
 
 ; Odoo themes
 ;[submodule "odoo/external-src/design-themes"]
