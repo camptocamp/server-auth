@@ -65,17 +65,15 @@ class TestPasswordSecurityHome(TransactionCase):
                 mocks[method] = _super[method]
                 mocks[method].return_value = MockResponse()
             with mock.patch("%s.request" % IMPORT) as request:
-                with mock.patch("%s.ensure_db" % IMPORT) as ensure:
-                    with mock.patch("%s.http" % IMPORT) as http:
-                        http.request.redirect.return_value = MockResponse()
-                        mocks.update(
-                            {
-                                "request": request,
-                                "ensure_db": ensure,
-                                "http": http,
-                            }
-                        )
-                        yield mocks
+                with mock.patch("%s.http" % IMPORT) as http:
+                    http.request.redirect.return_value = MockResponse()
+                    mocks.update(
+                        {
+                            "request": request,
+                            "http": http,
+                        }
+                    )
+                    yield mocks
 
     def test_do_signup_check(self):
         """It should check password on user"""
@@ -93,13 +91,6 @@ class TestPasswordSecurityHome(TransactionCase):
         with self.mock_assets() as assets:
             res = self.password_security_home.do_signup(self.qcontext)
             self.assertEqual(assets["do_signup"](), res)
-
-    def test_web_login_ensure_db(self):
-        """It should verify available db"""
-        with self.mock_assets() as assets:
-            assets["ensure_db"].side_effect = EndTestException
-            with self.assertRaises(EndTestException):
-                self.password_security_home.web_login()
 
     def test_web_login_super(self):
         """It should call superclass w/ proper args"""
