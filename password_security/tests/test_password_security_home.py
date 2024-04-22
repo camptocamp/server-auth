@@ -1,18 +1,12 @@
 # Copyright 2016 LasLabs Inc.
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
-from contextlib import contextmanager
 from datetime import datetime, timedelta
 from unittest import mock
 
 from werkzeug.urls import url_parse
 
-from odoo.exceptions import UserError
-from odoo.http import Response, _request_stack
-from odoo.tests.common import HttpCase, TransactionCase
-
-from ..controllers import main
-
+from odoo.tests.common import HttpCase
 
 
 @mock.patch("odoo.http.WebRequest.validate_csrf", return_value=True)
