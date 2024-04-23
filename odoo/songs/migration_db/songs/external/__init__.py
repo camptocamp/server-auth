@@ -17,11 +17,13 @@ import anthem
 # migration scripts.
 
 from .connector import pre as pre_connector
+from .sale_automatic_workflow import pre as pre_sale_automatic_workflow
 
 
 @anthem.log
 def pre(ctx):
     pre_connector(ctx)
+    pre_sale_automatic_workflow(ctx)
 
 
 @anthem.log

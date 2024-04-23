@@ -34,3 +34,7 @@ migration:
           - server_environment
           #### oca/web
           - web_environment_ribbon
+          #### oca/sale-workflow
+          # NOTE: force the upgrade of 'sale_automatic_workflow' to get its
+          # 'sale_stock' dependency installed for now (see BSSMS-371)
+          - sale_automatic_workflow
