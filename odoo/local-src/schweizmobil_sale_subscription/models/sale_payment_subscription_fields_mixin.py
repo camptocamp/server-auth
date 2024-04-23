@@ -5,7 +5,6 @@ from odoo import _, api, exceptions, fields, models
 
 
 class SalePaymentSubscriptionFieldsMixin(models.AbstractModel):
-
     _name = "sale.payment.subscription.fields.mixin"
     _description = "Payment fields for sale process"
 

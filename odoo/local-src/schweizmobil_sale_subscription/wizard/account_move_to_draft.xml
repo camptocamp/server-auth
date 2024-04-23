@@ -19,7 +19,7 @@
                             string="Confirm"
                             class="oe_highlight"
                             context="{'_bypass_draft_wizard_check': True}"
-                            attrs="{'invisible': [('removed_from_sftp', '!=', True)]}"
+                            invisible="not removed_from_sftp"
                     />
                     <button special="cancel"
                             string="Cancel"/>

@@ -10,6 +10,7 @@ from datetime import date
 from io import BytesIO
 
 import paramiko
+
 from odoo.addons.server_environment import serv_config
 
 SERV_CONFIG_SECTION = 'sftp'
@@ -21,7 +22,6 @@ _logger = logging.getLogger('SFTP')
 
 class _SFTPInterface:
     def __init__(self):
-
         self._server = os.environ.get("SFTP_SERVER") or serv_config.get(
             SERV_CONFIG_SECTION, 'server'
         )
@@ -48,9 +48,7 @@ class _SFTPInterface:
             self._sftp_client = paramiko.SFTPClient.from_transport(trnsprt)
         else:
             self._ssh_client = paramiko.SSHClient()
-            self._ssh_client.set_missing_host_key_policy(
-                paramiko.AutoAddPolicy()
-            )
+            self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self._ssh_client.connect(hostname=self._server, timeout=3)
             self._ssh_client.get_transport().set_keepalive(10)
             self._sftp_client = self._ssh_client.open_sftp()
@@ -142,7 +140,7 @@ class _SFTPInterface:
             for path in reversed(paths):
                 try:
                     self._sftp_client.chdir(path)
-                except IOError:
+                except OSError:
                     _logger.info("sftp mkdir %s", path)
                     self._sftp_client.mkdir(path)
                     self._sftp_client.chdir(path)
@@ -167,14 +165,10 @@ def sftp_upload(content, document_type, filename):
     # sanitize filename
     filename = re.sub(r"[/\:]", "_", filename)
     root_path = serv_config.get('sftp', 'root_path') or 'DUMMY'
-    dirname = os.path.join(
-        root_path, date.today().strftime('%Y-%V'), document_type
-    )
+    dirname = os.path.join(root_path, date.today().strftime('%Y-%V'), document_type)
     sftp_path = os.path.join('/', dirname, filename)
     if os.environ.get('CI', '') == 'True':
-        _logger.info(
-            'CI Mode: would have uploaded to sftp %s/%s', dirname, filename
-        )
+        _logger.info('CI Mode: would have uploaded to sftp %s/%s', dirname, filename)
         return sftp_path
     with SFTPInterface() as sftp:
         sftp.mkdirs(dirname)

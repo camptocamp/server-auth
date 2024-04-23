@@ -12,26 +12,21 @@ class TestSMSubscriptionCommon(TestSubscriptionCommon):
         cls.schweizmobil_plus_product = cls.env.ref(
             "schweizmobil_sale_subscription.product_product_schweizmobil_plus"
         )
-        cls.sale_order_ios_iap = cls._create_sale_order(
-            cls.user_portal.partner_id,
-            "inAppAppleStore",
-            "ios_iap",
-            paid_online=True,
+        cls.followup_line = cls.env['account_followup.followup.line'].create(
+            {
+                'name': 'followup delay 1',
+                'delay': 1,
+                'company_id': cls.company_data['company'].id,
+            }
         )
-
-    @classmethod
-    def _create_sale_order(
-        cls,
-        partner,
-        wim_payment_type,
-        online_renewal,
-        invoicing_method="",
-        paid_online=False,
-    ):
-        return cls.env["sale.order"].create(
+        cls.user_portal.partner_id.followup_line_id = cls.followup_line.id
+        cls.subscription_ios_iap = cls.env['sale.order'].create(
             {
                 'name': 'TestSO5',
-                'partner_id': partner.id,
+                'sale_order_template_id': cls.env.ref(
+                    'schweizmobil_sale_subscription.sale_subscription_template_schweizmobil_plus'
+                ).id,
+                'partner_id': cls.user_portal.partner_id.id,
                 'order_line': [
                     (
                         0,
@@ -45,35 +40,20 @@ class TestSMSubscriptionCommon(TestSubscriptionCommon):
                         },
                     )
                 ],
-                "online_renewal": online_renewal,
-                "wim_payment_type": wim_payment_type,
-                "invoicing_method": invoicing_method,
-                "paid_online": paid_online,
+                "online_renewal": "ios_iap",
+                "wim_payment_type": "inAppAppleStore",
+                "payment_token_id": cls.payment_token.id,
+                "invoicing_method": "",
+                "paid_online": True,
             }
         )
 
     @classmethod
-    def _confirm_get_subscription(self, sale_order):
-        sale_order.action_confirm()
-        return sale_order.order_line.subscription_id
-
-    @classmethod
     def _pay_invoice(cls, invoice):
-        payment_method = cls.env["account.payment.method"].search(
-            [("code", "=", "manual"), ("payment_type", "=", "inbound")]
+        wiz_action = invoice.action_register_payment()
+        wiz = (
+            cls.env[wiz_action['res_model']]
+            .with_context(wiz_action['context'])
+            .create({})
         )
-        bank_journal = cls.env["account.journal"].search(
-            [("type", "=", "bank")], limit=1
-        )
-        wiz_action = invoice.action_invoice_register_payment()
-        payment_wiz = (
-            cls.env[wiz_action["res_model"]]
-            .with_context(wiz_action["context"])
-            .create(
-                {
-                    "journal_id": bank_journal.id,
-                    "payment_method_id": payment_method.id,
-                }
-            )
-        )
-        payment_wiz.post()
+        wiz.action_create_payments()

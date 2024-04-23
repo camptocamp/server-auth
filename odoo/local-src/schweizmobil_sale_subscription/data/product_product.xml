@@ -5,9 +5,8 @@
         <field name="lst_price" eval="35.0" />
         <field name="standard_price" eval="0.0" />
         <field name="recurring_invoice" eval="True" />
-        <field name="subscription_template_id" ref="sale_subscription_template_schweizmobil_plus" />
-        <field name="type">service</field>
-        <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]" />
+        <field name="detailed_type">service</field>
+        <field name="taxes_id" model="account.tax" search="[('name','=', '7.7% INC')]" />
     </record>
 
     <record id="product_product_discount_5_chf_onetime" model="product.product">
@@ -15,8 +14,7 @@
         <field name="lst_price" eval="0.0" />
         <field name="standard_price" eval="0.0" />
         <field name="recurring_invoice" eval="True" />
-        <field name="subscription_template_id" ref="sale_subscription_template_schweizmobil_plus" />
-        <field name="type">service</field>
-        <field name="taxes_id" eval="[(4, ref('l10n_ch.1_vat_77_incl'))]" />
+        <field name="detailed_type">service</field>
+        <field name="taxes_id" model="account.tax" search="[('name','=', '7.7% INC')]" />
     </record>
 </odoo>

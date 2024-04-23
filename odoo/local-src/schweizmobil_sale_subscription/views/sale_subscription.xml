@@ -9,19 +9,19 @@
 
   <record id="sale_subscription_view_form" model="ir.ui.view">
     <field name="name">sale.subscription.form.inherit</field>
-    <field name="model">sale.subscription</field>
-    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale_subscription.sale_subscription_order_view_form"/>
     <field name="arch" type="xml">
-      <xpath expr="//page[@id='other_info']/group" position="inside">
+      <xpath expr="//page[@name='other_information']/group" position="inside">
         <field name="first_invoice_to_be_paid_before"/>
         <field name="wim_payment_type"/>
         <field name="online_renewal"/>
       </xpath>
-      <field name="date_start" position="before">
+      <field name="start_date" position="before">
           <field name="duration_display"/>
           <field name="duration"/>
       </field>
-      <field name="date" position="after">
+      <field name="end_date" position="after">
         <field name="next_online_renewal_date" groups="base.group_no_one" />
       </field>
     </field>
@@ -29,16 +29,16 @@
 
   <record id="sale_subscription_view_list" model="ir.ui.view">
     <field name="name">sale.subscription.tree.inherit</field>
-    <field name="model">sale.subscription</field>
-    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_list"/>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
     <field name="arch" type="xml">
-      <field name="recurring_next_date" position="after">
+      <field name="next_invoice_date" position="after">
         <field name="first_invoice_to_be_paid_before"/>
       </field>
       <field name="next_invoicing_date" position="before">
         <field name="duration_display"/>
-        <field name="date_start"/>
-        <field name="date"/>
+        <field name="start_date"/>
+        <field name="end_date"/>
         <field name="next_online_renewal_date" groups="base.group_no_one" />
       </field>
     </field>
@@ -46,7 +46,7 @@
 
   <record id="sale_subscription_view_search" model="ir.ui.view">
     <field name="name">sale.subscription.search.inherit</field>
-    <field name="model">sale.subscription</field>
+    <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search"/>
     <field name="arch" type="xml">
       <xpath expr="//filter[@name='bad']" position="after">

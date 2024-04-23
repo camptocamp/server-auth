@@ -11,7 +11,6 @@ INVOICING_METHOD_MAPPING = [
 
 
 class SalePaymentFieldsMixin(models.AbstractModel):
-
     _name = "sale.payment.fields.mixin"
     _description = "Payment fields for sale process"
 

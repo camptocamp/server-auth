@@ -5,7 +5,6 @@ from odoo.exceptions import UserError
 
 
 class AccountMoveToDraft(models.TransientModel):
-
     _name = "account.move.to.draft"
     _description = "Confirmation wizard for invoices pushed onto SFTP"
 
@@ -22,9 +21,7 @@ class AccountMoveToDraft(models.TransientModel):
             if "message" in fields_list:
                 moves = self.env["account.move"].browse(active_ids)
                 sftp_moves = moves.filtered(lambda m: m.sftp_pdf_path)
-                message_lines = "</li><li>".join(
-                    [m.sftp_pdf_path for m in sftp_moves]
-                )
+                message_lines = "</li><li>".join([m.sftp_pdf_path for m in sftp_moves])
                 res["message"] = "<ul><li>" + message_lines + "</li></ul>"
         return res
 
@@ -36,10 +33,6 @@ class AccountMoveToDraft(models.TransientModel):
                     "confirmation when the PDFs were already pushed on SFTP."
                 )
             )
-        res = self.move_ids.with_context(
-            _bypass_draft_wizard_check=True
-        ).button_draft()
-        self.move_ids.write(
-            {"sftp_pdf_path": "", "attachment_ids": [(5, 0, 0)]}
-        )
+        res = self.move_ids.with_context(_bypass_draft_wizard_check=True).button_draft()
+        self.move_ids.write({"sftp_pdf_path": "", "attachment_ids": [(5, 0, 0)]})
         return res

@@ -1,0 +1,19 @@
+<odoo noupdate="1">
+    <record model="queue.job.channel" id="schweizmobil_print_invoice">
+        <field name="name">root.schweizmobil.print_invoice</field>
+        <field name="parent_id" ref="queue_job.channel_root" />
+    </record>
+
+    <record id="job_generate_invoice_pdf" model="queue.job.function">
+        <field name="model_id" ref="sale_subscription.model_account_move" />
+        <field name="method">_generate_invoice_pdf</field>
+        <field name="channel_id" ref="schweizmobil_print_invoice" />
+        <field name="retry_pattern" eval="{1: 60, 2: 120, 3: 180, 5: 300}" />
+    </record>
+
+    <record id="job_generate_followup_pdf" model="queue.job.function">
+        <field name="model_id" ref="sale_subscription.model_res_partner" />
+        <field name="method">_generate_followup_pdf</field>
+        <field name="channel_id" ref="schweizmobil_print_invoice" />
+    </record>
+</odoo>
