@@ -1,6 +1,6 @@
 # Copyright 2023 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
+from odoo.addons.schweizmobil_subs_sale_subscription.tests.common_subscription_ios_iap import (
     TestSMSubscriptionCommon,
 )
 from odoo.tests import tagged

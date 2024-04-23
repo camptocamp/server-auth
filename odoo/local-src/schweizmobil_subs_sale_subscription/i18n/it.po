@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* schweizmobil_sale_subscription
+# 	* schweizmobil_subs_sale_subscription
 #
 msgid ""
 msgstr ""
@@ -15,9 +15,9 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: schweizmobil_sale_subscription
-#: model:product.product,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus
-#: model:product.template,name:schweizmobil_sale_subscription.product_product_schweizmobil_plus_product_template
-#: model:sale.order.template.line,name:schweizmobil_sale_subscription.sale_order_template_line_schweizmobil_plus
+#. module: schweizmobil_subs_sale_subscription
+#: model:product.product,name:schweizmobil_subs_sale_subscription.product_product_schweizmobil_plus
+#: model:product.template,name:schweizmobil_subs_sale_subscription.product_product_schweizmobil_plus_product_template
+#: model:sale.order.template.line,name:schweizmobil_subs_sale_subscription.sale_order_template_line_schweizmobil_plus
 msgid "Schweizmobil Plus"
 msgstr "SvizzeraMobile Plus"

@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from freezegun import freeze_time
 
 from odoo import exceptions
-from odoo.addons.schweizmobil_sale_subscription.tests.common_subscription_ios_iap import (
+from odoo.addons.schweizmobil_subs_sale_subscription.tests.common_subscription_ios_iap import (
     TestSMSubscriptionCommon,
 )
 from odoo.tests import tagged

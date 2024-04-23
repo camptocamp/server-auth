@@ -26,5 +26,6 @@ migration:
           #### local-src
           - schweizmobil_subs_account
           - schweizmobil_subs_base
+          - schweizmobil_subs_sale_subscription
           - schweizmobil_subs_bundle
           - schweizmobil_subs_bundle_ee

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="account.3_vat_77_incl" model="account.tax">
+        <field name="active">True</field>
+    </record>
+</odoo>

@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* schweizmobil_sale_subscription
+# 	* schweizmobil_subs_sale_subscription
 #
 msgid ""
 msgstr ""
@@ -15,22 +15,10 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: sale_subscription
-#: code:addons/sale_subscription/models/sale_subscription.py:0
-#, python-format
-msgid "This invoice covers the following period: %s - %s"
-msgstr "Période de facturation: %s - %s"
-
 #. module: sale_coupon
 #: code:addons/sale_coupon/models/sale_order.py:0
 #: code:addons/sale_coupon/models/sale_order.py:0
 #: code:addons/sale_coupon/models/sale_order.py:0
 #, python-format
 msgid "Discount: "
-msgstr "Réduction: "
-
-#. module: sale_subscription
-#: code:addons/sale_subscription/models/sale_order.py:0
-#, python-format
-msgid "Invoicing period: %s - %s"
-msgstr "Période de facturation: %s - %s"
+msgstr "Rabatt: "

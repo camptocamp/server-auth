@@ -10,7 +10,7 @@ class TestSMSubscriptionCommon(TestSubscriptionCommon):
     def setUpClass(cls):
         super().setUpClass()
         cls.schweizmobil_plus_product = cls.env.ref(
-            "schweizmobil_sale_subscription.product_product_schweizmobil_plus"
+            "schweizmobil_subs_sale_subscription.product_product_schweizmobil_plus"
         )
         cls.followup_line = cls.env['account_followup.followup.line'].create(
             {
@@ -24,7 +24,7 @@ class TestSMSubscriptionCommon(TestSubscriptionCommon):
             {
                 'name': 'TestSO5',
                 'sale_order_template_id': cls.env.ref(
-                    'schweizmobil_sale_subscription.sale_subscription_template_schweizmobil_plus'
+                    'schweizmobil_subs_sale_subscription.sale_subscription_template_schweizmobil_plus'
                 ).id,
                 'partner_id': cls.user_portal.partner_id.id,
                 'order_line': [

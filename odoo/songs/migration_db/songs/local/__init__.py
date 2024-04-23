@@ -3,6 +3,9 @@
 
 import anthem
 from .schweizmobil_subs_base import pre as pre_schweizmobil_subs_base
+from .schweizmobil_subs_sale_subscription import (
+    pre as pre_schweizmobil_subs_sale_subscription,
+)
 
 from .schweizmobil_subs_account import pre as pre_schweizmobil_subs_account
 
@@ -26,6 +29,7 @@ def pre(ctx):
     # pre_my_addon(ctx)
     pre_schweizmobil_subs_account(ctx)
     pre_schweizmobil_subs_base(ctx)
+    pre_schweizmobil_subs_sale_subscription(ctx)
 
 
 @anthem.log

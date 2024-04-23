@@ -94,7 +94,7 @@ class AccountMove(models.Model):
             self.mapped("sftp_pdf_path")
         ):
             action = self.env.ref(
-                "schweizmobil_sale_subscription.account_move_to_draft_action"
+                "schweizmobil_subs_sale_subscription.account_move_to_draft_action"
             )
             return action.read()[0]
         return super().button_draft()
