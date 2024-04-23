@@ -16,15 +16,12 @@ import anthem
 # The use of 'openupgradelib' Python package could help you to write such
 # migration scripts.
 
-# NOTE: this is an example, to uncomment/update
-# from .my_addon import pre as pre_my_addon
-# from .my_addon import post as post_my_addon
+from .connector import pre as pre_connector
 
 
 @anthem.log
 def pre(ctx):
-    # pre_my_addon(ctx)
-    pass
+    pre_connector(ctx)
 
 
 @anthem.log
