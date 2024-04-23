@@ -27,6 +27,8 @@ UNINSTALL_MODULES_LIST = [
     # OCA/bank-statement-import
     'account_bank_statement_import_camt_oca',
     'account_bank_statement_import_oca_camt54',
+    # OCA/rest-framework
+    'base_rest',
     # OCA/l10n-switzerland
     'l10n_ch_qr_no_amount',
     # local-src

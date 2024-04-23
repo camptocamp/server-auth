@@ -73,7 +73,6 @@ ENV ADDONS_PATH="/odoo/src/addons, \
   /odoo/external-src/bank-payment, \
   /odoo/external-src/partner-contact, \
   /odoo/external-src/reporting-engine, \
-  /odoo/external-src/rest-framework, \
   /odoo/external-src/sale-workflow, \
   /odoo/external-src/server-auth, \
   /odoo/external-src/server-env, \
