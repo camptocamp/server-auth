@@ -34,7 +34,6 @@ UNINSTALL_MODULES_LIST = [
     # local-src
     'schweizmobil_account_bank_statement_import',
     'schweizmobil_report',
-    'schweizmobil_sale_subscription_renewal',
     'wim_connector',
     'wim_queue',
     'wim_rest',

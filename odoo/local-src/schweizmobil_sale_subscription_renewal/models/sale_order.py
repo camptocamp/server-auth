@@ -4,31 +4,25 @@ from odoo import models
 
 
 class SaleOrder(models.Model):
-
     _inherit = "sale.order"
 
-    def update_existing_subscriptions(self):
-        # Ensure specific renewal behaviour is triggered only from sale order
-        # confirmation on closed subscription
-        std_ids = []
-        old_sub_renewal_ids = []
-        for order in self:
-            if order.subscription_management != "renew" or any(
-                order.order_line.mapped('subscription_id.in_progress')
-            ):
-                std_ids.append(order.id)
-            else:
-                old_sub_renewal_ids.append(order.id)
-        if std_ids:
-            std_orders = self.browse(std_ids)
-            res = super(SaleOrder, std_orders).update_existing_subscriptions()
-        else:
-            res = []
-        if old_sub_renewal_ids:
-            old_sub_renewal_orders = self.browse(
-                old_sub_renewal_ids
-            ).with_context(_reset_sub_dates=True)
-            res += super(
-                SaleOrder, old_sub_renewal_orders
-            ).update_existing_subscriptions()
-        return res
+    def _prepare_upsell_renew_order_values(self, subscription_state):
+        vals = super()._prepare_upsell_renew_order_values(subscription_state)
+        if subscription_state == '2_renewal':
+            for subscription in self:
+                payment_term = subscription._get_renewal_payment_term()
+                if payment_term:
+                    vals["payment_term_id"] = payment_term.id
+                vals.update(
+                    {
+                        'user_id': self.env.uid,
+                        'online_renewal': 'none',
+                        'to_close': False,
+                    }
+                )
+        return vals
+
+    def _get_renewal_payment_term(self):
+        """Hook allowing to redefine payment term for renewal orders"""
+        self.ensure_one()
+        return self.env["account.payment.term"].browse()
