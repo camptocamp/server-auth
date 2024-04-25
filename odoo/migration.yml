@@ -35,3 +35,4 @@ migration:
       addons:
         upgrade:
           - schweizmobil_subs_bundle_ee
+          - schweizmobil_subs_bundle

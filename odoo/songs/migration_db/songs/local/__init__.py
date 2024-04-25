@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
 import anthem
+from .schweizmobil_subs_base import pre as pre_schweizmobil_subs_base
 
 # NOTE: This package aims to host all migration scripts related to specific
 # addons or customer data that need some adjustments. For instance:
@@ -21,7 +22,7 @@ import anthem
 @anthem.log
 def pre(ctx):
     # pre_my_addon(ctx)
-    pass
+    pre_schweizmobil_subs_base(ctx)
 
 
 @anthem.log
