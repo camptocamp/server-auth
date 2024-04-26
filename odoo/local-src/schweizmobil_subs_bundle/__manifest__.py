@@ -57,6 +57,7 @@
         'logging_json',
         # local-src
         'camptocamp_tools',
+        'schweizmobil_account',
         'schweizmobil_subs_base',
     ],
     'installable': True,

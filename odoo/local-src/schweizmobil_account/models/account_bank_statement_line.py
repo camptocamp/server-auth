@@ -1,13 +1,23 @@
 # Copyright 2023 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo import models
+from odoo import api, fields, models
 
 
 class AccountBankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"
 
-    def button_cancel_reconciliation(self):
-        res = super().button_cancel_reconciliation()
-        if self.env.context.get("force_partner_removal"):
-            self.write({"partner_id": False, "partner_name": ""})
-        return res
+    partner_name_alternate = fields.Char(string="Altername partnername", required=True)
+
+    @api.model
+    def create(self, vals):
+        if 'partner_id' in vals:
+            vals['partner_id'] = False
+        if 'partner_name' in vals:
+            vals['partner_name_alternate'] = vals['partner_name']
+            vals['partner_name'] = False
+        line = super().create(vals)
+        return line
+
+    def action_undo_reconciliation(self):
+        self.write({"partner_id": False, "partner_name": ""})
+        return super().action_undo_reconciliation()
