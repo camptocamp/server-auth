@@ -4,6 +4,8 @@
 import anthem
 from .schweizmobil_subs_base import pre as pre_schweizmobil_subs_base
 
+from .schweizmobil_subs_account import pre as pre_schweizmobil_subs_account
+
 # NOTE: This package aims to host all migration scripts related to specific
 # addons or customer data that need some adjustments. For instance:
 #   - add a specific group on some user accounts
@@ -22,6 +24,7 @@ from .schweizmobil_subs_base import pre as pre_schweizmobil_subs_base
 @anthem.log
 def pre(ctx):
     # pre_my_addon(ctx)
+    pre_schweizmobil_subs_account(ctx)
     pre_schweizmobil_subs_base(ctx)
 
 
