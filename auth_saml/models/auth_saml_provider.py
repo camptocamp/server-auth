@@ -411,18 +411,22 @@ class AuthSamlProvider(models.Model):
         # lock the records we might update, so that multiple simultaneous login
         # attempts will not cause concurrent updates
         self.env.cr.execute(
-            "SELECT id FROM auth_saml_provider WHERE id in %s FOR UPDATE",
+            "SELECT id FROM auth_saml_provider WHERE id in %s FOR UPDATE NOWAIT",
             (tuple(providers.ids),),
         )
         updated = False
         for provider in providers:
-            document = requests.get(provider.idp_metadata_url)
-            if document.status_code != 200:
+            try:
+                response = requests.get(provider.idp_metadata_url, timeout=50)
+                response.raise_for_status()
+                if response.text != provider.idp_metadata:
+                    provider.idp_metadata = response.text
+                    _logger.info("Updated provider metadata for %s", provider.name)
+                    updated = True
+            except requests.exceptions.RequestException as e:
+                _logger.error("Error fetching metadata for provider '%s': %s", provider.name, e)
                 raise UserError(
-                    f"Unable to download the metadata for {provider.name}: {document.reason}"
+                    f"Unable to download the metadata for {provider.name}: {response.reason}"
                 )
-            if document.text != provider.idp_metadata:
-                provider.idp_metadata = document.text
-                _logger.info("Updated provider metadata for %s", provider.name)
-                updated = True
+
         return updated
