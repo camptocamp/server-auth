@@ -32,7 +32,6 @@ UNINSTALL_MODULES_LIST = [
     # OCA/l10n-switzerland
     'l10n_ch_qr_no_amount',
     # local-src
-    'schweizmobil_account',
     'schweizmobil_account_bank_statement_import',
     'schweizmobil_report',
     'schweizmobil_sale_subscription',
