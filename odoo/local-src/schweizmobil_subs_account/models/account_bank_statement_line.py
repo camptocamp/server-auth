@@ -6,9 +6,9 @@ from odoo import api, fields, models
 class AccountBankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"
 
-    partner_name_alternate = fields.Char(string="Altername partnername", required=True)
+    partner_name_alternate = fields.Char(string="Altername partnername")
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         if 'partner_id' in vals:
             vals['partner_id'] = False
