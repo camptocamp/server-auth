@@ -30,6 +30,8 @@ latest (unreleased)
 
 **Bugfixes**
 
+* [FIX] schweizmobil_subs_account: remove required from partner_name_alternate
+
 **Build**
 
 **Documentation**
