@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.config_parameter" id="sftp_pdf_generation_time">
+        <field name="key">sftp.pdf.generation.time</field>
+        <field name="value">{"hour": 5, "minute": 0, "second": 0}</field>
+    </record>
+</odoo>

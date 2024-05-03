@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="wim_paid_online_payment_mode" model="account.payment.mode">
+        <field name="name">Paid online</field>
+        <field name="bank_account_link">fixed</field>
+        <field name="payment_method_id" ref="account.account_payment_method_manual_in" />
+        <field name="fixed_journal_id" model="account.journal" eval="obj().search([('company_id', '=', obj().env.user.company_id.id),('type', '=', 'bank')], limit=1)" />
+        <field name="workflow_process_id" ref="sale_automatic_workflow.automatic_validation" />
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+    <record id="sale_coupon_program_promo_swisspass" model="loyalty.program">
+        <field name="sequence" eval="0"/>
+        <field name="name">SwissPass</field>
+        <field name="active" eval="True"/>
+        <field name="program_type">promo_code</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="swispass_promo_program_rule" model="loyalty.rule">
+        <field name="code">SWISSPASS</field>
+        <field name="program_id" ref="sale_coupon_program_promo_swisspass"/>
+    </record>
+
+    <record id="swispass_promo_program_reward" model="loyalty.reward">
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">per_order</field>
+        <field name="discount">5</field>
+        <field name="discount_product_ids" eval="[(4, ref('product_product_discount_5_chf_onetime'))]"/>
+        <field name="discount_applicability">order</field>
+        <field name="program_id" ref="sale_coupon_program_promo_swisspass"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <function model="ir.model.data" name="toggle_noupdate">
+        <value eval="'ir.filters'" />
+        <value eval="ref('sale_automatic_workflow.automatic_workflow_create_invoice_filter')"/>
+    </function>
+    <record model="ir.filters" id="sale_automatic_workflow.automatic_workflow_create_invoice_filter">
+        <field name="domain">[('state','in',['sale','done']),('invoice_status','=','to invoice'),('invoice_count','=',0)]</field>
+    </record>
+    <function model="ir.model.data" name="toggle_noupdate">
+        <value eval="'ir.filters'" />
+        <value eval="ref('sale_automatic_workflow.automatic_workflow_create_invoice_filter')"/>
+    </function>
+</odoo>

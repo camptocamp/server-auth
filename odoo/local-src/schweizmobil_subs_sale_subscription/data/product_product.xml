@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+    <record id="product_product_schweizmobil_plus" model="product.product">
+        <field name="name">SchweizMobil Plus</field>
+        <field name="lst_price" eval="35.0" />
+        <field name="standard_price" eval="0.0" />
+        <field name="recurring_invoice" eval="True" />
+        <field name="detailed_type">service</field>
+        <field name="taxes_id" model="account.tax" search="[('name','=', '7.7% INC')]" />
+    </record>
+
+    <record id="product_product_discount_5_chf_onetime" model="product.product">
+        <field name="name">5.0 CHF discount on total amount</field>
+        <field name="lst_price" eval="0.0" />
+        <field name="standard_price" eval="0.0" />
+        <field name="recurring_invoice" eval="True" />
+        <field name="detailed_type">service</field>
+        <field name="taxes_id" model="account.tax" search="[('name','=', '7.7% INC')]" />
+    </record>
+</odoo>

@@ -27,8 +27,11 @@ latest (unreleased)
 * BSSMS-343: Migration Spe - sale_subscription_recurring_next_date_advance (replaced by sale_subscription_next_invoice_date_advance)
 * BSSMS-350 Migration Spe - schweizmobil_base
 * BSSMS-348: Migration Spe - schweizmobil_account
+* BSSMS-352: Migration Spe - schweizmobil_sale_subscription
 
 **Bugfixes**
+
+* [FIX] schweizmobil_subs_account: remove required from partner_name_alternate
 
 **Build**
 
