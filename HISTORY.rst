@@ -28,6 +28,7 @@ latest (unreleased)
 * BSSMS-350 Migration Spe - schweizmobil_base
 * BSSMS-348: Migration Spe - schweizmobil_account
 * BSSMS-352: Migration Spe - schweizmobil_sale_subscription
+* BSSMS-353: Migration Spe - schweizmobil_sale_subscription_renewal
 
 **Bugfixes**
 

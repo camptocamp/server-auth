@@ -19,7 +19,8 @@
         'sale_subscription_next_invoice_date_advance',
         'sale_subscription_to_close_next_date_advance',
         # local-src
-        'schweizmobil_subs_sale_subscription'
+        'schweizmobil_subs_sale_subscription',
+        'schweizmobil_subs_sale_subscription_renewal'
     ],
     'installable': True,
     'auto_install': False,
