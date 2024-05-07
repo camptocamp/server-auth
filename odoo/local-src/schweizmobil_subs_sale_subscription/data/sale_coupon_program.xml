@@ -8,7 +8,7 @@
         <field name="applies_on">current</field>
     </record>
 
-    <record id="swispass_promo_program_rule" model="loyalty.rule">
+    <record id="sale_coupon_program_promo_swisspass_sale_coupon_rule" model="loyalty.rule">
         <field name="code">SWISSPASS</field>
         <field name="program_id" ref="sale_coupon_program_promo_swisspass"/>
     </record>
