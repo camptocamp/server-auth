@@ -10,7 +10,7 @@ import anthem
 
 # NOTE: this is an example, to uncomment/update
 # from .base import pre as pre_base
-# from .stock import post as post_stock
+from .product import post as post_product
 
 
 @anthem.log
@@ -21,5 +21,4 @@ def pre(ctx):
 
 @anthem.log
 def post(ctx):
-    # post_stock(ctx)
-    pass
+    post_product(ctx)
