@@ -35,7 +35,6 @@ UNINSTALL_MODULES_LIST = [
     'schweizmobil_account_bank_statement_import',
     'schweizmobil_report',
     'wim_connector',
-    'wim_queue',
     'wim_rest',
 ]
 

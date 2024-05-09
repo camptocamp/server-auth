@@ -3,7 +3,7 @@
 {
     "name": "WIM Queue",
     "summary": "Queue specifications",
-    "version": "13.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Queue",
     "author": "Camptocamp",
     "license": "AGPL-3",
