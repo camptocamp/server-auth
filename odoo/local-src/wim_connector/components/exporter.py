@@ -4,7 +4,6 @@ from odoo.addons.component.core import AbstractComponent, Component
 
 
 class WimExporter(Component):
-
     _name = "wim.exporter"
     _inherit = ["wim.base", "generic.exporter"]
     _default_binding_field = "wim_bind_ids"
@@ -12,7 +11,6 @@ class WimExporter(Component):
 
 
 class ConnectorListener(AbstractComponent):
-
     _inherit = "base.connector.listener"
 
     def _no_trigger_fields_modified(self, fields):

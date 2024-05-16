@@ -29,10 +29,10 @@
     <record id="view_partner_form" model="ir.ui.view">
       <field name="name">res.partner.form.inherit</field>
       <field name="model">res.partner</field>
-      <field name="inherit_id" ref="schweizmobil_base.view_partner_form"/>
+      <field name="inherit_id" ref="schweizmobil_subs_base.view_partner_form"/>
       <field name="arch" type="xml">
         <field name="customer_number" position="attributes">
-          <attribute name="attrs">{'readonly': [('wim_bind_ids', '!=', [])]}</attribute>
+          <attribute name="readonly">wim_bind_ids</attribute>
         </field>
       </field>
     </record>

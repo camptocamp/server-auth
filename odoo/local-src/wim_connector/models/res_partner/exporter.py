@@ -9,7 +9,6 @@ ALLOWED_LANG_VALUES = ["de", "fr", "en", "it"]
 
 
 class WIMResPartnerWebserviceAdapter(Component):
-
     _name = "wim.res.partner.webservice.adapter"
     _inherit = "wim.webservice.adapter"
     _apply_on = "wim.res.partner"
@@ -62,7 +61,6 @@ class ResPartnerListener(Component):
 
 
 class WimResPartnerExportMapper(Component):
-
     _name = "wim.res.partner.export.mapper"
     _inherit = ["base.export.mapper", "wim.base"]
     _apply_on = "wim.res.partner"

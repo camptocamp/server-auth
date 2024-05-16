@@ -2,8 +2,8 @@
 <odoo>
     <record id="sale_subscription_view_form" model="ir.ui.view">
       <field name="name">sale.subscription.form.inherit</field>
-      <field name="model">sale.subscription</field>
-      <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale_subscription.sale_subscription_order_view_form"/>
       <field name="arch" type="xml">
           <xpath expr="//notebook" position="inside">
               <page string="Connector" name="connector">
@@ -26,11 +26,11 @@
           <!-- Those field are required on the remote API and shouldn't be empty.
           I didn't modify the fields themselve in order to not alter the
           database schema. -->
-          <field name="date_start" position="attributes">
-              <attribute name="attrs">{'required': [('wim_bind_ids', '!=', [])]}</attribute>
+          <field name="start_date" position="attributes">
+              <attribute name="required">wim_bind_ids</attribute>
           </field>
-          <field name="date" position="attributes">
-              <attribute name="attrs">{'required': [('wim_bind_ids', '!=', [])]}</attribute>
+          <field name="end_date" position="attributes">
+              <attribute name="required">wim_bind_ids</attribute>
           </field>
       </field>
     </record>

@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 
 class WIMWebserviceAdapter(Component):
-    """ Generic adapter for using the WIM backend """
+    """Generic adapter for using the WIM backend"""
 
     _name = 'wim.webservice.adapter'
     _inherit = ['base.backend.adapter.crud', 'wim.base']
@@ -47,7 +47,7 @@ class WIMWebserviceAdapter(Component):
             yield api.Environment(new_cr, self.env.uid, self.env.context)
 
     def write(self, external_id, data):
-        """ Update records on the external system """
+        """Update records on the external system"""
         endpoint = self._endpoint_mapping["write"]
         uri = urljoin(self.backend_record.uri, endpoint)
         json_data = json.dumps(data)
@@ -57,11 +57,7 @@ class WIMWebserviceAdapter(Component):
             # If job fails, everything's rollbacked.
             # To create log instances, we have to instanciate a new environment.
             with self._do_in_new_env() as new_env:
-                job = (
-                    new_env["queue.job"]
-                    .sudo()
-                    .search([("uuid", "=", uuid)], limit=1)
-                )
+                job = new_env["queue.job"].sudo().search([("uuid", "=", uuid)], limit=1)
                 now = datetime.datetime.now()
                 log_data = "uri: {}\ncontent: {}".format(uri, json_data)
                 job_log = (

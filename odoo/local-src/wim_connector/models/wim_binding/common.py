@@ -1,11 +1,10 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
 from odoo import fields, models
-from odoo.addons.queue_job.job import job, related_action
 
 
 class WIMBinding(models.AbstractModel):
-    """ Abstract Model for the Bindings.
+    """Abstract Model for the Bindings.
     All the models used as bindings between WIM and Odoo
     (``wim.res.partner``, ...) should ``_inherit`` it.
     """
@@ -24,8 +23,6 @@ class WIMBinding(models.AbstractModel):
     )
     external_id = fields.Char(string='ID on WIM', index=True)
 
-    @job(default_channel='root.wim_connector.export')
-    @related_action(action='related_action_unwrap_binding')
     def export_record(self, fields=None):
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:

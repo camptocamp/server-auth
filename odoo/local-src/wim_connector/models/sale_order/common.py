@@ -6,11 +6,11 @@ from odoo import _, exceptions, fields, models
 class WIMSaleSubscription(models.Model):
     _name = 'wim.sale.subscription'
     _inherit = 'wim.binding'
-    _inherits = {'sale.subscription': 'odoo_id'}
+    _inherits = {'sale.order': 'odoo_id'}
     _description = 'WIM Subscription'
 
     odoo_id = fields.Many2one(
-        comodel_name='sale.subscription',
+        comodel_name='sale.order',
         string='Subscription',
         required=True,
         index=True,
@@ -19,8 +19,8 @@ class WIMSaleSubscription(models.Model):
     external_id = fields.Char(related="odoo_id.partner_id.customer_number")
 
 
-class SaleSubscription(models.Model):
-    _inherit = 'sale.subscription'
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
 
     wim_bind_ids = fields.One2many(
         comodel_name='wim.sale.subscription',
@@ -53,8 +53,7 @@ class SaleSubscription(models.Model):
         for sub in self:
             if sub.wim_bind_ids:
                 raise exceptions.UserError(
-                    _("Connector binding already set on subscription %s")
-                    % sub.name
+                    _("Connector binding already set on subscription %s") % sub.name
                 )
             if not sub.partner_id.wim_bind_ids:
                 raise exceptions.UserError(
@@ -75,12 +74,3 @@ class SaleSubscription(models.Model):
                     record, fields=["next_online_renewal_date"]
                 )
         return res
-
-
-class SaleSubscriptionStage(models.Model):
-
-    _inherit = "sale.subscription.stage"
-
-    in_progress = fields.Boolean(
-        help="Defines if the record is considered as active on WIM."
-    )

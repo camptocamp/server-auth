@@ -22,9 +22,7 @@ class WIMBackend(models.Model):
         required=True,
         readonly=True,
     )
-    sale_order_template_id = fields.Many2one(
-        "sale.order.template", ondelete="restrict"
-    )
+    sale_order_template_id = fields.Many2one("sale.order.template", ondelete="restrict")
     sale_workflow_process_id = fields.Many2one(
         "sale.workflow.process", ondelete="restrict"
     )
@@ -32,7 +30,7 @@ class WIMBackend(models.Model):
         "account.payment.mode", ondelete="restrict"
     )
     swisspass_promotion_program_id = fields.Many2one(
-        "sale.coupon.program", ondelete="restrict"
+        "loyalty.program", ondelete="restrict"
     )
     user_name = fields.Char(string="User Name")
     user_password = fields.Char(string="User Password")
@@ -58,11 +56,9 @@ class WIMBackend(models.Model):
     def get_singleton(self):
         return self.env.ref('wim_connector.wim_backend_config')
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         existing = self.search_count([])
         if existing:
-            raise exceptions.UserError(
-                _("Only 1 backend configuration allowed.")
-            )
+            raise exceptions.UserError(_("Only 1 backend configuration allowed."))
         return super().create(vals)

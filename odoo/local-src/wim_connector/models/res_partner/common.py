@@ -36,9 +36,6 @@ class ResPartner(models.Model):
         for partner in self:
             if partner.wim_bind_ids:
                 raise exceptions.UserError(
-                    _("Connector binding already set on partner %s")
-                    % partner.name
+                    _("Connector binding already set on partner %s") % partner.name
                 )
-            partner.write(
-                {"wim_bind_ids": [(0, 0, {"backend_id": backend.id})]}
-            )
+            partner.write({"wim_bind_ids": [(0, 0, {"backend_id": backend.id})]})

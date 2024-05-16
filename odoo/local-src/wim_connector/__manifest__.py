@@ -3,7 +3,7 @@
 {
     "name": "WIM Connector",
     "summary": "Connector between Odoo and WIM",
-    "version": "13.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Connector",
     "author": "Camptocamp",
     "license": "AGPL-3",
@@ -15,9 +15,9 @@
     "depends": [
         "connector",
         # local-src
-        "schweizmobil_sale_subscription",
-        "schweizmobil_sale_subscription_renewal",
-        "schweizmobil_base",
+        "schweizmobil_subs_sale_subscription",
+        "schweizmobil_subs_sale_subscription_renewal",
+        "schweizmobil_subs_base",
         "wim_queue",
         # oca/server-env
         "server_environment",
@@ -27,6 +27,7 @@
         "data/connector_backend.xml",
         "data/ir_actions_server.xml",
         "data/ir_cron.xml",
+        "data/queue_job_data.xml",
         "security/ir.model.access.csv",
         # views
         "views/res_partner.xml",
