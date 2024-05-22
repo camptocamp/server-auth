@@ -59,6 +59,7 @@
         'camptocamp_tools',
         'schweizmobil_subs_account',
         'schweizmobil_subs_base',
+        'wim_queue',
     ],
     'installable': True,
     'auto_install': False,
