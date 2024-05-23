@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_wim_backend_user,access_wim_backend_user,model_wim_backend,base.group_user,1,0,0,0
+access_wim_backend_manager,access_wim_backend_manager,model_wim_backend,connector.group_connector_manager,1,1,1,1
+access_wim_res_partner_user,access_wim_res_partner_user,model_wim_res_partner,base.group_user,1,1,1,1
+access_wim_res_partner_manager,access_wim_res_partner_manager,model_wim_res_partner,connector.group_connector_manager,1,1,1,1
+access_wim_sale_subscription_user,access_wim_sale_subscription_user,model_wim_sale_subscription,base.group_user,1,1,1,1
+access_wim_sale_subscription_manager,access_wim_sale_subscription_manager,model_wim_sale_subscription,connector.group_connector_manager,1,1,1,1

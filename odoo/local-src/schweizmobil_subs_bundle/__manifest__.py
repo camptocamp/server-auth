@@ -60,6 +60,7 @@
         'schweizmobil_subs_account',
         'schweizmobil_subs_base',
         'wim_queue',
+        'wim_connector'
     ],
     'installable': True,
     'auto_install': False,

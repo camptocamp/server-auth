@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.actions.server" id="partner_setup_binding">
+        <field name="name">Partner: Set up connector binding</field>
+        <field name="usage">ir_actions_server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="wim_connector.model_res_partner" />
+        <field name="binding_model_id" ref="wim_connector.model_res_partner" />
+        <field name="binding_type">action</field>
+        <field name="code">records.setup_binding()</field>
+        <field name="groups_id" eval="[(4, ref('connector.group_connector_manager'))]" />
+    </record>
+    <record model="ir.actions.server" id="subscription_setup_binding">
+        <field name="name">Subscription: Set up connector binding</field>
+        <field name="usage">ir_actions_server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="wim_connector.model_sale_order" />
+        <field name="binding_model_id" ref="wim_connector.model_sale_order" />
+        <field name="binding_type">action</field>
+        <field name="code">records.setup_binding()</field>
+        <field name="groups_id" eval="[(4, ref('connector.group_connector_manager'))]" />
+    </record>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_subscription_view_form" model="ir.ui.view">
+      <field name="name">sale.subscription.form.inherit</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale_subscription.sale_subscription_order_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//notebook" position="inside">
+              <page string="Connector" name="connector">
+                  <group string="WIM" name="wim">
+                      <field name="wim_bind_ids">
+                          <tree editable="top">
+                              <field name="backend_id" />
+                              <field name="external_id" />
+                          </tree>
+                          <form>
+                              <group>
+                                  <field name="backend_id" />
+                                  <field name="external_id" />
+                              </group>
+                          </form>
+                      </field>
+                  </group>
+              </page>
+          </xpath>
+          <!-- Those field are required on the remote API and shouldn't be empty.
+          I didn't modify the fields themselve in order to not alter the
+          database schema. -->
+          <field name="start_date" position="attributes">
+              <attribute name="required">wim_bind_ids</attribute>
+          </field>
+          <field name="end_date" position="attributes">
+              <attribute name="required">wim_bind_ids</attribute>
+          </field>
+      </field>
+    </record>
+</odoo>
