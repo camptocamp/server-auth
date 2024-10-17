@@ -308,6 +308,9 @@ class AuthSamlProvider(models.Model):
         except SignatureError:
             # we have a metadata url: try to refresh the metadata document
             if self.idp_metadata_url:
+                self.env.cr.execute(
+                    "SELECT id, idp_metadata from auth_saml_provider FOR UPDATE NOWAIT"
+                )
                 self.action_refresh_metadata_from_url()
                 # retry: if it fails again, we let the exception flow
                 client = self._get_client_for_provider(base_url)
