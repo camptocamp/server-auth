@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 ACSONE SA/NV
+     Copyright 2026 Camptocamp SA
+     @author Simone Orsi <simahawk@gmail.com>
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record model="ir.ui.view" id="auth_api_key_form_view">
@@ -19,6 +21,11 @@
                     <h1>
                         <field name="name" class="oe_inline" />
                     </h1>
+                    <field name="key_hash" invisible="1" />
+                    <div class="alert alert-info" role="alert" invisible="not key_hash">
+                        The key is stored hashed and cannot be displayed.
+                        Enter a new key to replace it.
+                    </div>
                     <group name="config" colspan="4" col="4">
                         <field name="user_id" colspan="4" />
                         <field name="key" colspan="4" password="True" />

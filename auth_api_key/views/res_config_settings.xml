@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2023 Camptocamp SA
+     Copyright 2026 Camptocamp SA
+     @author Simone Orsi <simahawk@gmail.com>
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record id="res_config_settings_view_form" model="ir.ui.view">
@@ -14,6 +16,14 @@
                     string="Disable API key when archiving user"
                 >
                     <field name="archived_user_disable_auth_api_key" />
+                </setting>
+                <setting
+                    groups="base.group_no_one"
+                    id="api_key_hash_keys"
+                    string="Store API keys hashed"
+                    help="A key is readable only when it is created."
+                >
+                    <field name="auth_api_key_hash_keys" />
                 </setting>
             </xpath>
         </field>

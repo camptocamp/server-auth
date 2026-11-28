@@ -4,7 +4,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 
-from odoo import models
+from odoo import api, models
 
 
 class AuthApiKey(models.Model):
@@ -20,6 +20,11 @@ class AuthApiKey(models.Model):
         """
         self.ensure_one()
         return f"api_key_{getattr(self, self._server_env_section_name_field)}"
+
+    @api.model
+    def _keys_hashing_enabled(self):
+        # The key comes from the server environment, there is nothing to hash.
+        return False
 
     @property
     def _server_env_fields(self):
