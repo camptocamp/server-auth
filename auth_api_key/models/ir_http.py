@@ -29,6 +29,7 @@ class IrHttp(models.AbstractModel):
                 # Unknown key: answer 401 like for a missing one, not a user error.
                 auth_api_key = None
             if auth_api_key:
+                auth_api_key._update_last_used()
                 # reset _env on the request since we change the uid...
                 # the next call to env will instantiate an new
                 # odoo.api.Environment with the user defined on the

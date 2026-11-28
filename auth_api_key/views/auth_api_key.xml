@@ -27,6 +27,8 @@
                     <group name="config" colspan="4" col="4">
                         <field name="user_id" colspan="4" />
                         <field name="key" colspan="4" password="True" />
+                        <field name="expiration_date" />
+                        <field name="last_used_date" />
                     </group>
                 </sheet>
             </form>
@@ -39,7 +41,34 @@
             <list>
                 <field name="name" />
                 <field name="user_id" />
+                <field name="expiration_date" optional="show" />
+                <field name="last_used_date" optional="show" />
             </list>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="auth_api_key_search_view">
+        <field name="name">auth.api.key.search (in auth_api_key)</field>
+        <field name="model">auth.api.key</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="user_id" />
+                <filter
+                    name="expired"
+                    string="Expired"
+                    domain="[('expiration_date', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]"
+                />
+                <filter
+                    name="never_used"
+                    string="Never used"
+                    domain="[('last_used_date', '=', False)]"
+                />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
+            </search>
         </field>
     </record>
     <record model="ir.actions.act_window" id="auth_api_key_act_window">

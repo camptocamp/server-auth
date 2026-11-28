@@ -2,18 +2,24 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 import importlib.util
+from datetime import timedelta
 from pathlib import Path
 
 from werkzeug.datastructures import EnvironHeaders
 from werkzeug.exceptions import Unauthorized
 
+from odoo import fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
 from odoo.tools import file_open
 
 from odoo.addons.website.tools import MockRequest
 
-from ..models.auth_api_key import HASH_KEYS_PARAM, HASHED_KEY_PLACEHOLDER
+from ..models.auth_api_key import (
+    HASH_KEYS_PARAM,
+    HASHED_KEY_PLACEHOLDER,
+    LAST_USED_THROTTLE,
+)
 
 
 class TestAuthApiKey(TransactionCase):
@@ -294,3 +300,108 @@ class TestAuthApiKeyHashing(TransactionCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         module.migrate(self.env.cr, "18.0.1.0.2")
+
+
+class TestAuthApiKeyExpiryAndUsage(TransactionCase):
+    @classmethod
+    def setUpClass(cls, *args, **kwargs):
+        super().setUpClass(*args, **kwargs)
+        cls.AuthApiKey = cls.env["auth.api.key"]
+        cls.demo_user = cls.env.ref("base.user_demo")
+        cls.api_key = cls.AuthApiKey.create(
+            {"name": "good", "user_id": cls.demo_user.id, "key": "api_key"}
+        )
+
+    def _authenticate(self, key="api_key"):
+        with MockRequest(self.env) as mocked_request:
+            mocked_request.httprequest.environ["HTTP_API_KEY"] = key
+            mocked_request.httprequest.environ["REMOTE_ADDR"] = "10.1.2.3"
+            mocked_request.httprequest.headers = EnvironHeaders(
+                mocked_request.httprequest.environ
+            )
+            return self.env["ir.http"]._auth_method_api_key()
+
+    def test_no_expiration(self):
+        """A key without expiration date does not expire."""
+        self.assertEqual(
+            self.AuthApiKey._retrieve_uid_from_api_key("api_key"), self.demo_user.id
+        )
+
+    def test_not_expired(self):
+        """A key is accepted before its expiration date."""
+        self.api_key.expiration_date = fields.Datetime.now() + timedelta(days=1)
+        self.assertEqual(
+            self.AuthApiKey._retrieve_uid_from_api_key("api_key"), self.demo_user.id
+        )
+
+    def test_expired(self):
+        """A key is refused after its expiration date, even if it was cached."""
+        self.assertEqual(
+            self.AuthApiKey._retrieve_uid_from_api_key("api_key"), self.demo_user.id
+        )
+        self.api_key.expiration_date = fields.Datetime.now() - timedelta(seconds=1)
+        with self.assertRaises(ValidationError) as cm, self.env.cr.savepoint():
+            self.AuthApiKey._retrieve_uid_from_api_key("api_key")
+        self.assertEqual(cm.exception.args[0], "The API key is expired")
+
+    def test_expired_is_unauthorized(self):
+        """An expired key gives a 401."""
+        self.api_key.expiration_date = fields.Datetime.now() - timedelta(seconds=1)
+        with (
+            self.assertLogs("odoo.addons.auth_api_key.models.ir_http") as logs,
+            self.assertRaises(Unauthorized),
+        ):
+            self._authenticate()
+        self.assertEqual(
+            logs.output,
+            [
+                "ERROR:odoo.addons.auth_api_key.models.ir_http:"
+                "Wrong HTTP_API_KEY from 10.1.2.3, access denied"
+            ],
+        )
+
+    def test_rotation(self):
+        """The new key works while the old one is still valid, then alone."""
+        new_key = self.AuthApiKey.create(
+            {"name": "new", "user_id": self.demo_user.id, "key": "new_api_key"}
+        )
+        for key in ("api_key", "new_api_key"):
+            self.assertEqual(
+                self.AuthApiKey._retrieve_uid_from_api_key(key), self.demo_user.id
+            )
+        self.api_key.expiration_date = fields.Datetime.now() - timedelta(seconds=1)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            self.AuthApiKey._retrieve_uid_from_api_key("api_key")
+        self.assertEqual(
+            self.AuthApiKey._retrieve_uid_from_api_key("new_api_key"),
+            new_key.user_id.id,
+        )
+
+    def test_last_used_set(self):
+        """The first use of a key sets its last use date."""
+        self.assertFalse(self.api_key.last_used_date)
+        before = fields.Datetime.now()
+        self.assertTrue(self._authenticate())
+        self.assertGreaterEqual(self.api_key.last_used_date, before)
+
+    def test_last_used_throttled(self):
+        """A use right after the previous one does not update the date."""
+        recent = fields.Datetime.now() - LAST_USED_THROTTLE / 2
+        self.api_key.last_used_date = recent
+        self.assertTrue(self._authenticate())
+        self.assertEqual(self.api_key.last_used_date, recent)
+
+    def test_last_used_updated(self):
+        """A use after the throttle delay updates the date."""
+        old = fields.Datetime.now() - LAST_USED_THROTTLE * 2
+        self.api_key.last_used_date = old
+        self.assertTrue(self._authenticate())
+        self.assertGreater(self.api_key.last_used_date, old)
+
+    def test_last_used_not_set_for_wrong_key(self):
+        """A refused key leaves the last use date untouched."""
+        with self.assertRaises(Unauthorized), self.assertLogs(
+            "odoo.addons.auth_api_key.models.ir_http"
+        ):
+            self._authenticate("wrong")
+        self.assertFalse(self.api_key.last_used_date)
