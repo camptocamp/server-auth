@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Camptocamp SA
+     @author Simone Orsi <simahawk@gmail.com>
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+<odoo noupdate="1">
+    <record id="ir_cron_warn_expiring_api_keys" model="ir.cron">
+        <field name="name">API keys: warn about the expiring ones</field>
+        <field name="model_id" ref="auth_api_key.model_auth_api_key" />
+        <field name="state">code</field>
+        <field name="code">model._cron_warn_expiring_keys()</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

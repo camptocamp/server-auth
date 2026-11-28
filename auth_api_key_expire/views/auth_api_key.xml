@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Camptocamp SA
+     @author Simone Orsi <simahawk@gmail.com>
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record model="ir.ui.view" id="auth_api_key_form_view">
+        <field name="name">auth.api.key.form (in auth_api_key_expire)</field>
+        <field name="model">auth.api.key</field>
+        <field name="inherit_id" ref="auth_api_key.auth_api_key_form_view" />
+        <field name="arch" type="xml">
+            <field name="key" position="after">
+                <field name="expiration_date" colspan="4" />
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="auth_api_key_tree_view">
+        <field name="name">auth.api.key.list (in auth_api_key_expire)</field>
+        <field name="model">auth.api.key</field>
+        <field name="inherit_id" ref="auth_api_key.auth_api_key_tree_view" />
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="expiration_date" />
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="auth_api_key_search_view">
+        <field name="name">auth.api.key.search (in auth_api_key_expire)</field>
+        <field name="model">auth.api.key</field>
+        <field name="inherit_id" ref="auth_api_key.auth_api_key_search_view" />
+        <field name="arch" type="xml">
+            <filter name="inactive" position="before">
+                <filter
+                    name="expired"
+                    string="Expired"
+                    domain="[('expiration_date', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]"
+                />
+                <filter
+                    name="expiring"
+                    string="Expiring"
+                    domain="[('expiration_warning_sent', '=', True), ('expiration_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]"
+                />
+            </filter>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Camptocamp SA
+     @author Simone Orsi <simahawk@gmail.com>
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+<odoo noupdate="1">
+    <record id="config_param_notify_group" model="ir.config_parameter">
+        <field name="key">auth_api_key_expire.notify_group_id</field>
+        <field name="value" eval="ref('base.group_system')" />
+    </record>
+    <record id="config_param_warning_days" model="ir.config_parameter">
+        <field name="key">auth_api_key_expire.warning_days</field>
+        <field name="value">15</field>
+    </record>
+</odoo>
