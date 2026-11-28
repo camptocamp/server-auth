@@ -1,9 +1,15 @@
 # Copyright 2018 ACSONE SA/NV
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
+import hashlib
+
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tools import consteq
+from odoo.tools import consteq, str2bool
+
+HASH_KEYS_PARAM = "auth_api_key.hash_keys"
+# Stored in ``key`` when the real key is only kept as a hash.
+HASHED_KEY_PLACEHOLDER = "********"
 
 
 class AuthApiKey(models.Model):
@@ -15,6 +21,12 @@ class AuthApiKey(models.Model):
         required=True,
         help="""The API key. Enter a dummy value in this field if it is
         obtained from the server environment configuration.""",
+    )
+    key_hash = fields.Char(
+        index=True,
+        readonly=True,
+        copy=False,
+        help="SHA-256 of the key, set when the key is stored hashed.",
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
@@ -40,9 +52,15 @@ class AuthApiKey(models.Model):
     def _retrieve_api_key_id(self, key):
         if not self.env.user.has_group("base.group_system"):
             raise AccessError(_("User is not allowed"))
-        for api_key in self.search([]):
-            if api_key.key and consteq(key, api_key.key):
+        if key:
+            api_key = self.search([("key_hash", "=", self._hash_key(key))], limit=1)
+            if api_key:
                 return api_key.id
+            # Keys not stored hashed: set before enabling the hashing or
+            # provided by the server environment.
+            for api_key in self.search([("key_hash", "=", False)]):
+                if api_key.key and consteq(key, api_key.key):
+                    return api_key.id
         # Never include the submitted key in the message: it ends up in logs
         # and error pages, and a mistyped or rotated key is almost a valid one.
         raise ValidationError(_("The API key is not allowed"))
@@ -51,6 +69,48 @@ class AuthApiKey(models.Model):
     @tools.ormcache("key")
     def _retrieve_uid_from_api_key(self, key):
         return self._retrieve_api_key(key).user_id.id
+
+    @api.model
+    def _hash_key(self, key):
+        """Return the hash used to store and look up a key.
+
+        Keys are long random values, a fast hash is enough to protect them
+        and it allows an indexed lookup.
+        """
+        return hashlib.sha256(key.encode()).hexdigest()
+
+    @api.model
+    def _keys_hashing_enabled(self):
+        """Tell if new keys are stored hashed (enabled by default)."""
+        value = self.env["ir.config_parameter"].sudo().get_param(HASH_KEYS_PARAM)
+        return str2bool(value or "True", default=True)
+
+    @api.model
+    def _prepare_key_storage(self, vals):
+        """Return ``vals`` with the key replaced by its hash if so configured.
+
+        When the hashing is disabled, any previous hash is dropped: it would
+        keep accepting the old key.
+        """
+        if not vals.get("key") or vals["key"] == HASHED_KEY_PLACEHOLDER:
+            return vals
+        if self._keys_hashing_enabled():
+            return dict(
+                vals,
+                key=HASHED_KEY_PLACEHOLDER,
+                key_hash=self._hash_key(vals["key"]),
+            )
+        return dict(vals, key_hash=False)
+
+    def _hash_plaintext_keys(self):
+        """Replace the keys stored in plain text by their hash."""
+        if not self._keys_hashing_enabled():
+            return
+        plain_keys = self.with_context(active_test=False).search(
+            [("key_hash", "=", False)]
+        )
+        for api_key in plain_keys:
+            api_key.write({"key": api_key.key})
 
     def _clear_key_cache(self):
         self.env.registry.clear_cache()
@@ -68,14 +128,16 @@ class AuthApiKey(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        vals_list = [self._prepare_key_storage(vals) for vals in vals_list]
         records = super().create(vals_list)
         if any(["key" in vals or "user_id" in vals for vals in vals_list]):
             self._clear_key_cache()
         return records
 
     def write(self, vals):
+        vals = self._prepare_key_storage(vals)
         super().write(vals)
-        if "key" in vals or "user_id" in vals or "active" in vals:
+        if any(fname in vals for fname in ("key", "user_id", "active")):
             self._clear_key_cache()
         return True
 

@@ -1,13 +1,19 @@
 # Copyright 2018 ACSONE SA/NV
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
+import importlib.util
+from pathlib import Path
+
 from werkzeug.datastructures import EnvironHeaders
 from werkzeug.exceptions import Unauthorized
 
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
+from odoo.tools import file_open
 
 from odoo.addons.website.tools import MockRequest
+
+from ..models.auth_api_key import HASH_KEYS_PARAM, HASHED_KEY_PLACEHOLDER
 
 
 class TestAuthApiKey(TransactionCase):
@@ -78,7 +84,7 @@ class TestAuthApiKey(TransactionCase):
     def test_api_key_headers(self):
         """The API key in the headers is read."""
         with MockRequest(self.env) as mocked_request:
-            mocked_request.httprequest.environ["HTTP_API_KEY"] = self.api_key_good.key
+            mocked_request.httprequest.environ["HTTP_API_KEY"] = "api_key"
             mocked_request.httprequest.headers = EnvironHeaders(
                 mocked_request.httprequest.environ
             )
@@ -149,3 +155,142 @@ class TestAuthApiKey(TransactionCase):
                 "Wrong HTTP_API_KEY from 10.1.2.3, access denied"
             ],
         )
+
+
+class TestAuthApiKeyHashing(TransactionCase):
+    @classmethod
+    def setUpClass(cls, *args, **kwargs):
+        super().setUpClass(*args, **kwargs)
+        cls.AuthApiKey = cls.env["auth.api.key"]
+        cls.demo_user = cls.env.ref("base.user_demo")
+        cls.param = cls.env["ir.config_parameter"].sudo()
+
+    def _create(self, name, key):
+        return self.AuthApiKey.create(
+            {"name": name, "key": key, "user_id": self.demo_user.id}
+        )
+
+    def _uid(self, key):
+        return self.AuthApiKey._retrieve_uid_from_api_key(key)
+
+    def test_hashing_enabled_by_default(self):
+        """A new key is stored hashed and can still be used."""
+        api_key = self._create("hashed", "secret_key")
+        self.assertEqual(api_key.key, HASHED_KEY_PLACEHOLDER)
+        self.assertEqual(api_key.key_hash, self.AuthApiKey._hash_key("secret_key"))
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+
+    def test_hashed_key_is_not_the_placeholder(self):
+        """The placeholder itself does not authenticate."""
+        self._create("hashed", "secret_key")
+        with self.assertRaises(ValidationError):
+            self._uid(HASHED_KEY_PLACEHOLDER)
+
+    def test_write_key_replaces_hash(self):
+        """Writing a new key replaces the hash: the old key stops working."""
+        api_key = self._create("hashed", "secret_key")
+        api_key.key = "new_secret_key"
+        self.assertEqual(api_key.key, HASHED_KEY_PLACEHOLDER)
+        self.assertEqual(self._uid("new_secret_key"), self.demo_user.id)
+        with self.assertRaises(ValidationError):
+            self._uid("secret_key")
+
+    def test_write_other_field_keeps_hash(self):
+        """Writing another field does not touch the hashed key."""
+        api_key = self._create("hashed", "secret_key")
+        api_key.name = "renamed"
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+
+    def test_hashing_disabled(self):
+        """With the hashing disabled the key is stored as is."""
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key = self._create("plain", "secret_key")
+        self.assertEqual(api_key.key, "secret_key")
+        self.assertFalse(api_key.key_hash)
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+
+    def test_write_key_hashing_disabled_drops_hash(self):
+        """A key written in plain text drops the hash of the previous one."""
+        api_key = self._create("hashed", "secret_key")
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key.key = "new_secret_key"
+        self.assertFalse(api_key.key_hash)
+        self.assertEqual(self._uid("new_secret_key"), self.demo_user.id)
+        with self.assertRaises(ValidationError):
+            self._uid("secret_key")
+
+    def test_plain_key_still_works_when_enabling(self):
+        """Keys stored in plain text keep working until they are hashed."""
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key = self._create("plain", "secret_key")
+        self.param.set_param(HASH_KEYS_PARAM, "True")
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+        self.assertEqual(api_key.key, "secret_key")
+
+    def test_hash_plaintext_keys(self):
+        """Hashing the existing keys keeps them usable but unreadable."""
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key = self._create("plain", "secret_key")
+        archived = self._create("archived", "archived_key")
+        archived.active = False
+        self.param.set_param(HASH_KEYS_PARAM, "True")
+        self.AuthApiKey._hash_plaintext_keys()
+        self.assertEqual(api_key.key, HASHED_KEY_PLACEHOLDER)
+        self.assertEqual(archived.key, HASHED_KEY_PLACEHOLDER)
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+
+    def test_hash_plaintext_keys_disabled(self):
+        """Nothing is hashed while the hashing is disabled."""
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key = self._create("plain", "secret_key")
+        self.AuthApiKey._hash_plaintext_keys()
+        self.assertEqual(api_key.key, "secret_key")
+
+    def test_settings_enable_hashes_existing_keys(self):
+        """Enabling the setting hashes the keys already stored."""
+        self.param.set_param(HASH_KEYS_PARAM, "False")
+        api_key = self._create("plain", "secret_key")
+        settings = self.env["res.config.settings"].create(
+            {"auth_api_key_hash_keys": True}
+        )
+        settings.execute()
+        self.assertEqual(api_key.key, HASHED_KEY_PLACEHOLDER)
+        self.assertEqual(self._uid("secret_key"), self.demo_user.id)
+
+    def test_neutralize(self):
+        """The neutralization clears the hash too: no key works anymore."""
+        self._create("hashed", "secret_key")
+        with file_open("auth_api_key/data/neutralize.sql") as f:
+            self.env.cr.execute(f.read())
+        self.AuthApiKey.invalidate_model()
+        self.env.registry.clear_cache()
+        with self.assertRaises(ValidationError):
+            self._uid("secret_key")
+        self.assertFalse(self.AuthApiKey.search([("key_hash", "!=", False)]))
+
+    def test_migration_keeps_plain_keys(self):
+        """Existing keys: the upgrade keeps them stored in plain text."""
+        # can be trashed on migration
+        self.AuthApiKey.search([]).unlink()
+        self.param.search([("key", "=", HASH_KEYS_PARAM)]).unlink()
+        self._create("existing", "secret_key")
+        self._run_migration()
+        self.assertEqual(self.param.get_param(HASH_KEYS_PARAM), "False")
+        self.assertFalse(self.AuthApiKey._keys_hashing_enabled())
+
+    def test_migration_without_keys(self):
+        """No existing keys: the upgrade leaves the default (hashing enabled)."""
+        # can be trashed on migration
+        self.AuthApiKey.search([]).unlink()
+        self.param.search([("key", "=", HASH_KEYS_PARAM)]).unlink()
+        self._run_migration()
+        self.assertTrue(self.AuthApiKey._keys_hashing_enabled())
+
+    def _run_migration(self):
+        spec = importlib.util.spec_from_file_location(
+            "post_migration",
+            Path(__file__).parents[1] / "migrations/18.0.1.1.0/post-migration.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.migrate(self.env.cr, "18.0.1.0.2")

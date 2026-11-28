@@ -35,3 +35,8 @@ class TestAuthApiKey(TransactionCase):
             # dummy key must be replace with the one from env and
             # therefore should be unusable
             self.env["auth.api.key"]._retrieve_uid_from_api_key("dummy")
+
+    def test_keys_not_hashed(self):
+        """Keys from the environment are never hashed."""
+        self.assertFalse(self.AuthApiKey._keys_hashing_enabled())
+        self.assertFalse(self.api_key_from_env.key_hash)
