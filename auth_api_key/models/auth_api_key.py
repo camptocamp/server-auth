@@ -1,4 +1,6 @@
 # Copyright 2018 ACSONE SA/NV
+# Copyright 2026 Camptocamp SA
+# @author Simone Orsi <simahawk@gmail.com>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from odoo import _, api, fields, models, tools
@@ -43,7 +45,9 @@ class AuthApiKey(models.Model):
         for api_key in self.search([]):
             if api_key.key and consteq(key, api_key.key):
                 return api_key.id
-        raise ValidationError(_(f"The key {key} is not allowed"))
+        # Never include the submitted key in the message: it ends up in logs
+        # and error pages, and a mistyped or rotated key is almost a valid one.
+        raise ValidationError(_("The API key is not allowed"))
 
     @api.model
     @tools.ormcache("key")
@@ -73,6 +77,13 @@ class AuthApiKey(models.Model):
 
     def write(self, vals):
         super().write(vals)
-        if "key" in vals or "user_id" in vals:
+        if "key" in vals or "user_id" in vals or "active" in vals:
             self._clear_key_cache()
         return True
+
+    def unlink(self):
+        # A deleted key must stop working right away, not when the cache
+        # happens to be cleared.
+        res = super().unlink()
+        self._clear_key_cache()
+        return res

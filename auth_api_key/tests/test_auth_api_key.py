@@ -1,7 +1,10 @@
 # Copyright 2018 ACSONE SA/NV
+# Copyright 2026 Camptocamp SA
+# @author Simone Orsi <simahawk@gmail.com>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from werkzeug.datastructures import EnvironHeaders
+from werkzeug.exceptions import Unauthorized
 
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
@@ -82,3 +85,69 @@ class TestAuthApiKey(TransactionCase):
                 mocked_request.httprequest.environ
             )
             self.assertTrue(self.env["ir.http"]._auth_method_api_key())
+
+    def test_unlink_cache_invalidation(self):
+        """A deleted key stops being accepted right away."""
+        uid = self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+        self.assertEqual(uid, self.demo_user.id)
+        self.api_key_good.unlink()
+        with self.assertRaises(ValidationError):
+            self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+
+    def test_archive_cache_invalidation(self):
+        """An archived key stops being accepted right away."""
+        uid = self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+        self.assertEqual(uid, self.demo_user.id)
+        self.api_key_good.active = False
+        with self.assertRaises(ValidationError):
+            self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+        self.api_key_good.active = True
+        uid = self.env["auth.api.key"]._retrieve_uid_from_api_key("api_key")
+        self.assertEqual(uid, self.demo_user.id)
+
+    def test_wrong_key_message_does_not_leak_key(self):
+        """The error raised for an unknown key does not contain the key."""
+        with self.assertRaises(ValidationError) as cm, self.env.cr.savepoint():
+            self.env["auth.api.key"]._retrieve_uid_from_api_key("secret_typo")
+        self.assertEqual(cm.exception.args[0], "The API key is not allowed")
+
+    def test_wrong_key_is_unauthorized(self):
+        """An unknown key gives a 401 and logs the caller address, not the key."""
+        with MockRequest(self.env) as mocked_request:
+            mocked_request.httprequest.environ["HTTP_API_KEY"] = "secret_typo"
+            mocked_request.httprequest.environ["REMOTE_ADDR"] = "10.1.2.3"
+            mocked_request.httprequest.headers = EnvironHeaders(
+                mocked_request.httprequest.environ
+            )
+            with (
+                self.assertLogs("odoo.addons.auth_api_key.models.ir_http") as logs,
+                self.assertRaises(Unauthorized),
+            ):
+                self.env["ir.http"]._auth_method_api_key()
+        self.assertEqual(
+            logs.output,
+            [
+                "ERROR:odoo.addons.auth_api_key.models.ir_http:"
+                "Wrong HTTP_API_KEY from 10.1.2.3, access denied"
+            ],
+        )
+
+    def test_missing_key_is_unauthorized(self):
+        """A request without key gives a 401."""
+        with MockRequest(self.env) as mocked_request:
+            mocked_request.httprequest.environ["REMOTE_ADDR"] = "10.1.2.3"
+            mocked_request.httprequest.headers = EnvironHeaders(
+                mocked_request.httprequest.environ
+            )
+            with (
+                self.assertLogs("odoo.addons.auth_api_key.models.ir_http") as logs,
+                self.assertRaises(Unauthorized),
+            ):
+                self.env["ir.http"]._auth_method_api_key()
+        self.assertEqual(
+            logs.output,
+            [
+                "ERROR:odoo.addons.auth_api_key.models.ir_http:"
+                "Wrong HTTP_API_KEY from 10.1.2.3, access denied"
+            ],
+        )
