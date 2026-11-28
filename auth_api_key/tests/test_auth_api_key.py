@@ -4,18 +4,26 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 import importlib.util
+from datetime import timedelta
 from pathlib import Path
 
+from lxml import etree
 from werkzeug.datastructures import EnvironHeaders
 from werkzeug.exceptions import Unauthorized
 
+from odoo import fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
 from odoo.tools import file_open
+from odoo.tools.safe_eval import datetime, safe_eval
 
 from odoo.addons.website.tools import MockRequest
 
-from ..models.auth_api_key import HASH_KEYS_PARAM, HASHED_KEY_PLACEHOLDER
+from ..models.auth_api_key import (
+    HASH_KEYS_PARAM,
+    HASHED_KEY_PLACEHOLDER,
+    LAST_USED_THROTTLE,
+)
 
 
 class TestAuthApiKey(TransactionCase):
@@ -296,3 +304,89 @@ class TestAuthApiKeyHashing(TransactionCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         module.migrate(self.env.cr, "18.0.1.0.2")
+
+
+class TestAuthApiKeyLastUsed(TransactionCase):
+    @classmethod
+    def setUpClass(cls, *args, **kwargs):
+        super().setUpClass(*args, **kwargs)
+        cls.AuthApiKey = cls.env["auth.api.key"]
+        cls.demo_user = cls.env.ref("base.user_demo")
+        cls.api_key = cls.AuthApiKey.create(
+            {"name": "good", "user_id": cls.demo_user.id, "key": "api_key"}
+        )
+
+    def _authenticate(self, key="api_key"):
+        with MockRequest(self.env) as mocked_request:
+            mocked_request.httprequest.environ["HTTP_API_KEY"] = key
+            mocked_request.httprequest.environ["REMOTE_ADDR"] = "10.1.2.3"
+            mocked_request.httprequest.headers = EnvironHeaders(
+                mocked_request.httprequest.environ
+            )
+            return self.env["ir.http"]._auth_method_api_key()
+
+    def test_last_used_set(self):
+        """The first use of a key sets its last use date."""
+        self.assertFalse(self.api_key.last_used_date)
+        before = fields.Datetime.now()
+        self.assertTrue(self._authenticate())
+        self.assertGreaterEqual(self.api_key.last_used_date, before)
+
+    def test_last_used_throttled(self):
+        """A use right after the previous one does not update the date."""
+        recent = fields.Datetime.now() - LAST_USED_THROTTLE / 2
+        self.api_key.last_used_date = recent
+        self.assertTrue(self._authenticate())
+        self.assertEqual(self.api_key.last_used_date, recent)
+
+    def test_last_used_updated(self):
+        """A use after the throttle delay updates the date."""
+        old = fields.Datetime.now() - LAST_USED_THROTTLE * 2
+        self.api_key.last_used_date = old
+        self.assertTrue(self._authenticate())
+        self.assertGreater(self.api_key.last_used_date, old)
+
+    def test_last_used_not_set_for_wrong_key(self):
+        """A refused key leaves the last use date untouched."""
+        with self.assertRaises(Unauthorized), self.assertLogs(
+            "odoo.addons.auth_api_key.models.ir_http"
+        ):
+            self._authenticate("wrong")
+        self.assertFalse(self.api_key.last_used_date)
+
+    def _filter_names(self, filter_name, api_keys):
+        """Return the names of ``api_keys`` matched by a filter of the search view."""
+        arch = self.AuthApiKey.get_view(view_type="search")["arch"]
+        node = etree.fromstring(arch).xpath(f"//filter[@name='{filter_name}']")[0]
+        domain = safe_eval(
+            node.get("domain"),
+            {"context_today": fields.Date.today, "datetime": datetime},
+        )
+        found = self.AuthApiKey.search(domain + [("id", "in", api_keys.ids)])
+        return set(found.mapped("name"))
+
+    def test_search_not_used_filters(self):
+        """The filters find the keys never used or not used for a given time."""
+        now = fields.Datetime.now()
+        api_keys = self.api_key  # never used
+        for days in (5, 20, 45, 90):
+            api_keys |= self.AuthApiKey.create(
+                {
+                    "name": f"used {days}d ago",
+                    "user_id": self.demo_user.id,
+                    "key": f"key_{days}",
+                    "last_used_date": now - timedelta(days=days),
+                }
+            )
+        self.assertEqual(self._filter_names("never_used", api_keys), {"good"})
+        self.assertEqual(
+            self._filter_names("not_used_10d", api_keys),
+            {"good", "used 20d ago", "used 45d ago", "used 90d ago"},
+        )
+        self.assertEqual(
+            self._filter_names("not_used_30d", api_keys),
+            {"good", "used 45d ago", "used 90d ago"},
+        )
+        self.assertEqual(
+            self._filter_names("not_used_60d", api_keys), {"good", "used 90d ago"}
+        )

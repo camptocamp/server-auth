@@ -4,14 +4,17 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 import hashlib
+from datetime import timedelta
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tools import consteq, str2bool
+from odoo.tools import SQL, consteq, str2bool
 
 HASH_KEYS_PARAM = "auth_api_key.hash_keys"
 # Stored in ``key`` when the real key is only kept as a hash.
 HASHED_KEY_PLACEHOLDER = "********"
+# Minimum delay between two updates of the last use of a key.
+LAST_USED_THROTTLE = timedelta(hours=1)
 
 
 class AuthApiKey(models.Model):
@@ -29,6 +32,11 @@ class AuthApiKey(models.Model):
         readonly=True,
         copy=False,
         help="SHA-256 of the key, set when the key is stored hashed.",
+    )
+    last_used_date = fields.Datetime(
+        readonly=True,
+        copy=False,
+        help="Last time the key was used (updated at most once an hour).",
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
@@ -68,9 +76,33 @@ class AuthApiKey(models.Model):
         raise ValidationError(_("The API key is not allowed"))
 
     @api.model
-    @tools.ormcache("key")
     def _retrieve_uid_from_api_key(self, key):
+        # Not cached: checks added to ``_retrieve_api_key`` by other modules
+        # (that cannot be cached, e.g. depending on the time) must apply.
         return self._retrieve_api_key(key).user_id.id
+
+    def _update_last_used(self):
+        """Record that the key is being used, at most once per throttle delay.
+
+        Done in SQL, only when needed, to avoid a write on each request.
+        """
+        self.ensure_one()
+        now = fields.Datetime.now()
+        threshold = now - LAST_USED_THROTTLE
+        if self.last_used_date and self.last_used_date >= threshold:
+            return
+        self.flush_recordset(["last_used_date"])
+        self.env.cr.execute(
+            SQL(
+                "UPDATE %s SET last_used_date = %s WHERE id = %s "
+                "AND (last_used_date IS NULL OR last_used_date < %s)",
+                SQL.identifier(self._table),
+                now,
+                self.id,
+                threshold,
+            )
+        )
+        self.invalidate_recordset(["last_used_date"])
 
     @api.model
     def _hash_key(self, key):
