@@ -4,3 +4,4 @@
 - Sébastien Beau \<<sebastien.beau@akretion.com>\>
 - Chafique Delli \<<chafique.delli@akretion.com>\>
 - Thien Vo Hong \<<thienvh@trobz.com>\>
+- Simone Orsi \<<simone.orsi@camptocamp.com>\>
