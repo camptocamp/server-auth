@@ -7,3 +7,4 @@ pysaml2==7.1.0 ; python_version <= '3.12'  # jammy, noble
 pysaml2==7.5.0 ; python_version == '3.13'  # trixie
 pysaml2==7.5.4 ; python_version >= '3.14'  # question
 #: }}}
+odoo-addon-auth_api_key @ git+https://github.com/camptocamp/server-auth.git@18-imp-auth_api_key-last-used#subdirectory=auth_api_key
